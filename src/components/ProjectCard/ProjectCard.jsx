@@ -5,6 +5,7 @@ import Card from '@/components/Card/Card'
 import gvmShot from '@/assets/projects/gvm-company.jpg'
 import nkurubaShot from '@/assets/projects/nkuruba-tours.jpg'
 import scavalShot from '@/assets/projects/scaval.jpg'
+import smallBeginningsShot from '@/assets/projects/small-beginnings-uganda.jpg'
 
 /**
  * Home-page screenshots, keyed by project id and captured at 1440x810. That is
@@ -23,14 +24,15 @@ const SCREENSHOTS = {
   'gvm-company': gvmShot,
   scaval: scavalShot,
   'nkuruba-tours': nkurubaShot,
+  'small-beginnings-uganda': smallBeginningsShot,
 }
 
 /**
  * Renders one entry from PROJECTS (catalogue Section 2).
  *
  * Small Beginnings Uganda has no public URL in the 2026 catalogue, so this
- * component renders a non-linked card for it rather than inventing a domain,
- * and falls back to the lettered tile because there is no site to screenshot.
+ * component renders a non-linked card for it rather than inventing a domain —
+ * its screenshot still shows, just without a 'Visit site' link.
  */
 export const ProjectCard = ({ project, index = 0 }) => {
   const hasUrl = Boolean(project.url)
@@ -66,7 +68,7 @@ export const ProjectCard = ({ project, index = 0 }) => {
               className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            /* No public URL, so nothing to screenshot: the initial keeps the
+            /* No capture on file for this project: the initial keeps the
                grid from looking broken. See PROJECT_BRIEF.md §8. */
             <span className="text-5xl font-extrabold text-white/15 transition-transform duration-500 group-hover:scale-110">
               {project.name.charAt(0)}
