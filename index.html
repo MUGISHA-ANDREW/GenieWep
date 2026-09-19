@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/jpeg" href="/logo2.jpeg" />
+    <link rel="apple-touch-icon" href="/logo2.jpeg" />
+
+    <title>GenieWep Technologies | Software Development Company in Uganda</title>
+    <meta
+      name="description"
+      content="GenieWep Technologies builds websites, web apps, mobile apps and desktop software for businesses, schools, NGOs, SACCOs and tourism companies in Uganda. 5 years of experience."
+    />
+    <meta name="author" content="GenieWep Technologies" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#071726" media="(prefers-color-scheme: dark)" />
+
+    <!--
+      Resolve the theme before first paint. Without this the page renders in the
+      default light theme for a frame and then snaps to dark, which reads as a
+      flash on every single navigation for dark-mode visitors.
+      Kept inline and dependency-free so it runs before any bundle loads.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = window.localStorage.getItem('geniewep-theme')
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+          document.documentElement.dataset.theme = theme
+        } catch (error) {
+          document.documentElement.dataset.theme = 'light'
+        }
+      })()
+    </script>
+    <link rel="canonical" href="https://geniewep.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="GenieWep Technologies" />
+    <meta property="og:title" content="GenieWep Technologies | Software Development Company in Uganda" />
+    <meta
+      property="og:description"
+      content="Affordable, innovative and reliable software solutions for businesses, schools, NGOs, SACCOs and startups across Uganda."
+    />
+    <meta property="og:url" content="https://geniewep.com/" />
+    <meta property="og:image" content="https://geniewep.com/og-image.jpg" />
+    <meta property="og:image:alt" content="GenieWep Technologies — software development in Uganda" />
+    <meta property="og:locale" content="en_UG" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GenieWep Technologies | Software Development Company in Uganda" />
+    <meta
+      name="twitter:description"
+      content="Affordable, innovative and reliable software solutions for businesses, schools, NGOs, SACCOs and startups across Uganda."
+    />
+    <meta name="twitter:image" content="https://geniewep.com/og-image.jpg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Structured data: local software business -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "GenieWep Technologies",
+        "description": "Ugandan software development startup building websites, web applications, mobile apps and desktop software.",
+        "url": "https://geniewep.com",
+        "email": "geniewep@gmail.com",
+        "telephone": "+256767267209",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "UG"
+        },
+        "areaServed": "Uganda",
+        "sameAs": [
+          "https://www.facebook.com/profile.php?id=61594174394851",
+          "https://www.instagram.com/geniewep/",
+          "https://x.com/GenieWep",
+          "https://www.tiktok.com/@geniewep"
+        ],
+        "priceRange": "UGX 800,000+",
+        "knowsAbout": [
+          "Web Development",
+          "Django",
+          "React",
+          "Mobile App Development",
+          "UI/UX Design",
+          "SEO"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

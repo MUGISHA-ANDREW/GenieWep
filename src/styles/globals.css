@@ -1,0 +1,160 @@
+/* Base element styles and shared component classes. */
+
+@layer base {
+  * {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--c-canvas);
+    color: var(--c-body);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Theme swap should feel deliberate, not instant-flicker */
+    transition: background-color 0.2s var(--ease-brand),
+      color 0.2s var(--ease-brand);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--c-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible keyboard focus everywhere (WCAG 2.1 AA, brief §13) */
+  :focus-visible {
+    outline: 3px solid var(--color-accent-500);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /*
+   * Respect reduced-motion preferences.
+   *
+   * This covers CSS transitions and animations only. Framer Motion drives its
+   * animations from JavaScript, so it is silenced separately via
+   * `useReducedMotion()` in `components/Reveal.jsx` — CSS alone cannot stop it.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Page width container, consistent across every section */
+  .container-page {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+
+  /*
+   * The accent rule that sits above section headings in the catalogue.
+   * It runs azure → aqua: at 56px wide the gradient is read as a single richer
+   * blue rather than as two colours, which is the cheapest way to make the
+   * brand pair present on every section without adding a competing hue.
+   */
+  .accent-rule::before {
+    content: '';
+    display: block;
+    width: 3.5rem;
+    height: 4px;
+    border-radius: 999px;
+    background-image: linear-gradient(
+      90deg,
+      var(--color-accent-500),
+      var(--color-aqua-500)
+    );
+    margin-bottom: 1rem;
+  }
+
+  .accent-rule-center::before {
+    margin-inline: auto;
+  }
+
+  /* Dark bands keep a brighter rule so it does not disappear into the ocean */
+  .accent-rule-on-dark::before {
+    background-image: linear-gradient(
+      90deg,
+      var(--color-accent-400),
+      var(--color-aqua-300)
+    );
+  }
+
+  /*
+   * The dark brand band behind page heroes and closing CTAs.
+   *
+   * Flat `bg-steel-800` across a full-bleed band reads as a solid slab; the
+   * two radial washes lift the top-left corner toward azure and the bottom-
+   * right toward aqua, so the band has depth without any image to download.
+   * They sit at 20%/14% alpha because anything stronger starts competing with
+   * the white headline for attention.
+   */
+  .band-dark {
+    background-color: var(--color-steel-800);
+    background-image: radial-gradient(
+        70rem 40rem at 8% -20%,
+        rgb(63 182 238 / 0.2),
+        transparent 60%
+      ),
+      radial-gradient(
+        55rem 35rem at 100% 120%,
+        rgb(18 169 155 / 0.14),
+        transparent 62%
+      );
+  }
+
+  /*
+   * Headline word painted in the brand gradient. Used on one or two words at a
+   * time — a whole gradient paragraph is unreadable, and the effect only lands
+   * when it is rare.
+   */
+  .text-brand-gradient {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-accent-300),
+      var(--color-aqua-300)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@layer utilities {
+  /* Skip-link: visually hidden until focused */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+  }
+
+  .skip-link:focus {
+    left: 1rem;
+    top: 1rem;
+  }
+}
