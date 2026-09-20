@@ -6,16 +6,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import ContactForm from './ContactForm'
 
 /*
- * Email delivery is mocked at the module boundary: these tests are about what
- * the form promises the visitor, not about Web3Forms' wire format. The real
- * request shape is covered in email.test.js.
+ * Delivery is mocked at the module boundary: these tests are about what the
+ * form promises the visitor. The request it makes is covered in email.test.js,
+ * and what the server does with it in api/enquiry.test.js.
  */
 vi.mock('@/utils/email', () => ({
-  isEmailDeliveryConfigured: vi.fn(() => false),
   sendEnquiryEmail: vi.fn(),
 }))
 
-const { isEmailDeliveryConfigured, sendEnquiryEmail } = await import('@/utils/email')
+const { sendEnquiryEmail } = await import('@/utils/email')
 
 const renderForm = () =>
   render(
@@ -39,16 +38,15 @@ const fillValidForm = async (user) => {
 }
 
 /*
- * jsdom has no window.open, and submitting a valid form always reaches for it,
- * so every suite in this file needs the spy — not just the submission one.
+ * jsdom has no window.open. The form is not supposed to call it at all any
+ * more, so the spy is here to prove that rather than to make it work.
  */
 let openSpy
 
 beforeEach(() => {
   openSpy = vi.spyOn(window, 'open').mockReturnValue({ opener: {} })
-  // Default: no delivery key, the state a fresh checkout is in.
-  isEmailDeliveryConfigured.mockReturnValue(false)
   sendEnquiryEmail.mockReset()
+  sendEnquiryEmail.mockResolvedValue({ success: true })
 })
 
 afterEach(() => {
@@ -111,99 +109,16 @@ describe('ContactForm validation', () => {
   })
 })
 
-describe('ContactForm submission', () => {
-  /*
-   * There is no backend. Submitting hands the enquiry to WhatsApp, so these
-   * assert on what `window.open` was actually called with — that URL is the
-   * whole delivery mechanism.
-   */
-  it('opens WhatsApp with every field in the message', async () => {
-    const fakeTab = { opener: {} }
-    openSpy.mockReturnValue(fakeTab)
-
+describe('ContactForm delivery', () => {
+  it('posts the enquiry and reports it delivered', async () => {
     const user = userEvent.setup()
     renderForm()
 
     await fillValidForm(user)
     await user.click(screen.getByRole('button', { name: /send message/i }))
 
-    expect(openSpy).toHaveBeenCalledTimes(1)
-    const [url, target] = openSpy.mock.calls[0]
-    expect(target).toBe('_blank')
-
-    expect(url).toContain('wa.me/256767267209')
-    const text = decodeURIComponent(new URL(url).searchParams.get('text'))
-    expect(text).toContain('Name: Jane Nakato')
-    expect(text).toContain('Email: jane@example.com')
-    expect(text).toContain('Phone: +256700000000')
-    expect(text).toContain('Service: Business / Corporate Website')
-    expect(text).toContain('We need a five page website for our SACCO.')
-
-    // The new tab must not keep a handle on this window.
-    expect(fakeTab.opener).toBeNull()
-  })
-
-  it('never claims the message was sent, only handed to WhatsApp', async () => {
-    const user = userEvent.setup()
-    renderForm()
-
-    await fillValidForm(user)
-    await user.click(screen.getByRole('button', { name: /send message/i }))
-
-    expect(await screen.findByText(/finish in whatsapp/i)).toBeInTheDocument()
-    expect(screen.queryByText(/message sent/i)).not.toBeInTheDocument()
-  })
-
-  it('offers a manual link when the browser blocks the popup', async () => {
-    openSpy.mockReturnValue(null)
-
-    const user = userEvent.setup()
-    renderForm()
-
-    await fillValidForm(user)
-    await user.click(screen.getByRole('button', { name: /send message/i }))
-
-    expect(await screen.findByText(/blocked the whatsapp window/i)).toBeInTheDocument()
-
-    const link = screen.getByRole('link', { name: /open whatsapp/i })
-    expect(link.getAttribute('href')).toContain('wa.me/256767267209')
-    expect(link.getAttribute('href')).toContain('Jane%20Nakato')
-
-    expect(screen.getByRole('link', { name: /email us instead/i })).toHaveAttribute(
-      'href',
-      'mailto:geniewep@gmail.com',
-    )
-  })
-
-  it('keeps the typed details when the popup was blocked', async () => {
-    openSpy.mockReturnValue(null)
-
-    const user = userEvent.setup()
-    renderForm()
-
-    await fillValidForm(user)
-    await user.click(screen.getByRole('button', { name: /send message/i }))
-
-    await screen.findByText(/blocked the whatsapp window/i)
-    await user.click(screen.getByRole('button', { name: /back to the form/i }))
-
-    expect(screen.getByLabelText(/full name/i)).toHaveValue('Jane Nakato')
-  })
-})
-
-describe('ContactForm email delivery', () => {
-  it('posts the enquiry and reports it sent', async () => {
-    isEmailDeliveryConfigured.mockReturnValue(true)
-    sendEnquiryEmail.mockResolvedValue({ success: true })
-
-    const user = userEvent.setup()
-    renderForm()
-
-    await fillValidForm(user)
-    await user.click(screen.getByRole('button', { name: /send message/i }))
-
-    expect(await screen.findByText(/^message sent$/i)).toBeInTheDocument()
-    expect(screen.getByText(/in our inbox/i)).toBeInTheDocument()
+    expect(await screen.findByText(/^message delivered$/i)).toBeInTheDocument()
+    expect(screen.getByText(/get back to you shortly/i)).toBeInTheDocument()
 
     expect(sendEnquiryEmail).toHaveBeenCalledTimes(1)
     expect(sendEnquiryEmail).toHaveBeenCalledWith(
@@ -217,12 +132,8 @@ describe('ContactForm email delivery', () => {
     )
   })
 
-  it('opens WhatsApp before awaiting the email, so the popup survives', async () => {
-    isEmailDeliveryConfigured.mockReturnValue(true)
-
-    // Resolve only when released, so the assertion lands while the POST is
-    // still in flight. If window.open were awaited behind it, it would not
-    // have been called yet — and in a real browser it would be blocked.
+  it('shows progress while the request is in flight', async () => {
+    // Resolves only when released, so the assertion lands mid-flight.
     let release
     sendEnquiryEmail.mockReturnValue(new Promise((resolve) => { release = resolve }))
 
@@ -233,54 +144,111 @@ describe('ContactForm email delivery', () => {
     await user.click(screen.getByRole('button', { name: /send message/i }))
 
     expect(await screen.findByText(/sending your message/i)).toBeInTheDocument()
-    expect(openSpy).toHaveBeenCalledTimes(1)
 
     release({ success: true })
-    expect(await screen.findByText(/^message sent$/i)).toBeInTheDocument()
+    expect(await screen.findByText(/^message delivered$/i)).toBeInTheDocument()
   })
 
-  it('falls back to WhatsApp and never claims sent when delivery fails', async () => {
-    isEmailDeliveryConfigured.mockReturnValue(true)
-    sendEnquiryEmail.mockRejectedValue(new Error('network down'))
-
+  /*
+   * The form used to open WhatsApp on every submission, from the days when it
+   * was the only channel. Now that Send actually delivers, that is a second
+   * tab nobody asked for, appearing at the same moment the panel says the
+   * message arrived — which reads as though it did not.
+   */
+  it('does not throw a WhatsApp tab at a visitor who chose email', async () => {
     const user = userEvent.setup()
     renderForm()
 
     await fillValidForm(user)
     await user.click(screen.getByRole('button', { name: /send message/i }))
 
-    expect(await screen.findByText(/could not deliver your enquiry by email/i)).toBeInTheDocument()
-    expect(screen.queryByText(/^message sent$/i)).not.toBeInTheDocument()
+    await screen.findByText(/^message delivered$/i)
+    expect(openSpy).not.toHaveBeenCalled()
 
-    // The WhatsApp link still carries everything they typed.
-    const link = screen.getByRole('link', { name: /reopen whatsapp/i })
-    expect(link.getAttribute('href')).toContain('Jane%20Nakato')
+    // Still reachable, as an offer rather than a fallback.
+    const link = screen.getByRole('link', { name: /chat on whatsapp too/i })
+    expect(link.getAttribute('href')).toContain('wa.me/256767267209')
+
+    // Nothing suggests the email needs following up by mail.
+    expect(screen.queryByRole('link', { name: /email us instead/i })).not.toBeInTheDocument()
   })
 
-  it('keeps the typed details when delivery fails', async () => {
-    isEmailDeliveryConfigured.mockReturnValue(true)
-    sendEnquiryEmail.mockRejectedValue(new Error('network down'))
-
+  it('clears the form once the message is actually delivered', async () => {
     const user = userEvent.setup()
     renderForm()
 
     await fillValidForm(user)
     await user.click(screen.getByRole('button', { name: /send message/i }))
 
-    await screen.findByText(/could not deliver your enquiry by email/i)
+    await screen.findByText(/^message delivered$/i)
+    await user.click(screen.getByRole('button', { name: /send another message/i }))
+
+    expect(screen.getByLabelText(/full name/i)).toHaveValue('')
+  })
+})
+
+describe('ContactForm when delivery fails', () => {
+  /*
+   * One failure path covers them all, deliberately. The browser cannot tell a
+   * network outage from a deployment missing RESEND_API_KEY from Resend
+   * rejecting an unverified sender — in every case nobody received the
+   * message, so the form must say exactly that and offer a way through.
+   */
+  beforeEach(() => {
+    sendEnquiryEmail.mockRejectedValue(new Error('delivery failed'))
+  })
+
+  it('never claims delivery', async () => {
+    const user = userEvent.setup()
+    renderForm()
+
+    await fillValidForm(user)
+    await user.click(screen.getByRole('button', { name: /send message/i }))
+
+    expect(await screen.findByText(/could not deliver your message/i)).toBeInTheDocument()
+    expect(screen.getByText(/nobody has seen it yet/i)).toBeInTheDocument()
+    expect(screen.queryByText(/^message delivered$/i)).not.toBeInTheDocument()
+  })
+
+  it('offers WhatsApp with every field already in the message', async () => {
+    const user = userEvent.setup()
+    renderForm()
+
+    await fillValidForm(user)
+    await user.click(screen.getByRole('button', { name: /send message/i }))
+
+    await screen.findByText(/could not deliver your message/i)
+
+    const link = screen.getByRole('link', { name: /send on whatsapp/i })
+    const url = new URL(link.getAttribute('href'))
+    expect(url.host).toBe('wa.me')
+
+    const text = decodeURIComponent(url.searchParams.get('text'))
+    expect(text).toContain('Name: Jane Nakato')
+    expect(text).toContain('Email: jane@example.com')
+    expect(text).toContain('Phone: +256700000000')
+    expect(text).toContain('Service: Business / Corporate Website')
+    expect(text).toContain('We need a five page website for our SACCO.')
+
+    expect(screen.getByRole('link', { name: /email us instead/i })).toHaveAttribute(
+      'href',
+      'mailto:geniewep@gmail.com',
+    )
+  })
+
+  it('keeps the typed details so nothing has to be retyped', async () => {
+    const user = userEvent.setup()
+    renderForm()
+
+    await fillValidForm(user)
+    await user.click(screen.getByRole('button', { name: /send message/i }))
+
+    await screen.findByText(/could not deliver your message/i)
     await user.click(screen.getByRole('button', { name: /back to the form/i }))
 
     expect(screen.getByLabelText(/full name/i)).toHaveValue('Jane Nakato')
-  })
-
-  it('does not attempt delivery when no key is configured', async () => {
-    const user = userEvent.setup()
-    renderForm()
-
-    await fillValidForm(user)
-    await user.click(screen.getByRole('button', { name: /send message/i }))
-
-    await screen.findByText(/finish in whatsapp/i)
-    expect(sendEnquiryEmail).not.toHaveBeenCalled()
+    expect(screen.getByLabelText(/project details/i)).toHaveValue(
+      'We need a five page website for our SACCO.',
+    )
   })
 })

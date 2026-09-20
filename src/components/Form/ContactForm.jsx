@@ -6,12 +6,13 @@ import { FiAlertCircle, FiCheckCircle, FiSend } from 'react-icons/fi'
 
 import Button from '@/components/Button/Button'
 import {
+  COMPANY,
   EMAIL_LINK,
   SERVICE_TYPE_OPTIONS,
   buildEnquiryMessage,
   buildWhatsAppLink,
 } from '@/utils/constants'
-import { isEmailDeliveryConfigured, sendEnquiryEmail } from '@/utils/email'
+import { sendEnquiryEmail } from '@/utils/email'
 import { contactDefaultValues, contactSchema } from '@/utils/validation'
 
 const FIELD_BASE =
@@ -36,11 +37,13 @@ const FieldError = ({ id, message }) =>
 /**
  * The panel shown after submitting, driven by what actually happened.
  *
- * Only `email: 'sent'` is allowed to say the message was sent, because that is
- * the only state where it reached the company without the visitor doing
- * anything else. Every other state describes the step still outstanding.
+ * Only `email: 'sent'` is allowed to say the message was delivered, because
+ * that is the only state where it reached the company without the visitor
+ * doing anything else. The other states describe the step still outstanding —
+ * including a deployment with no `RESEND_API_KEY`, which fails like any other
+ * outage rather than quietly pretending to have sent something.
  */
-const outcomeCopy = ({ email, opened }) => {
+const outcomeCopy = ({ email }) => {
   if (email === 'pending') {
     return {
       tone: 'border-line bg-tint',
@@ -52,40 +55,24 @@ const outcomeCopy = ({ email, opened }) => {
   if (email === 'sent') {
     return {
       tone: 'border-ok-line bg-ok-bg',
-      heading: 'Message sent',
-      body: opened
-        ? 'Your enquiry is in our inbox and we reply within one business day. We also opened WhatsApp if you would like an answer sooner.'
-        : 'Your enquiry is in our inbox and we reply within one business day.',
+      heading: 'Message delivered',
+      body: `Your message has arrived in the ${COMPANY.shortName} inbox. We will get back to you shortly — usually within one business day.`,
     }
   }
 
-  if (email === 'failed') {
-    return {
-      tone: 'border-warn-line bg-warn-bg',
-      heading: 'Send it on WhatsApp',
-      body: 'We could not deliver your enquiry by email just now. Your details are already filled into a WhatsApp chat — press send there and we will pick it up.',
-    }
+  // 'failed' — the POST never landed, or the server could not send it on.
+  return {
+    tone: 'border-warn-line bg-warn-bg',
+    heading: 'That did not send',
+    body: 'We could not deliver your message just now, so nobody has seen it yet. Send it on WhatsApp instead — your details are already filled in — or email us directly.',
   }
-
-  // 'off' — no delivery key configured, so WhatsApp is the only channel.
-  return opened
-    ? {
-        tone: 'border-ok-line bg-ok-bg',
-        heading: 'Finish in WhatsApp',
-        body: 'Your details are ready in a WhatsApp chat with us. Press send there and we will reply within one business day.',
-      }
-    : {
-        tone: 'border-warn-line bg-warn-bg',
-        heading: 'Open WhatsApp to send',
-        body: 'Your browser blocked the WhatsApp window. Use the button below to open the chat with your details already filled in.',
-      }
 }
 
 export const ContactForm = () => {
   /*
    * `handoff` is null while editing, and otherwise records what became of the
-   * submission: the WhatsApp link, whether the browser let us open it, and how
-   * the email delivery went ('pending' | 'sent' | 'failed' | 'off').
+   * submission: the prefilled WhatsApp link, and how delivery went
+   * ('pending' | 'sent' | 'failed').
    */
   const [handoff, setHandoff] = useState(null)
 
@@ -101,39 +88,29 @@ export const ContactForm = () => {
   })
 
   const onSubmit = async (values) => {
-    const link = buildWhatsAppLink(buildEnquiryMessage(values))
-
     /*
-     * WhatsApp opens first, before any await. A popup is only allowed while
-     * the click's user gesture is still live, and awaiting the email POST
-     * first would spend it — the tab would be blocked on every submission.
+     * Pressing Send delivers the message to the company inbox and nothing else
+     * happens: no second tab, no app switch. WhatsApp used to open on every
+     * submission, which was right when it was the only channel and wrong now —
+     * a visitor who asked to send an email should not have a chat window
+     * thrown at them, and a popup appearing alongside "delivered" reads as
+     * though the send did not work.
      *
-     * Deliberately not `window.open(link, '_blank', 'noopener')` either:
-     * passing noopener in the features string makes browsers return null even
-     * on success, which would make every successful hand-over look blocked.
-     * Opening plainly and then severing `opener` gets both the reference and
-     * the isolation.
+     * It stays one click away on the panel below, and on failure it is the
+     * recovery path, which is the one case where it earns the interruption.
+     * The link is built up front so it is ready either way.
      */
-    const tab = window.open(link, '_blank')
-    if (tab) tab.opener = null
-
-    const configured = isEmailDeliveryConfigured()
-    setHandoff({ link, opened: Boolean(tab), email: configured ? 'pending' : 'off' })
-
-    if (!configured) {
-      // WhatsApp is the only channel, so clear only once it has the message.
-      if (tab) reset()
-      return
-    }
+    const link = buildWhatsAppLink(buildEnquiryMessage(values))
+    setHandoff({ link, email: 'pending' })
 
     try {
       await sendEnquiryEmail(values)
-      setHandoff((current) => ({ ...current, email: 'sent' }))
+      setHandoff({ link, email: 'sent' })
       reset()
     } catch {
       // Keep the typed values: the enquiry has not reached anyone yet, and the
       // visitor may want to retry or copy their text out.
-      setHandoff((current) => ({ ...current, email: 'failed' }))
+      setHandoff({ link, email: 'failed' })
     }
   }
 
@@ -171,13 +148,22 @@ export const ContactForm = () => {
         {!pending && (
           <>
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+              {/*
+                After a delivered message this is an offer, not a fallback —
+                "instead" would suggest the email did not land. Everywhere else
+                it is the way the enquiry actually reaches someone.
+              */}
               <Button href={handoff.link} variant="whatsapp" size="sm">
                 <FaWhatsapp aria-hidden="true" className="h-4 w-4" />
-                {handoff.opened ? 'Reopen WhatsApp' : 'Open WhatsApp'}
+                {delivered ? 'Chat on WhatsApp too' : 'Send on WhatsApp'}
               </Button>
-              <Button href={EMAIL_LINK} variant="outline" size="sm">
-                Email us instead
-              </Button>
+
+              {/* Pointless once the message is already in that inbox. */}
+              {!delivered && (
+                <Button href={EMAIL_LINK} variant="outline" size="sm">
+                  Email us instead
+                </Button>
+              )}
             </div>
 
             <button

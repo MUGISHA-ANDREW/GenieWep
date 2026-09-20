@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "//": "The SPA fallback deliberately excludes /api — without the negative lookahead a routing change could start serving index.html to the contact form, which would look like a delivery failure rather than a misroute.",
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
   "headers": [
     {
       "source": "/assets/(.*)",

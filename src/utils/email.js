@@ -1,33 +1,26 @@
 /**
- * Contact-form email delivery.
+ * Contact-form email delivery, browser side.
  *
- * This is a static site with no server, so the browser cannot send mail
- * itself. Submissions are relayed through Web3Forms, which posts them to the
- * inbox registered against the access key and needs no backend of our own.
+ * Posts the enquiry to this site's own `/api/send-enquiry`, which hands it to
+ * Resend and on to the company inbox. Nothing about Resend is visible here:
+ * its API key can send mail as the whole verified domain, so it stays on the
+ * server and the browser only ever talks to our own origin.
  *
- * The access key is deliberately public — Web3Forms issues it for client-side
- * use and it only ever delivers to the address it was registered with, so a
- * scraper who lifts it can spam that inbox but cannot read anything or point
- * submissions somewhere else. It still lives in `VITE_WEB3FORMS_KEY` rather
- * than in this file, so the repo is not tied to one company's inbox.
+ * That is the difference from the Web3Forms setup this replaced. A Web3Forms
+ * access key is public by design and shipped in the bundle; a Resend key in
+ * the bundle would let anyone send mail as geniewep.com. Same form, same
+ * panel, but delivery now runs through `api/send-enquiry.js`.
  *
- * When the key is unset, `sendEnquiryEmail` throws `EmailNotConfiguredError`
- * and the form falls back to the WhatsApp hand-over. It never reports a
- * delivery that did not happen.
+ * There is no client-side "is it configured" check any more, because there is
+ * nothing in the browser to check — whether the server has a key is the
+ * server's business. The form attempts delivery and reports what happened. A
+ * deployment with no `RESEND_API_KEY` answers 503 and lands in the same
+ * failure path as a network outage, which is correct: in both cases nobody
+ * received the message, and the form says so rather than claiming otherwise.
  */
 
-import { COMPANY, CONTACT } from './constants'
-
-const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY ?? ''
-const ENDPOINT = 'https://api.web3forms.com/submit'
+const ENDPOINT = '/api/send-enquiry'
 const REQUEST_TIMEOUT_MS = 15_000
-
-export class EmailNotConfiguredError extends Error {
-  constructor(message = 'No Web3Forms access key is configured.') {
-    super(message)
-    this.name = 'EmailNotConfiguredError'
-  }
-}
 
 export class EmailDeliveryError extends Error {
   constructor(message = 'The enquiry could not be delivered.') {
@@ -36,13 +29,10 @@ export class EmailDeliveryError extends Error {
   }
 }
 
-export const isEmailDeliveryConfigured = () => Boolean(ACCESS_KEY)
-
 /**
  * Deliver one validated enquiry to the company inbox.
  *
- * @param {{name: string, email: string, phone: string, serviceType: string, message: string}} values
- * @throws {EmailNotConfiguredError} when no access key is set
+ * @param {{name: string, email: string, phone: string, serviceType: string, message: string, company?: string}} values
  * @throws {EmailDeliveryError} on timeout, network failure or a rejection
  */
 export const sendEnquiryEmail = async ({
@@ -51,9 +41,8 @@ export const sendEnquiryEmail = async ({
   phone,
   serviceType,
   message,
+  company = '',
 }) => {
-  if (!ACCESS_KEY) throw new EmailNotConfiguredError()
-
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
@@ -65,30 +54,20 @@ export const sendEnquiryEmail = async ({
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      body: JSON.stringify({
-        access_key: ACCESS_KEY,
-
-        /*
-         * The subject carries the name and service so the inbox is triageable
-         * from the notification list alone, and `replyto` is the enquirer, so
-         * hitting reply in Gmail answers the client rather than Web3Forms.
-         */
-        subject: `New ${serviceType} enquiry from ${name}`,
-        from_name: `${COMPANY.shortName} website`,
-        replyto: email,
-
-        name,
-        email,
-        phone,
-        service: serviceType,
-        message,
-        submitted_at: new Date().toISOString(),
-        source: CONTACT.website,
-      }),
+      /*
+       * The honeypot travels with the rest. It is checked again on the server:
+       * a bot posting straight to the endpoint never ran the form's
+       * validation, so the browser's check is a convenience, not a control.
+       */
+      body: JSON.stringify({ name, email, phone, serviceType, message, company }),
     })
 
-    // A rejection still comes back as JSON with success:false, so the body is
-    // the authority here, not the status code alone.
+    /*
+     * A rejection can still arrive as JSON with success:false, so the body is
+     * the authority here, not the status code alone. It can also arrive as the
+     * SPA's index.html — that is what `npm run dev` serves for an unknown path
+     * when the dev middleware is not running — hence the guarded parse.
+     */
     const result = await response.json().catch(() => null)
 
     if (!response.ok || !result?.success) {
@@ -102,7 +81,8 @@ export const sendEnquiryEmail = async ({
     if (error.name === 'AbortError') {
       throw new EmailDeliveryError('The request timed out.')
     }
-    throw error
+    if (error instanceof EmailDeliveryError) throw error
+    throw new EmailDeliveryError(error.message)
   } finally {
     clearTimeout(timeout)
   }

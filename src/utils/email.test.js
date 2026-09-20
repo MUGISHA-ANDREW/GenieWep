@@ -1,13 +1,17 @@
 /**
- * Guards the Web3Forms request shape.
+ * Guards the request the browser makes to our own delivery endpoint.
  *
- * The contact form mocks this module, so nothing else checks that the body we
- * POST is the one Web3Forms expects. A wrong field name here fails silently in
- * production: the request succeeds and the enquiry arrives missing its phone
- * number, or with no reply-to address.
+ * The contact form mocks this module, so nothing else checks that the POST
+ * carries every field. A wrong field name here fails silently in production:
+ * the request succeeds and the enquiry arrives missing its phone number.
+ *
+ * What the server then does with it — the Resend call, the honeypot, the
+ * rejection paths — is covered in `api/enquiry.test.js`.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { EmailDeliveryError, sendEnquiryEmail } from './email'
 
 const VALUES = {
   name: 'Jane Nakato',
@@ -15,13 +19,6 @@ const VALUES = {
   phone: '+256700000000',
   serviceType: 'Business / Corporate Website',
   message: 'We need a five page website for our SACCO.',
-}
-
-/** Re-import the module with a given key, since it reads env at module scope. */
-const loadWith = async (key) => {
-  vi.resetModules()
-  vi.stubEnv('VITE_WEB3FORMS_KEY', key)
-  return import('./email')
 }
 
 const jsonResponse = (body, ok = true, status = 200) => ({
@@ -36,70 +33,81 @@ describe('sendEnquiryEmail', () => {
   })
 
   afterEach(() => {
-    vi.unstubAllEnvs()
     vi.unstubAllGlobals()
-    vi.resetModules()
   })
 
-  it('reports itself unconfigured when no key is set', async () => {
-    const { isEmailDeliveryConfigured, sendEnquiryEmail, EmailNotConfiguredError } =
-      await loadWith('')
+  it('posts every field to the site own endpoint', async () => {
+    fetch.mockResolvedValue(jsonResponse({ success: true }))
 
-    expect(isEmailDeliveryConfigured()).toBe(false)
-    await expect(sendEnquiryEmail(VALUES)).rejects.toBeInstanceOf(
-      EmailNotConfiguredError,
-    )
-    expect(fetch).not.toHaveBeenCalled()
-  })
-
-  it('posts every field Web3Forms needs', async () => {
-    const { isEmailDeliveryConfigured, sendEnquiryEmail } = await loadWith('test-key')
-    fetch.mockResolvedValue(jsonResponse({ success: true, message: 'ok' }))
-
-    expect(isEmailDeliveryConfigured()).toBe(true)
     await sendEnquiryEmail(VALUES)
 
-    const [url, options] = fetch.mock.calls[0]
-    expect(url).toBe('https://api.web3forms.com/submit')
-    expect(options.method).toBe('POST')
-    expect(options.headers['Content-Type']).toBe('application/json')
+    expect(fetch).toHaveBeenCalledTimes(1)
+    const [url, init] = fetch.mock.calls[0]
 
-    const body = JSON.parse(options.body)
-    expect(body.access_key).toBe('test-key')
-    expect(body.name).toBe(VALUES.name)
-    expect(body.email).toBe(VALUES.email)
-    expect(body.phone).toBe(VALUES.phone)
-    expect(body.service).toBe(VALUES.serviceType)
-    expect(body.message).toBe(VALUES.message)
+    /*
+     * Same-origin and relative. An absolute URL to Resend would mean the API
+     * key had been moved into the browser, which is the one thing this whole
+     * arrangement exists to prevent.
+     */
+    expect(url).toBe('/api/send-enquiry')
+    expect(url).not.toMatch(/resend\.com/)
+    expect(init.method).toBe('POST')
+    expect(init.headers['Content-Type']).toBe('application/json')
 
-    // Reply-to must be the enquirer, or hitting reply answers Web3Forms.
-    expect(body.replyto).toBe(VALUES.email)
-    expect(body.subject).toContain('Jane Nakato')
-    expect(body.subject).toContain('Business / Corporate Website')
+    expect(JSON.parse(init.body)).toEqual({
+      name: 'Jane Nakato',
+      email: 'jane@example.com',
+      phone: '+256700000000',
+      serviceType: 'Business / Corporate Website',
+      message: 'We need a five page website for our SACCO.',
+      company: '',
+    })
   })
 
-  it('treats success:false as a failure even on HTTP 200', async () => {
-    const { sendEnquiryEmail, EmailDeliveryError } = await loadWith('test-key')
+  it('forwards the honeypot so the server can check it too', async () => {
+    fetch.mockResolvedValue(jsonResponse({ success: true }))
+
+    await sendEnquiryEmail({ ...VALUES, company: 'spam-bot' })
+
+    expect(JSON.parse(fetch.mock.calls[0][1].body).company).toBe('spam-bot')
+  })
+
+  it('never leaks an API key into the request', async () => {
+    fetch.mockResolvedValue(jsonResponse({ success: true }))
+
+    await sendEnquiryEmail(VALUES)
+
+    const [, init] = fetch.mock.calls[0]
+    expect(init.headers.Authorization).toBeUndefined()
+    expect(init.body).not.toMatch(/re_[A-Za-z0-9]/)
+  })
+
+  it('throws when the server reports a failure', async () => {
     fetch.mockResolvedValue(
-      jsonResponse({ success: false, message: 'Invalid access key' }),
+      jsonResponse({ success: false, message: 'Email delivery is not configured.' }, false, 503),
     )
 
     await expect(sendEnquiryEmail(VALUES)).rejects.toBeInstanceOf(EmailDeliveryError)
-    await expect(sendEnquiryEmail(VALUES)).rejects.toThrow(/invalid access key/i)
   })
 
-  it('fails on a non-ok response', async () => {
-    const { sendEnquiryEmail, EmailDeliveryError } = await loadWith('test-key')
-    fetch.mockResolvedValue(jsonResponse(null, false, 500))
+  /*
+   * What a dev server without the API middleware actually returns for an
+   * unknown path: the SPA shell, with a 200. The status alone would read as
+   * success, so the body has to be the authority.
+   */
+  it('treats a 200 that is not JSON as a failure, not a delivery', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.reject(new SyntaxError('Unexpected token <')),
+    })
 
     await expect(sendEnquiryEmail(VALUES)).rejects.toBeInstanceOf(EmailDeliveryError)
   })
 
-  it('surfaces a timeout as a delivery error', async () => {
-    const { sendEnquiryEmail, EmailDeliveryError } = await loadWith('test-key')
-    fetch.mockRejectedValue(Object.assign(new Error('aborted'), { name: 'AbortError' }))
+  it('throws when the network is down', async () => {
+    fetch.mockRejectedValue(new TypeError('Failed to fetch'))
 
     await expect(sendEnquiryEmail(VALUES)).rejects.toBeInstanceOf(EmailDeliveryError)
-    await expect(sendEnquiryEmail(VALUES)).rejects.toThrow(/timed out/i)
   })
 })

@@ -277,7 +277,7 @@ Four planned files were deliberately not created:
 - Responsive, mobile-first design
 - Fast load times (Lighthouse 90+)
 - SEO meta tags + Open Graph tags
-- Validated contact form wired to an email service
+- Validated contact form wired to an email service — see §12.1
 - WhatsApp deep link (`wa.me/256767267209`)
 - Smooth transitions (Framer Motion)
 - Mobile hamburger nav
@@ -285,6 +285,73 @@ Four planned files were deliberately not created:
 - Portfolio showcase using real client projects (§4)
 - Lazy-loaded images/video, code-split routes
 - **Dark mode — implemented.** Light/dark toggle in the header, defaulting to the visitor's OS setting until they choose. Built on semantic colour tokens rather than `dark:` variants; see the Theming section of the README.
+
+### 12.1 Contact form delivery — how "Send message" reaches the inbox
+
+Pressing **Send message** POSTs the enquiry to this site's own
+`/api/send-enquiry`, a Vercel Serverless Function, which hands it to **Resend**
+for delivery to `geniewep@gmail.com`. On success the visitor sees **"Message
+delivered — we will get back to you shortly"**. Nothing else happens: no second
+tab, no app switch.
+
+| Piece | File |
+|---|---|
+| Browser: POSTs the enquiry, reports the outcome | `src/utils/email.js` |
+| Browser: the form and its result panel | `src/components/Form/ContactForm.jsx` |
+| Server: the HTTP route | `api/send-enquiry.js` |
+| Server: validation, the Resend call, the email body | `api/_enquiry.js` |
+| Local dev: runs the route inside `vite dev` | `vite.config.js` |
+
+**Why a serverless function, when Web3Forms needed none.** A Web3Forms access
+key is public by design — it only ever delivers to the one address it was
+registered against, so shipping it in the bundle costs nothing. A Resend API
+key is the opposite: it can send mail as the entire verified domain. In the
+browser it would let anyone send mail as geniewep.com. So it stays on the
+server, the browser only ever talks to our own origin, and the front end knows
+nothing about Resend at all. `api/enquiry.test.js` and `src/utils/email.test.js`
+both assert this — one that the key goes in the `Authorization` header server
+side, the other that the browser request carries no key and never addresses
+`resend.com`.
+
+**Setup — one signup, and note that two of the three steps are easy to miss:**
+
+1. Create a key at https://resend.com/api-keys (Sending access is enough).
+2. **Verify `geniewep.com` at https://resend.com/domains** and set `RESEND_FROM`
+   to an address on it, e.g. `GenieWep Website <website@geniewep.com>`. This is
+   the step that decides whether real enquiries arrive. Until the domain is
+   verified the code falls back to Resend's shared `onboarding@resend.dev`
+   sender, which **only delivers to the email address that owns the Resend
+   account** — fine for one smoke test, useless in production.
+3. Local: copy `.env.example` to `.env.local` and fill in `RESEND_API_KEY`.
+   Vercel: add `RESEND_API_KEY` (and `RESEND_FROM`) under Settings →
+   Environment Variables for Production and Preview.
+
+Unlike the `VITE_*` vars, these are read at request time rather than inlined at
+build time, so changing them does **not** need a rebuild — but the function
+does need to have been deployed at least once.
+
+Then submit the live form and confirm the mail arrives. Resend's free tier
+covers 3,000 emails a month, far above what this site will produce.
+
+**The form never claims a delivery that did not happen.** Every failure lands
+in the same place — "That did not send… nobody has seen it yet" — with WhatsApp
+offered as the recovery path and everything the visitor typed preserved:
+
+| What went wrong | Server | Logged |
+|---|---|---|
+| `RESEND_API_KEY` not set | 503 | `RESEND_API_KEY is not set — nothing was sent.` |
+| Resend rejected it (unverified sender, bad key) | 502 | the reason Resend gave |
+| Malformed or missing fields | 400 | — |
+| Honeypot filled in | 200, nothing sent | — |
+
+The honeypot answers success on purpose: a bot told it was filtered comes back
+with the field left blank, and nothing was sent either way.
+
+The server re-validates everything the browser already checked with Zod. That
+check is worth nothing here — the endpoint is a public URL and anything can
+POST to it. The message is also HTML-escaped before it goes into the email
+body, since it is attacker-controlled text landing in someone's mail client.
+
 
 ## 13. Design Considerations
 
@@ -328,7 +395,7 @@ Verified in the build:
 
 Needs a deployed URL or client input to close:
 
-- [ ] Contact form email delivery — needs a free Web3Forms access key in `VITE_WEB3FORMS_KEY`; until then the form hands off to WhatsApp only
+- [ ] Contact form email delivery — built and tested end to end, but needs a Resend API key in `RESEND_API_KEY` and `geniewep.com` verified at https://resend.com/domains. Until then the form reports that the message was not delivered and offers WhatsApp. See §12.1.
 
 - [ ] Load time < 3s on 4G — measure against the deployed site
 - [ ] Lighthouse 90+ — measure against the deployed site
@@ -349,8 +416,9 @@ Needs a deployed URL or client input to close:
 
 ## 18. Deployment Checklist
 
-- [ ] Environment variables configured
-- [ ] Email service (Resend / Nodemailer / SendGrid) configured for contact form
+- [ ] **`RESEND_API_KEY` set on Vercel — this is what makes the contact form send.** See §12.1.
+- [ ] **`geniewep.com` verified in Resend and `RESEND_FROM` set to an address on it.** Without this the default sender only delivers to the Resend account owner, so real enquiries never arrive.
+- [ ] Environment variables configured (see `.env.example`)
 - [ ] Domain DNS pointed to geniewep.com
 - [ ] SSL certificate installed
 - [ ] Analytics tracking implemented
