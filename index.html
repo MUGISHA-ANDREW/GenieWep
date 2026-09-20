@@ -67,10 +67,25 @@
     <meta name="twitter:image" content="https://geniewep.com/og-image.jpg" />
 
     <!--
-      Fonts: none fetched. `--font-sans` in styles/theme.css asks for figmaSans
-      and falls through to the platform UI face, so there is no webfont request
-      and no flash of fallback text on first paint.
+      Fonts: one self-hosted variable woff2, covering weight 400–800. See
+      src/styles/fonts.css for why this file and no others.
+
+      Preloaded because the hero headline is the LCP element and would
+      otherwise reflow when the font arrives mid-paint. `crossorigin` is
+      required even same-origin — a font request is CORS-mode, and without it
+      the browser fetches the file twice.
+
+      Only the `latin` subset is preloaded. `latin-ext` is gated behind its own
+      unicode-range and English copy never triggers it, so preloading it would
+      be 35kb nobody reads.
     -->
+    <link
+      rel="preload"
+      href="/fonts/open-sans-latin-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     <!-- Structured data: local software business -->
     <script type="application/ld+json">

@@ -221,17 +221,21 @@
   --color-whatsapp-dark: #1da851;
 
   /*
-   * Typography — figmaSans first, then the platform UI face.
+   * Typography — figmaSans if the machine has it, otherwise the webfont.
    *
-   * figmaSans is not a hosted webfont, so nothing is downloaded for it: the
-   * stack resolves to it only on a machine that has it installed locally, and
-   * everyone else lands on `system-ui` (Segoe UI on Windows, Roboto on
-   * Android, SF on Apple, where the explicit "SF Pro Display" is tried first).
-   * That is deliberate — it is why the Inter <link> is gone from index.html and
-   * why the site now renders its first paint with no font request at all.
+   * figmaSans stays first at the client's request, so anyone with it installed
+   * (a designer with Figma's desktop app, for instance) still gets it. It is
+   * never downloaded, because it cannot be: Figma's brand typeface is not
+   * published as a webfont and not licensed for third-party hosting.
+   *
+   * 'Open Sans' is the served face — self-hosted woff2, declared in
+   * styles/fonts.css, and the reason every visitor now sees the same
+   * typography instead of their own OS font. It sits ahead of `system-ui`
+   * rather than replacing it: the system stack is still there for a browser
+   * too old for woff2, and for the moment before the font lands.
    */
-  --font-sans: figmaSans, 'figmaSans Fallback', 'SF Pro Display', system-ui,
-    helvetica, sans-serif;
+  --font-sans: figmaSans, 'figmaSans Fallback', 'Open Sans', 'SF Pro Display',
+    system-ui, helvetica, sans-serif;
 
   /*
    * Spacing deliberately keeps Tailwind's 0.25rem base step. The 8px grid from

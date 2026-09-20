@@ -6,7 +6,7 @@
  * the request succeeds and the enquiry arrives missing its phone number.
  *
  * What the server then does with it — the Resend call, the honeypot, the
- * rejection paths — is covered in `api/enquiry.test.js`.
+ * rejection paths — is covered in `api/_enquiry.test.js`.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'

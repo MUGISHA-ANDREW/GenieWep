@@ -1,4 +1,7 @@
 @import 'tailwindcss';
 
+/* Before theme.css: the @font-face rules have to be registered before
+   `--font-sans` names the family. */
+@import './styles/fonts.css';
 @import './styles/theme.css';
 @import './styles/globals.css';

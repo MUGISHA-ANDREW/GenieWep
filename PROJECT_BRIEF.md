@@ -344,7 +344,7 @@ registered against, so shipping it in the bundle costs nothing. A Resend API
 key is the opposite: it can send mail as the entire verified domain. In the
 browser it would let anyone send mail as geniewep.com. So it stays on the
 server, the browser only ever talks to our own origin, and the front end knows
-nothing about Resend at all. `api/enquiry.test.js` and `src/utils/email.test.js`
+nothing about Resend at all. `api/_enquiry.test.js` and `src/utils/email.test.js`
 both assert this — one that the key goes in the `Authorization` header server
 side, the other that the browser request carries no key and never addresses
 `resend.com`.
@@ -392,7 +392,17 @@ body, since it is attacker-controlled text landing in someone's mail client.
 ## 13. Design Considerations
 
 - **Colour scheme — "Azure & Aqua", implemented.** A light-blue brand: azure is the primary hue, sampled from the faceted G monogram in `Assets/logo2.jpeg`, and aqua is its neighbour on the wheel, used only for the gradient that runs through the accent rules and the dark bands. Neutrals are tinted toward the same blue rather than left grey, and the dark bands are ocean blue rather than slate. This supersedes both the earlier "Steel & Sapphire" slate direction and the navy/cyan one taken from the PDF cover. One warm amber note is reserved for the "Most popular" pricing badge; WhatsApp keeps its own green wherever it appears.
-- **Typography — figmaSans, then the platform UI face.** `--font-sans` in `styles/theme.css` is `figmaSans, "figmaSans Fallback", "SF Pro Display", system-ui, helvetica, sans-serif`, at the client's request. This supersedes the earlier Inter direction, and the Google Fonts `<link>` has been removed from `index.html` along with it: figmaSans is not a hosted webfont, so nothing is downloaded for it and the stack resolves to it only where it is installed locally. Everyone else gets `system-ui` — Segoe UI on Windows, Roboto on Android, SF on Apple. The upside is a first paint with zero font requests and no FOUT; the trade-off is that the site's letterforms now vary by platform. Reinstating a hosted webfont means adding it back to both files.
+- **Typography — figmaSans if installed, otherwise a self-hosted Open Sans.** `--font-sans` in `styles/theme.css` is `figmaSans, "figmaSans Fallback", "Open Sans", "SF Pro Display", system-ui, helvetica, sans-serif`.
+
+  figmaSans is first at the client's request but is **never downloaded, because it cannot be**: it is Figma's proprietary brand typeface, not published as a webfont and not licensed for third-party hosting. Only a machine with it installed uses it.
+
+  For the first iteration the stack ended at `system-ui`, which meant nothing was fetched and every visitor got their own OS font — Segoe UI on Windows, Roboto on Android, SF on Apple. Three different-looking sites. `'Open Sans'` now sits ahead of the system stack as the served face, so the typography is the same everywhere. It is a humanist sans in the same genre as the Segoe UI the site had in fact been rendering in, and it is under the SIL Open Font License, so it can be hosted here.
+
+  **Self-hosted, not Google Fonts CDN**, for two reasons. Performance: same origin, no extra DNS and TLS handshake before the font can start. And accuracy: the cookie policy states the site makes no third-party requests and sets no third-party cookies, which a `fonts.gstatic.com` link would quietly falsify — Google logs the visitor's IP for that request.
+
+  Files are `public/fonts/*.woff2` plus the required `OFL.txt`, declared in `styles/fonts.css`, with the Latin subset preloaded from `index.html`. One variable file covers weight 400–800 (48kb); `latin-ext` is gated behind its own `unicode-range` and is never fetched for English copy. See `styles/fonts.css` for why woff2 with no woff/ttf fallback.
+
+  Verified in a real browser against the production build: one font request, face reports `loaded`, and the h1 measures 925px with Open Sans against 876px with `system-ui` — i.e. it is the face being painted, not a silent fallback.
 - **Motion — one vocabulary, one set of numbers.** Scroll entrances go through `components/Reveal.jsx` (`Reveal`, `Stagger`, `StaggerItem`): 28px of travel, `--ease-brand`, `-60px` viewport margin, once per element. Looping ambient movement (`animate-drift`, `animate-halo`, `animate-pan`) is CSS, defined as `--animate-*` tokens in `theme.css`. Active-state indicators that move between siblings use a shared `layoutId`. Every one of these is silenced by `prefers-reduced-motion` — via the CSS block in `globals.css`, `MotionConfig reducedMotion="user"` in `App.jsx`, and `useReducedMotion()` inside the motion components.
 - **Spacing:** 8px grid
 - **Imagery:** Use real assets from §8 first; supplement with tech-stack icons for service cards
@@ -451,6 +461,31 @@ Needs a deployed URL or client input to close:
 | **Total** | **17–24 days** | **Production-ready website** |
 
 ## 18. Deployment Checklist
+
+### 18.1 Two Vercel rules that are easy to trip over
+
+Both of these broke the deploy once already. Neither shows up locally — `npm
+run build` passes with both faults present.
+
+1. **`vercel.json` allows no comments and no extra keys.** Its published schema
+   (https://openapi.vercel.sh/vercel.json) sets `additionalProperties: false`,
+   so *any* unrecognised top-level key — `"//"`, `""`, anything — fails the
+   whole file with `Invalid vercel.json` before a build even starts. JSON has
+   no comment syntax and Vercel does not add one. Rationale for anything in
+   that file belongs here, not in the file.
+
+   For the record, the reason `rewrites` uses `"/((?!api/).*)"` rather than
+   `"/(.*)"`: the negative lookahead keeps the SPA fallback off `/api`, so a
+   routing change can never start serving `index.html` to the contact form,
+   which would look like a delivery failure rather than a misroute.
+
+2. **Every file in `api/` becomes a Serverless Function unless its name starts
+   with `_`.** That is why the shared core is `api/_enquiry.js` and the test is
+   `api/_enquiry.test.js`. When that test was named `api/enquiry.test.js`,
+   Vercel tried to build it as an endpoint — a module that imports `vitest` and
+   exports no default handler. Vitest still collects it under the underscore,
+   because its default include glob matches any `*.test.js`.
+
 
 - [ ] **`RESEND_API_KEY` set on Vercel — this is what makes the contact form send.** See §12.1.
 - [ ] **`geniewep.com` verified in Resend and `RESEND_FROM` set to an address on it.** Without this the default sender only delivers to the Resend account owner, so real enquiries never arrive.

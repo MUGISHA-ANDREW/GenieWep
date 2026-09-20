@@ -8,7 +8,7 @@ import ContactForm from './ContactForm'
 /*
  * Delivery is mocked at the module boundary: these tests are about what the
  * form promises the visitor. The request it makes is covered in email.test.js,
- * and what the server does with it in api/enquiry.test.js.
+ * and what the server does with it in api/_enquiry.test.js.
  */
 vi.mock('@/utils/email', () => ({
   sendEnquiryEmail: vi.fn(),
