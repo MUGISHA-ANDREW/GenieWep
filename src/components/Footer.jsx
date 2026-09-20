@@ -13,6 +13,7 @@ import {
   SOCIAL_LINKS,
   WHATSAPP_LINK,
 } from '@/utils/constants'
+import { LEGAL_LINKS } from '@/utils/legal'
 
 /**
  * Maps the `icon` keys on `SOCIAL_LINKS` to components. Kept here rather than
@@ -31,9 +32,15 @@ export const Footer = () => {
   return (
     <footer className="bg-steel-900 text-surface-200">
       <div className="container-page py-14 md:py-16">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        {/*
+          Five columns from `lg`, not four: the Legal column was added and
+          squeezing it into the Pages column would have buried three documents
+          people occasionally need to find quickly. The brand block spans two
+          at `lg` so the tagline is not forced into a 150px gutter.
+        */}
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-6">
           {/* Brand */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <p className="text-lg font-extrabold text-white">{COMPANY.name}</p>
             <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent-400">
               {COMPANY.label}
@@ -58,9 +65,15 @@ export const Footer = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`${COMPANY.shortName} on ${social.label} (opens in a new tab)`}
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/8 text-surface-200 ring-1 ring-white/12 transition-all duration-200 ease-[var(--ease-brand)] hover:-translate-y-0.5 hover:bg-accent-500 hover:text-white hover:ring-accent-400"
+                      /*
+                        No disc behind the glyph — the filled circles are gone
+                        at the client's request. The 40px box is kept as the tap
+                        target (WCAG 2.5.8 asks for 24px minimum and a thumb
+                        wants more), it just no longer paints anything.
+                      */
+                      className="inline-flex h-10 w-10 items-center justify-center text-surface-200 transition-all duration-200 ease-[var(--ease-brand)] hover:-translate-y-0.5 hover:text-accent-400"
                     >
-                      <SocialIcon aria-hidden="true" className="h-4 w-4" />
+                      <SocialIcon aria-hidden="true" className="h-5 w-5" />
                     </a>
                   </li>
                 )
@@ -75,6 +88,25 @@ export const Footer = () => {
             </h2>
             <ul className="space-y-2.5">
               {NAV_LINKS.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="text-sm text-surface-300 transition-colors hover:text-accent-400"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Legal */}
+          <nav aria-label="Legal">
+            <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
+              Legal
+            </h2>
+            <ul className="space-y-2.5">
+              {LEGAL_LINKS.map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}

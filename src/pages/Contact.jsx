@@ -21,8 +21,8 @@ const CHANNELS = [
     hint: 'Fastest reply — usually within a few hours.',
     external: true,
     /* WhatsApp is recognised by its green long before the label is read, so
-       this one tile keeps the brand colour instead of the site accent. */
-    tile: 'bg-whatsapp/12 text-whatsapp-dark',
+       this one glyph keeps the brand colour instead of the site accent. */
+    tile: 'text-whatsapp-dark',
   },
   {
     id: 'phone',
@@ -97,14 +97,14 @@ const Contact = () => (
                         : {})}
                       className="flex items-start gap-4"
                     >
+                      {/* Bare glyph: the tinted tiles behind icons are gone
+                          site-wide, so `tile` now only carries a colour. */}
                       <span
-                        className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${
-                          channel.tile ?? 'bg-chip text-link'
-                        }`}
+                        className={`inline-flex shrink-0 ${channel.tile ?? 'text-link'}`}
                       >
                         {/* Member expression: the component reference already
                             exists on the module-scope CHANNELS entry. */}
-                        <channel.icon aria-hidden="true" className="h-5 w-5" />
+                        <channel.icon aria-hidden="true" className="h-7 w-7" />
                       </span>
                       <span className="min-w-0">
                         <span className="block text-xs font-bold uppercase tracking-wider text-dim">
@@ -127,8 +127,8 @@ const Contact = () => (
               <li>
                 <Card className="p-5">
                   <div className="flex items-start gap-4">
-                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-chip text-link">
-                      <FiMapPin aria-hidden="true" className="h-5 w-5" />
+                    <span className="inline-flex shrink-0 text-link">
+                      <FiMapPin aria-hidden="true" className="h-7 w-7" />
                     </span>
                     <span>
                       <span className="block text-xs font-bold uppercase tracking-wider text-dim">

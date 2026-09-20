@@ -73,8 +73,9 @@ describe('routing', () => {
       await screen.findByRole('heading', { name: 'Mobile App Packages' }),
     ).toBeInTheDocument()
     expect(screen.getByText('Basic Android App')).toBeInTheDocument()
-    expect(screen.getByText('2M – 3.5M')).toBeInTheDocument()
-    expect(screen.getByText('7M – 15M+')).toBeInTheDocument()
+    // Full figures, not the catalogue's "2M – 3.5M" shorthand.
+    expect(screen.getByText('2,000,000 – 3,500,000')).toBeInTheDocument()
+    expect(screen.getByText('7,000,000 – 15,000,000+')).toBeInTheDocument()
   })
 
   it('renders every completed project on the projects page', async () => {
@@ -160,6 +161,36 @@ describe('routing', () => {
     expect(screen.getByRole('button', { name: /send message/i })).toBeInTheDocument()
   })
 
+  it.each([
+    ['/terms', /terms & conditions/i],
+    ['/privacy', /privacy policy/i],
+    ['/cookies', /cookie policy/i],
+  ])('renders %s', async (route, heading) => {
+    renderAt(route)
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: heading }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/last updated/i)).toBeInTheDocument()
+  })
+
+  /*
+   * The cookie policy states that no analytics or advertising tag is loaded.
+   * That is true today and is the kind of claim that quietly becomes a lie the
+   * moment someone wires up VITE_GA_MEASUREMENT_ID, so it is asserted rather
+   * than trusted.
+   */
+  it('keeps the cookie policy honest about there being no analytics', async () => {
+    renderAt('/cookies')
+
+    expect(await screen.findByText(/no analytics/i)).toBeInTheDocument()
+
+    const scripts = [...document.querySelectorAll('script[src]')].map((s) => s.src)
+    expect(scripts.some((src) => /googletagmanager|google-analytics|gtag/.test(src))).toBe(
+      false,
+    )
+  })
+
   it('renders a 404 for an unknown route', async () => {
     renderAt('/does-not-exist')
 
@@ -191,6 +222,15 @@ describe('global chrome', () => {
       .filter((link) => link.getAttribute('href')?.includes('wa.me'))
 
     expect(headerWhatsApp).toHaveLength(0)
+  })
+
+  it('links all three legal documents from the footer', async () => {
+    renderAt('/')
+
+    const footer = document.querySelector('footer')
+    for (const name of [/terms & conditions/i, /privacy policy/i, /cookie policy/i]) {
+      expect(within(footer).getByRole('link', { name })).toBeInTheDocument()
+    }
   })
 
   it('puts Kampala in the footer', async () => {

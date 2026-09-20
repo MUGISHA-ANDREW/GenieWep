@@ -114,9 +114,13 @@ const About = () => (
     <Section tone="tinted" align="center" title="Mission & Vision">
       <div className="grid gap-6 md:grid-cols-2">
         <Reveal from="left">
-          <Card hoverable className="h-full border-l-4 border-l-accent-500 p-8">
-            <span className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-accent-500/10 text-link">
-              <FiTarget aria-hidden="true" className="h-5 w-5" />
+          {/* The 4px accent bar that used to run down the left of these two
+              cards is gone with the rest of the borders. Mission and vision
+              are still told apart by their icon and heading colour. */}
+          <Card hoverable className="h-full p-8">
+            {/* Bare glyph: the tinted tiles behind icons are gone site-wide. */}
+            <span className="mb-4 inline-flex text-link">
+              <FiTarget aria-hidden="true" className="h-8 w-8" />
             </span>
             <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-link">
               Mission
@@ -126,9 +130,9 @@ const About = () => (
         </Reveal>
 
         <Reveal from="right" delay={0.1}>
-          <Card hoverable className="h-full border-l-4 border-l-steel-700 p-8">
-            <span className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-steel-700/10 text-title">
-              <FiEye aria-hidden="true" className="h-5 w-5" />
+          <Card hoverable className="h-full p-8">
+            <span className="mb-4 inline-flex text-title">
+              <FiEye aria-hidden="true" className="h-8 w-8" />
             </span>
             <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-title">
               Vision
@@ -198,8 +202,8 @@ const About = () => (
         {WHY_CHOOSE_US.map((reason) => (
           <StaggerItem as="li" key={reason.id}>
             <Card hoverable className="group flex h-full items-start gap-4 p-5">
-              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-chip text-link transition-colors duration-300 group-hover:bg-accent-500 group-hover:text-white">
-                <Icon name={reason.icon} className="h-5 w-5" />
+              <span className="inline-flex shrink-0 text-link transition-colors duration-300 group-hover:text-accent-500">
+                <Icon name={reason.icon} className="h-7 w-7" />
               </span>
               <span className="pt-2 text-sm font-medium text-title">
                 {reason.text}

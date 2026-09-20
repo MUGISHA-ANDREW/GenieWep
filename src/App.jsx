@@ -21,6 +21,8 @@ const About = lazy(() => import('@/pages/About'))
 const Services = lazy(() => import('@/pages/Services'))
 const Projects = lazy(() => import('@/pages/Projects'))
 const Contact = lazy(() => import('@/pages/Contact'))
+/* One chunk for all three legal documents — see the note in pages/Legal.jsx. */
+const Legal = lazy(() => import('@/pages/Legal'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
 
 /*
@@ -82,6 +84,9 @@ export const App = () => (
               <Route path="/services" element={<Services />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/terms" element={<Legal id="terms" />} />
+              <Route path="/privacy" element={<Legal id="privacy" />} />
+              <Route path="/cookies" element={<Legal id="cookies" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </RouteTransition>

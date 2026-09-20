@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { FaWhatsapp } from 'react-icons/fa'
-import { FiArrowRight, FiCheck } from 'react-icons/fi'
+import { FiArrowDown, FiArrowRight, FiCheck } from 'react-icons/fi'
 
 import Button from '@/components/Button/Button'
 import Counter from '@/components/Counter'
@@ -11,13 +11,7 @@ import Reveal, { Stagger, StaggerItem } from '@/components/Reveal'
 import Section from '@/components/Section'
 import Seo from '@/components/Seo'
 import ServiceCard from '@/components/ServiceCard/ServiceCard'
-/*
- * `img.jpeg`, not `image.jpeg`. The latter is the same office-signage render
- * but its wall tagline still reads "INNOVATION THROUGH CODE SINCE [current
- * year]" — an unreplaced placeholder. It must not appear anywhere public.
- */
-import heroPoster from '@/assets/images/img.jpeg'
-import heroVideo from '@/assets/videos/hero.mp4'
+import heroImage from '@/assets/images/hero-grid.jpg'
 import {
   COMPANY,
   CORE_SERVICES,
@@ -34,46 +28,61 @@ const fadeUp = {
 
 const Hero = () => (
   <section className="relative isolate overflow-hidden bg-steel-900">
-    {/* Background video, muted and decorative. Plays at full opacity. */}
-    <video
-      className="absolute inset-0 -z-10 h-full w-full object-cover"
-      src={heroVideo}
-      poster={heroPoster}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
+    {/*
+      Background image, decorative.
+
+      This replaced the `hero.mp4` loop. A still costs one 117kb request
+      against the video's ~965kb, decodes on first paint instead of waiting on
+      buffering, and cannot be blocked by a phone's data-saver — and the
+      wireframe terrain reads as the same thing at any moment, which is exactly
+      what a looping ambient video was being used for.
+
+      `fetchPriority="high"` and no lazy loading: this is the largest element
+      above the fold, so it is the LCP. Deferring it would be deferring the
+      metric.
+    */}
+    <img
+      src={heroImage}
+      alt=""
+      width="1200"
+      height="675"
+      fetchPriority="high"
+      decoding="async"
       aria-hidden="true"
-      tabIndex={-1}
+      className="absolute inset-0 -z-10 h-full w-full object-cover"
     />
     {/*
-      Scrim, shaped rather than flat.
+      Scrim, in two layers.
 
-      This used to be a near-opaque wash over a video held at 14% — the footage
-      was texture, not picture. It is now the other way round, so the only job
-      left is keeping white text legible over moving footage whose brightness
-      nobody controls.
+      The horizontal layer does the same job it did over the video: heavy under
+      the text column, which ends around 58% of the container from `md` up,
+      then clearing to nothing so the terrain is visible on the right. Below
+      `md` the text runs full width, so it falls back to one flat tint.
 
-      A gradient does that without hiding the video: from `md` up the text
-      column ends around 61% of the container, so the scrim holds its weight to
-      62% and then falls away to almost nothing, leaving the right-hand third —
-      where the animated wordmark plays — effectively uncovered. Below `md` the
-      text runs the full width and there is no empty side to clear, so it falls
-      back to one flat tint.
+      The vertical layer is a light 45% lift off the bottom edge only. The grid
+      brightens toward the horizon, and this keeps the trust strip clear of it
+      without dimming the part of the picture worth showing. A heavier version
+      of this layer was tried first and crushed the terrain to almost nothing —
+      it measured beautifully and looked like a plain navy block.
 
-      Worst-case contrast for white text, sampled off the live page across nine
-      frames of the loop at 1440px: eyebrow 13.8:1, headline 8.6:1, lede 9.0:1,
-      trust strip 11.2:1. At 390px, all above 7:1. The binding one is the lede,
-      which is small text and so needs 4.5:1.
+      Worst-case contrast for white text, measured off the live page by hiding
+      each run and sampling the pixels behind it — at 1440px: eyebrow 17.0:1,
+      headline 12.8:1, lede 12.0:1, trust strip 10.6:1. At 390px: 13.5, 12.6,
+      12.8, 8.7. The binding one is the lede, small text needing 4.5:1. The
+      uncovered right-hand side sits at 2.2:1, which is the picture showing
+      through as intended — nothing is set on it.
 
-      Re-measure if `hero.mp4` is ever re-cut. A brighter grade is exactly the
-      change that would quietly push the headline under, and it would do it
+      Re-measure if the image is ever swapped. A brighter one is exactly the
+      change that would quietly push the trust strip under, and it would do it
       without touching a line of this file.
     */}
     <div
       aria-hidden="true"
-      className="absolute inset-0 -z-10 bg-steel-950/68 md:bg-transparent md:bg-linear-to-r md:from-steel-950/90 md:via-steel-950/72 md:via-62% md:to-steel-950/8"
+      className="absolute inset-0 -z-10 bg-steel-950/68 md:bg-transparent md:bg-linear-to-r md:from-steel-950/88 md:via-steel-950/66 md:via-58% md:to-transparent"
+    />
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 -z-10 bg-linear-to-t from-steel-950/45 via-transparent via-30% to-transparent"
     />
     {/*
       Sapphire bloom, echoing the faceted highlights in the logo. It drifts on
@@ -97,18 +106,29 @@ const Hero = () => (
         transition={{ staggerChildren: 0.1 }}
         className="max-w-3xl"
       >
+        {/*
+          The rule before the eyebrow is borrowed from the reference layout the
+          client sent. It gives the label something to sit against on a busy
+          photographic background, where an unanchored line of small caps reads
+          as debris. A span rather than the `.accent-rule` class, which stacks
+          its bar above the text instead of beside it.
+        */}
         <motion.p
           variants={fadeUp}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent-400"
+          className="mb-4 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-accent-400"
         >
+          <span aria-hidden="true" className="h-px w-8 bg-accent-400/70" />
           {COMPANY.label}
         </motion.p>
 
         <motion.h1
           variants={fadeUp}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="text-4xl leading-tight text-white sm:text-5xl lg:text-6xl"
+          /* One step down at every breakpoint (was 4xl/5xl/6xl). At 6xl the
+             headline ran to three lines on a laptop and crowded the terrain
+             out of its own hero. */
+          className="text-3xl leading-tight text-white sm:text-4xl lg:text-5xl"
         >
           Building{' '}
           {/*
@@ -194,6 +214,32 @@ const Hero = () => (
         </motion.dl>
       </motion.div>
     </div>
+
+    {/*
+      Scroll cue, bottom-right, from the reference layout. A full-bleed image
+      hero gives no edge to hint that the page continues, which is the one real
+      problem with the shape — this is the cheapest fix for it.
+
+      Hidden below `lg`: on a phone the hero does not fill the viewport and the
+      next section is already visible, so the cue would be pointing at
+      something the visitor can see. `aria-hidden` because a scrollbar already
+      says this to assistive technology, and the bounce is CSS so the
+      reduced-motion block in globals.css stops it.
+    */}
+    <div
+      aria-hidden="true"
+      /*
+        Bottom-centre, not bottom-right as in the reference: the floating
+        WhatsApp button is pinned to that corner on every page, and the two
+        overlapped.
+      */
+      className="pointer-events-none absolute bottom-8 left-1/2 hidden -translate-x-1/2 items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-surface-300 lg:flex"
+    >
+      Scroll to explore
+      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-white/25">
+        <FiArrowDown className="h-4 w-4 animate-bounce" />
+      </span>
+    </div>
   </section>
 )
 
@@ -260,10 +306,10 @@ const Home = () => (
               delay: Math.min(index * 0.07, 0.3),
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm"
+            className="flex items-start gap-4 rounded-xl bg-white/5 p-5 backdrop-blur-sm"
           >
-            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-500/15 text-accent-400">
-              <Icon name={reason.icon} className="h-5 w-5" />
+            <span className="inline-flex shrink-0 text-accent-400">
+              <Icon name={reason.icon} className="h-7 w-7" />
             </span>
             <span className="pt-2 text-sm font-medium text-surface-100">
               {reason.text}

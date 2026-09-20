@@ -148,7 +148,8 @@ The repo already has real brand media — use these before sourcing stock imager
 | `src/assets/certifications/*.png` (generated) | **In use.** The five accreditation badges, cut out of the client-supplied strip and keyed off its flat olive ground. See §8.1. |
 | `img.jpeg` | **In use.** Hero poster, About page image, and the social share card. |
 | `image.jpeg` | **Do not use.** Same render as `img.jpeg` but the wall tagline reads "INNOVATION THROUGH CODE SINCE [current year]" — an unreplaced placeholder that would be visible to prospects. |
-| `video.mp4` | **In use** as the hero background loop, at full opacity. The scrim over it is a left-weighted gradient, heavy under the text and clear on the right where the wordmark animation plays. Contrast figures and how to re-check them are in the comment on that element in `pages/Home.jsx` — do it if the video is re-cut. |
+| `hero-grid.jpg` (client-supplied) | **In use** as the home hero background, at full opacity. 1200×675, 117kb. The scrim over it is a left-weighted gradient plus a light lift off the bottom edge; measured contrast figures and how to re-check them are in the comment on that element in `pages/Home.jsx` — do it if the image is ever swapped. |
+| `video.mp4` | **No longer used.** Was the hero background loop until the client asked for the wireframe still instead. Kept in `Assets/` and `src/assets/videos/`; delete both if the video is not coming back — it is ~965kb that nothing imports, so it is not shipped, just stored. |
 | `img1.mp4`, `video1.mp4`, `video2.mp4`, `video3.mp4` | Not used. Available for a showreel or project media. |
 
 Action items:
@@ -192,7 +193,11 @@ export const formatUGX = (amount) =>
   }).format(amount);
 ```
 
-For ranges (e.g. "2M – 4M", "UGX 2,800,000 – 4,000,000"), store `min`/`max` numeric fields in the pricing data and render `${formatUGX(min)} – ${formatUGX(max)}` rather than hand-typed strings, so formatting stays consistent everywhere the range appears.
+For ranges, store `min`/`max` numeric fields in the pricing data and render `${formatUGX(min)} – ${formatUGX(max)}` rather than hand-typed strings, so formatting stays consistent everywhere the range appears.
+
+**Every price on the site is spelled out in full: `2,000,000`, never `2M`.** This is a deliberate divergence from the printed catalogue, made at the client's request. Sections 4–7 of the PDF abbreviate the application and service tables to `2M – 4M`, and `PricingTable` used to match that with `compact: true`; it is now `compact: false` and the tables read `2,000,000 – 4,000,000`. A visitor comparing quotes should not have to expand an abbreviation to count zeroes.
+
+`formatCompact` is still exported from `formatters.js`, still tested, and reachable through the `compact` prop, but no caller passes it. Delete it if the abbreviated form is never wanted again.
 
 ## 10. Folder Structure
 
@@ -266,6 +271,37 @@ Four planned files were deliberately not created:
 - Zod validation, success/error states
 - Direct WhatsApp link: `https://wa.me/256767267209`
 - `mailto:geniewep@gmail.com`
+
+### Legal — `/terms`, `/privacy`, `/cookies`
+
+Three documents, linked from a **Legal** column in the footer. Content lives in
+`src/utils/legal.js` as data; `pages/Legal.jsx` renders any one of them, so all
+three routes share one layout and one lazy chunk.
+
+They are drafted against what the code actually does, not from a template: the
+contact form posts to `/api/send-enquiry`, Resend delivers to
+`geniewep@gmail.com`, the theme choice sits in `localStorage` under
+`geniewep-theme`, and nothing else is collected. Every factual claim in them was
+written by reading the source.
+
+**Two things are needed before these go live:**
+
+1. **A Ugandan lawyer should review them.** They are accurate, not authoritative.
+2. **Company registration details are deliberately absent** — no registration
+   number, no registered office. Inventing those on a legal page is worse than
+   omitting them. Add them to the "Who we are" section of the terms once known.
+
+Project contract terms — deposits, milestones, refunds, source-code ownership on
+delivery, warranty — are also deliberately absent. They belong in the signed
+proposal, and the terms say so rather than guessing at commitments the client
+never made.
+
+One claim is load-bearing and easy to break: the cookie policy says the site
+loads no analytics or advertising tag. That is true today — there is no
+analytics code in `src/`. Wiring up `VITE_GA_MEASUREMENT_ID` would make it false
+and would require a consent banner, so update `legal.js` in the same commit. A
+test in `routes.test.jsx` asserts no analytics script is present, so the suite
+fails if the two drift apart.
 
 ### Blog (optional)
 - Deferred unless the client wants case studies; not present in the source catalogue
@@ -419,6 +455,7 @@ Needs a deployed URL or client input to close:
 - [ ] **`RESEND_API_KEY` set on Vercel — this is what makes the contact form send.** See §12.1.
 - [ ] **`geniewep.com` verified in Resend and `RESEND_FROM` set to an address on it.** Without this the default sender only delivers to the Resend account owner, so real enquiries never arrive.
 - [ ] Environment variables configured (see `.env.example`)
+- [ ] **Legal pages reviewed by a lawyer, and company registration details added** to the "Who we are" section of the terms. See §11 → Legal.
 - [ ] Domain DNS pointed to geniewep.com
 - [ ] SSL certificate installed
 - [ ] Analytics tracking implemented

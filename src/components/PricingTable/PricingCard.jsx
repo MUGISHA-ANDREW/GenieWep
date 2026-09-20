@@ -26,11 +26,17 @@ export const PricingCard = ({ pkg, index = 0 }) => {
       }}
       className="h-full"
     >
+      {/*
+        Borderless, like every other card on the site. The featured tier used
+        to be outlined in `accent-500` with a matching ring; it now stands out
+        on elevation plus the amber badge and its lighter header band, which
+        were always doing most of that work anyway.
+      */}
       <div
-        className={`relative flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-shadow duration-300 ${
+        className={`relative flex h-full flex-col overflow-hidden rounded-xl bg-card transition-shadow duration-300 ${
           pkg.featured
-            ? 'border-accent-500 shadow-[var(--shadow-card-hover)] ring-1 ring-accent-500'
-            : 'border-line shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)]'
+            ? 'shadow-[var(--shadow-card-hover)]'
+            : 'shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)]'
         }`}
       >
         {/* The badge carries the palette's one warm note — see styles/theme.css */}
@@ -47,7 +53,9 @@ export const PricingCard = ({ pkg, index = 0 }) => {
           noticeably deeper than its neighbours.
         */}
         <div
-          className={`flex min-h-28 flex-col justify-center border-b border-line px-6 py-5 ${
+          /* No rule under the band: it is a dark fill against a light card, so
+             the colour change is the edge. */
+          className={`flex min-h-28 flex-col justify-center px-6 py-5 ${
             pkg.featured ? 'bg-band-featured' : 'bg-band'
           }`}
         >

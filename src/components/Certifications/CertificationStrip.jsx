@@ -58,13 +58,19 @@ export const CertificationStrip = () => {
           }}
         >
           {/*
+            No card behind the badge — the white plates are gone at the
+            client's request, so each mark sits straight on the band. That only
+            works because the band is `band-light` in both themes: the ANAB
+            mark carries its own white field, which would read as a floating
+            slab on any dark surface.
+
             `tabIndex` and `group-focus-within` rather than hover alone: the
             note under each badge is real information, so it has to be reachable
             by keyboard and not only by mouse.
           */}
           <figure
             tabIndex={0}
-            className="group flex h-full flex-col items-center rounded-xl bg-white/70 px-4 py-6 text-center ring-1 ring-steel-900/8 transition-all duration-300 ease-[var(--ease-brand)] hover:-translate-y-1 hover:bg-white hover:ring-steel-900/15 focus-visible:-translate-y-1 focus-visible:bg-white"
+            className="group flex h-full flex-col items-center rounded-xl px-4 py-6 text-center transition-transform duration-300 ease-[var(--ease-brand)] hover:-translate-y-1 focus-visible:-translate-y-1"
           >
             <img
               src={BADGES[certification.id]}

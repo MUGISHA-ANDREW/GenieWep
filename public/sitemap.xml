@@ -25,4 +25,21 @@
     <changefreq>yearly</changefreq>
     <priority>0.9</priority>
   </url>
+  <!-- Legal. Listed so they are indexable and findable, at low priority:
+       nobody should reach these from a search result ahead of a service page. -->
+  <url>
+    <loc>https://geniewep.com/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://geniewep.com/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://geniewep.com/cookies</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
 </urlset>

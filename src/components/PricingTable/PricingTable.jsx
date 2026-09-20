@@ -6,9 +6,20 @@ import { formatPriceWithUnit } from '@/utils/formatters'
  * Renders a real <table> for semantics and screen readers, wrapped in a
  * horizontally scrollable container so narrow screens never force the page
  * body to scroll sideways.
+ *
+ * `compact` is off. The printed catalogue abbreviates these to "2M – 4M" and
+ * this used to match it, but at the client's request the site now spells them
+ * out: "2,000,000 – 4,000,000". A visitor comparing quotes should not have to
+ * expand an abbreviation to count the zeroes, and the tables have the width.
+ * Note that this is a deliberate divergence from the PDF — see
+ * PROJECT_BRIEF.md §9.
+ *
+ * The wrapper is borderless like the cards. The row rules below stay: they are
+ * table structure rather than a card edge, and they are what lets the eye
+ * track a package across to its price.
  */
-export const PricingTable = ({ items, columnLabel = 'Package', compact = true }) => (
-  <div className="overflow-x-auto rounded-xl border border-line shadow-[var(--shadow-card)]">
+export const PricingTable = ({ items, columnLabel = 'Package', compact = false }) => (
+  <div className="overflow-x-auto rounded-xl shadow-[var(--shadow-card)]">
     <table className="w-full min-w-[32rem] border-collapse text-left">
       <thead>
         <tr className="bg-steel-800 text-white">

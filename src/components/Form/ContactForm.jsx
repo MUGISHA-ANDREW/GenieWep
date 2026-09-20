@@ -46,7 +46,7 @@ const FieldError = ({ id, message }) =>
 const outcomeCopy = ({ email }) => {
   if (email === 'pending') {
     return {
-      tone: 'border-line bg-tint',
+      tone: 'bg-tint',
       heading: 'Sending your message…',
       body: 'Delivering your enquiry to our inbox.',
     }
@@ -54,7 +54,7 @@ const outcomeCopy = ({ email }) => {
 
   if (email === 'sent') {
     return {
-      tone: 'border-ok-line bg-ok-bg',
+      tone: 'bg-ok-bg',
       heading: 'Message delivered',
       body: `Your message has arrived in the ${COMPANY.shortName} inbox. We will get back to you shortly — usually within one business day.`,
     }
@@ -62,7 +62,7 @@ const outcomeCopy = ({ email }) => {
 
   // 'failed' — the POST never landed, or the server could not send it on.
   return {
-    tone: 'border-warn-line bg-warn-bg',
+    tone: 'bg-warn-bg',
     heading: 'That did not send',
     body: 'We could not deliver your message just now, so nobody has seen it yet. Send it on WhatsApp instead — your details are already filled in — or email us directly.',
   }
@@ -123,7 +123,9 @@ export const ContactForm = () => {
       <div
         role="status"
         aria-live="polite"
-        className={`rounded-xl border p-8 text-center ${tone}`}
+        /* Borderless like the cards. The tinted fill still carries the state,
+           and the icon above says it again without relying on colour. */
+        className={`rounded-xl p-8 text-center ${tone}`}
       >
         {pending ? (
           <span

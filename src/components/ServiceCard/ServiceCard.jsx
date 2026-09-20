@@ -19,14 +19,16 @@ export const ServiceCard = ({ service, index = 0 }) => {
     >
       <Card hoverable className="group h-full p-6">
         {/*
-          The tile fills with the accent on hover and the glyph inside it grows
-          a little against that fill, so the card responds in two steps rather
-          than just changing colour.
+          The glyph sits on the card with no tile behind it. It used to be a
+          rounded `bg-chip` square that filled with the accent on hover; the
+          plate is gone at the client's request, so the icon itself carries the
+          response — it lifts and brightens instead of a box changing colour.
+          Drawn larger to hold the same weight in the layout as the tile did.
         */}
-        <span className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-chip text-link transition-all duration-300 ease-[var(--ease-brand)] group-hover:bg-accent-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-accent-500/25">
+        <span className="mb-5 inline-flex text-link transition-all duration-300 ease-[var(--ease-brand)] group-hover:-translate-y-0.5 group-hover:text-accent-500">
           <Icon
             name={service.icon}
-            className="h-6 w-6 transition-transform duration-300 ease-[var(--ease-brand)] group-hover:scale-110"
+            className="h-9 w-9 transition-transform duration-300 ease-[var(--ease-brand)] group-hover:scale-110"
           />
         </span>
 
