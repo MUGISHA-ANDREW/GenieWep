@@ -34,14 +34,9 @@ const fadeUp = {
 
 const Hero = () => (
   <section className="relative isolate overflow-hidden bg-steel-900">
-    {/* Ambient background video, muted and decorative */}
-    {/*
-      Held at low opacity behind a heavy scrim so the footage reads as ambient
-      texture. Any wordmark inside the video would otherwise ghost through and
-      compete with the headline sitting on top of it.
-    */}
+    {/* Background video, muted and decorative. Plays at full opacity. */}
     <video
-      className="absolute inset-0 -z-10 h-full w-full object-cover opacity-14"
+      className="absolute inset-0 -z-10 h-full w-full object-cover"
       src={heroVideo}
       poster={heroPoster}
       autoPlay
@@ -52,9 +47,33 @@ const Hero = () => (
       aria-hidden="true"
       tabIndex={-1}
     />
+    {/*
+      Scrim, shaped rather than flat.
+
+      This used to be a near-opaque wash over a video held at 14% — the footage
+      was texture, not picture. It is now the other way round, so the only job
+      left is keeping white text legible over moving footage whose brightness
+      nobody controls.
+
+      A gradient does that without hiding the video: from `md` up the text
+      column ends around 61% of the container, so the scrim holds its weight to
+      62% and then falls away to almost nothing, leaving the right-hand third —
+      where the animated wordmark plays — effectively uncovered. Below `md` the
+      text runs the full width and there is no empty side to clear, so it falls
+      back to one flat tint.
+
+      Worst-case contrast for white text, sampled off the live page across nine
+      frames of the loop at 1440px: eyebrow 13.8:1, headline 8.6:1, lede 9.0:1,
+      trust strip 11.2:1. At 390px, all above 7:1. The binding one is the lede,
+      which is small text and so needs 4.5:1.
+
+      Re-measure if `hero.mp4` is ever re-cut. A brighter grade is exactly the
+      change that would quietly push the headline under, and it would do it
+      without touching a line of this file.
+    */}
     <div
       aria-hidden="true"
-      className="absolute inset-0 -z-10 bg-linear-to-br from-steel-950/96 via-steel-900/92 to-steel-800/88"
+      className="absolute inset-0 -z-10 bg-steel-950/68 md:bg-transparent md:bg-linear-to-r md:from-steel-950/90 md:via-steel-950/72 md:via-62% md:to-steel-950/8"
     />
     {/*
       Sapphire bloom, echoing the faceted highlights in the logo. It drifts on

@@ -148,7 +148,7 @@ The repo already has real brand media — use these before sourcing stock imager
 | `src/assets/certifications/*.png` (generated) | **In use.** The five accreditation badges, cut out of the client-supplied strip and keyed off its flat olive ground. See §8.1. |
 | `img.jpeg` | **In use.** Hero poster, About page image, and the social share card. |
 | `image.jpeg` | **Do not use.** Same render as `img.jpeg` but the wall tagline reads "INNOVATION THROUGH CODE SINCE [current year]" — an unreplaced placeholder that would be visible to prospects. |
-| `video.mp4` | **In use** as the hero background loop, held at low opacity behind a scrim. |
+| `video.mp4` | **In use** as the hero background loop, at full opacity. The scrim over it is a left-weighted gradient, heavy under the text and clear on the right where the wordmark animation plays. Contrast figures and how to re-check them are in the comment on that element in `pages/Home.jsx` — do it if the video is re-cut. |
 | `img1.mp4`, `video1.mp4`, `video2.mp4`, `video3.mp4` | Not used. Available for a showreel or project media. |
 
 Action items:
