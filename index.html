@@ -3,8 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/jpeg" href="/logo2.jpeg" />
-    <link rel="apple-touch-icon" href="/logo2.jpeg" />
+    <!--
+      The monogram on transparency, not the studio render it was cut from: the
+      old JPEG carried the mockup's slate wall with it, which showed up as a
+      grey tile in every browser tab and on every home screen.
+    -->
+    <link rel="icon" type="image/png" href="/logo-mark.png" />
+    <link rel="apple-touch-icon" href="/logo-mark.png" />
 
     <title>GenieWep Technologies | Software Development Company in Uganda</title>
     <meta
@@ -61,13 +66,11 @@
     />
     <meta name="twitter:image" content="https://geniewep.com/og-image.jpg" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <!--
+      Fonts: none fetched. `--font-sans` in styles/theme.css asks for figmaSans
+      and falls through to the platform UI face, so there is no webfont request
+      and no flash of fallback text on first paint.
+    -->
 
     <!-- Structured data: local software business -->
     <script type="application/ld+json">
@@ -81,6 +84,7 @@
         "telephone": "+256767267209",
         "address": {
           "@type": "PostalAddress",
+          "addressLocality": "Kampala",
           "addressCountry": "UG"
         },
         "areaServed": "Uganda",

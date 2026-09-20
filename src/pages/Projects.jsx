@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { FiArrowRight } from 'react-icons/fi'
 
@@ -41,7 +42,15 @@ const Projects = () => {
       </section>
 
       <Section>
-        {/* Industry filter */}
+        {/*
+          Industry filter.
+
+          The accent pill is a single shared element that slides from the old
+          filter to the new one (`layoutId`), instead of one pill switching off
+          while another switches on. It reads as the selection moving, which is
+          what actually happened. The pill is behind the label, so the label
+          keeps its own colour transition on top of it.
+        */}
         <div className="mb-10 flex flex-wrap gap-2">
           {PROJECT_CATEGORIES.map((category) => {
             const isActive = category === activeCategory
@@ -51,12 +60,20 @@ const Projects = () => {
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setActiveCategory(category)}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
                   isActive
-                    ? 'bg-accent-500 text-white'
+                    ? 'text-white'
                     : 'bg-chip text-body hover:bg-chip-hover hover:text-title'
                 }`}
               >
+                {isActive && (
+                  <motion.span
+                    layoutId="project-filter-pill"
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 rounded-full bg-accent-500"
+                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                  />
+                )}
                 {category}
               </button>
             )

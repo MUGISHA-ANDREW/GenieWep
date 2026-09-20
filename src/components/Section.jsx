@@ -1,8 +1,12 @@
-import { motion } from 'framer-motion'
+import Reveal from '@/components/Reveal'
 
 /**
  * Section wrapper with the catalogue's heading treatment: a small uppercase
  * eyebrow, the accent rule, then the heading. Animates in once on scroll.
+ *
+ * The entrance is delegated to `Reveal` rather than configured here, so the
+ * distance, easing and viewport margin match every other element on the site
+ * and reduced-motion handling only has to be right in one place.
  */
 
 /*
@@ -37,11 +41,10 @@ export const Section = ({
     >
       <div className={`container-page ${containerClassName}`}>
         {(eyebrow || title || description) && (
-          <motion.header
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          <Reveal
+            as="header"
+            duration={0.5}
+            margin="-80px"
             className={`mb-12 max-w-3xl ${isCentered ? 'mx-auto text-center' : ''}`}
           >
             {eyebrow && (
@@ -73,7 +76,7 @@ export const Section = ({
                 {description}
               </p>
             )}
-          </motion.header>
+          </Reveal>
         )}
 
         {children}

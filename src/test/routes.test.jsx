@@ -11,6 +11,7 @@ import { describe, expect, it } from 'vitest'
 
 import App from '@/App'
 import { ThemeProvider } from '@/context/ThemeProvider'
+import { TEAM } from '@/utils/constants'
 
 const renderAt = (route) =>
   render(
@@ -119,6 +120,36 @@ describe('routing', () => {
     ).toBeInTheDocument()
   })
 
+  it('renders the team and certification sections on the about page', async () => {
+    renderAt('/about')
+
+    expect(
+      await screen.findByRole('heading', { name: /the people who build your software/i }),
+    ).toBeInTheDocument()
+
+    /*
+      Derived from TEAM rather than hard-coded, because the card heading is the
+      person's name once the client supplies one and the role until then. This
+      asserts the card renders whichever of the two is current, and keeps
+      passing on the day the names land.
+    */
+    for (const member of TEAM) {
+      expect(
+        screen.getByRole('heading', { name: member.name ?? member.role }),
+      ).toBeInTheDocument()
+    }
+
+    expect(
+      screen.getByRole('heading', { name: /accredited to international standards/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('img', { name: /ISO 9001:2015 certification badge/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('img', { name: /R2v3 Certified certification badge/i }),
+    ).toBeInTheDocument()
+  })
+
   it('renders the contact page form', async () => {
     renderAt('/contact')
 
@@ -160,6 +191,14 @@ describe('global chrome', () => {
       .filter((link) => link.getAttribute('href')?.includes('wa.me'))
 
     expect(headerWhatsApp).toHaveLength(0)
+  })
+
+  it('puts Kampala in the footer', async () => {
+    renderAt('/')
+
+    const footer = document.querySelector('footer')
+    expect(footer).not.toBeNull()
+    expect(within(footer).getByText('Kampala, Uganda')).toBeInTheDocument()
   })
 
   it('renders a skip link for keyboard users', async () => {

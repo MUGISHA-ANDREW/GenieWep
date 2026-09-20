@@ -11,12 +11,14 @@ import { describe, expect, it } from 'vitest'
 
 import {
   ADDITIONAL_SERVICES,
+  CERTIFICATIONS,
   CONTACT,
   CORE_SERVICES,
   DESKTOP_PACKAGES,
   MOBILE_APP_PACKAGES,
   PROJECTS,
   SOCIAL_LINKS,
+  TEAM,
   WEBSITE_PACKAGES,
   WEB_APP_PACKAGES,
   WHY_CHOOSE_US,
@@ -36,6 +38,17 @@ describe('contact details', () => {
   it('builds a wa.me link with an encoded message', () => {
     const link = buildWhatsAppLink('Hello there')
     expect(link).toBe('https://wa.me/256767267209?text=Hello%20there')
+  })
+
+  /*
+   * The footer and the contact page both print `location`. Asserting that it
+   * is built from `city` and `country` is what stops one of the three drifting
+   * when the company moves.
+   */
+  it('places the company in Kampala', () => {
+    expect(CONTACT.city).toBe('Kampala')
+    expect(CONTACT.country).toBe('Uganda')
+    expect(CONTACT.location).toBe(`${CONTACT.city}, ${CONTACT.country}`)
   })
 })
 
@@ -173,6 +186,56 @@ describe('additional services (Section 7)', () => {
     expect(domain.unit).toBe('year')
 
     expect(byId(ADDITIONAL_SERVICES, 'seo-setup').unit).toBeNull()
+  })
+})
+
+describe('team', () => {
+  /* Two cards, one centred row. The grid in About.jsx is capped to match. */
+  it('holds two members', () => {
+    expect(TEAM).toHaveLength(2)
+  })
+
+  it('gives every member a unique id, a role and a focus line', () => {
+    const ids = TEAM.map((member) => member.id)
+    expect(new Set(ids).size).toBe(ids.length)
+    expect(TEAM.every((member) => Boolean(member.role && member.focus))).toBe(true)
+  })
+
+  /*
+   * These are real named people on a public page, so the pairing of name to
+   * role is asserted rather than eyeballed: swapping two of them in a refactor
+   * is invisible in review and misattributes somebody's job.
+   */
+  it('pairs each name with the role the client gave it', () => {
+    expect(
+      TEAM.map((member) => `${member.name} — ${member.role}`),
+    ).toEqual([
+      'Kasozi Alosious — Founder & Lead Developer',
+      'Mugisha Andrew — Co-Founder & Software Engineer',
+    ])
+  })
+})
+
+describe('certifications', () => {
+  it('names the five standards the client supplied badges for', () => {
+    expect(CERTIFICATIONS.map((certification) => certification.id)).toEqual([
+      'anab-iso-iec-17021',
+      'iso-9001-2015',
+      'iso-14001-2015',
+      'iso-45001',
+      'r2-v3-certified',
+    ])
+  })
+
+  it('describes what each badge covers', () => {
+    expect(
+      CERTIFICATIONS.every(
+        (certification) =>
+          Boolean(certification.name) &&
+          Boolean(certification.standard) &&
+          Boolean(certification.note),
+      ),
+    ).toBe(true)
   })
 })
 

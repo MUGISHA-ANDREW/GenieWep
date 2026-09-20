@@ -13,7 +13,7 @@ Build a modern, scalable, React-based marketing and lead-generation website for 
 | Field | Value |
 |---|---|
 | Company | GenieWep Technologies |
-| Location | Uganda |
+| Location | Kampala, Uganda |
 | Website | geniewep.com |
 | WhatsApp | +256 767 267 209 |
 | Email | geniewep@gmail.com |
@@ -142,8 +142,10 @@ The repo already has real brand media — use these before sourcing stock imager
 
 | File | Status |
 |---|---|
-| `logo2.jpeg` | **In use.** Header logo and favicon, cropped square to the monogram. Also the source of the site palette. |
-| `logo.jpeg` | Not used. Superseded by `logo2.jpeg`. |
+| `logo2.jpeg` | **Source only.** Kept as the origin of `src/assets/images/logo-mark.png` and of the site palette; nothing renders the JPEG itself any more. |
+| `logo-mark.png` (generated) | **In use.** Header logo and favicon. The monogram keyed off the mockup's slate wall onto transparency, 247×256, plus a square 192×192 copy at `public/logo-mark.png` for the favicon and iOS icon. |
+| `logo.jpeg` | Not used. Full lockup on a slate ground; the header renders its own wordmark beside the monogram. |
+| `src/assets/certifications/*.png` (generated) | **In use.** The five accreditation badges, cut out of the client-supplied strip and keyed off its flat olive ground. See §8.1. |
 | `img.jpeg` | **In use.** Hero poster, About page image, and the social share card. |
 | `image.jpeg` | **Do not use.** Same render as `img.jpeg` but the wall tagline reads "INNOVATION THROUGH CODE SINCE [current year]" — an unreplaced placeholder that would be visible to prospects. |
 | `video.mp4` | **In use** as the hero background loop, held at low opacity behind a scrim. |
@@ -151,8 +153,31 @@ The repo already has real brand media — use these before sourcing stock imager
 
 Action items:
 - Regenerate or retire `image.jpeg` — it carries a visible placeholder-text defect.
-- Get a transparent-background, vector (SVG) version of the logo; the square crop in `Logo.jsx` exists only because the supplied file is a wide raster mockup.
+- Get a vector (SVG) version of the logo. `logo-mark.png` closed the transparency gap, but it is still a raster cut out of a mockup render.
 - Compress the hero video for web (H.264 MP4 + WebM, muted/autoplay-safe).
+
+### 8.1 Certifications — content still owed
+
+The five badges on the About page (ANAB / ISO/IEC 17021-1, ISO 9001:2015,
+ISO 14001:2015, ISO 45001, R2v3) came from a client-supplied image, not from the
+2026 catalogue, which does not mention certification anywhere.
+
+Two things to confirm with the client before this page goes live, because these
+are verifiable public claims about accreditation:
+
+1. **That the company holds them, in its own name.** Badge artwork is easy to
+   come by; the certificates are not. Ask for the certificate PDFs.
+2. **That the ANAB mark belongs here at all.** It reads "ACCREDITED —
+   MANAGEMENT SYSTEMS CERTIFICATION BODY", which is the mark of a body that
+   *certifies other organizations* against ISO standards, not of a company that
+   holds a certification. Likewise R2v3 covers electronics refurbishment and
+   recycling, which is not a service in §3.
+
+`CERTIFICATIONS` in `constants.js` deliberately carries no certificate numbers,
+issuing bodies or expiry dates. Add them from the certificates once they arrive
+— they are the detail that makes the row checkable rather than decorative. If a
+claim cannot be substantiated, delete its entry: the strip renders whatever the
+array holds, down to none.
 
 ## 9. UGX Currency Formatting
 
@@ -231,6 +256,8 @@ Four planned files were deliberately not created:
 ### About
 - Mission & vision (verbatim, §2)
 - 5-year experience highlight, markets served (businesses, schools, NGOs, SACCOs, tourism, startups)
+- **Team** (`#team`) — two cards in one centred row, driven by `TEAM` in `constants.js`: circular portrait, name, job title, then what the person does. A member with no headshot in `TEAM_PHOTOS` falls back to `placeholder-avatar.png`, the same circle at the same size, so a real photo can be dropped in without touching the markup. A member with no `name` leads with the role instead. See §17.
+- **Certifications** — the accreditation badge row, driven by `CERTIFICATIONS`. Drawn on `.band-light`, which stays light in dark mode because third-party marks arrive with their colours fixed. See §8.1 for what still needs confirming.
 - Why Choose GenieWep (§6)
 - Tech stack overview (Django/React, matching their real delivery stack)
 
@@ -262,7 +289,8 @@ Four planned files were deliberately not created:
 ## 13. Design Considerations
 
 - **Colour scheme — "Azure & Aqua", implemented.** A light-blue brand: azure is the primary hue, sampled from the faceted G monogram in `Assets/logo2.jpeg`, and aqua is its neighbour on the wheel, used only for the gradient that runs through the accent rules and the dark bands. Neutrals are tinted toward the same blue rather than left grey, and the dark bands are ocean blue rather than slate. This supersedes both the earlier "Steel & Sapphire" slate direction and the navy/cyan one taken from the PDF cover. One warm amber note is reserved for the "Most popular" pricing badge; WhatsApp keeps its own green wherever it appears.
-- **Typography:** Clean, modern sans (Inter, Poppins, or similar)
+- **Typography — figmaSans, then the platform UI face.** `--font-sans` in `styles/theme.css` is `figmaSans, "figmaSans Fallback", "SF Pro Display", system-ui, helvetica, sans-serif`, at the client's request. This supersedes the earlier Inter direction, and the Google Fonts `<link>` has been removed from `index.html` along with it: figmaSans is not a hosted webfont, so nothing is downloaded for it and the stack resolves to it only where it is installed locally. Everyone else gets `system-ui` — Segoe UI on Windows, Roboto on Android, SF on Apple. The upside is a first paint with zero font requests and no FOUT; the trade-off is that the site's letterforms now vary by platform. Reinstating a hosted webfont means adding it back to both files.
+- **Motion — one vocabulary, one set of numbers.** Scroll entrances go through `components/Reveal.jsx` (`Reveal`, `Stagger`, `StaggerItem`): 28px of travel, `--ease-brand`, `-60px` viewport margin, once per element. Looping ambient movement (`animate-drift`, `animate-halo`, `animate-pan`) is CSS, defined as `--animate-*` tokens in `theme.css`. Active-state indicators that move between siblings use a shared `layoutId`. Every one of these is silenced by `prefers-reduced-motion` — via the CSS block in `globals.css`, `MotionConfig reducedMotion="user"` in `App.jsx`, and `useReducedMotion()` inside the motion components.
 - **Spacing:** 8px grid
 - **Imagery:** Use real assets from §8 first; supplement with tech-stack icons for service cards
 - **Accessibility:** WCAG 2.1 AA, semantic HTML
@@ -343,3 +371,6 @@ For traceability, this refinement:
 5. Added §8 inventorying the brand assets already sitting in `Assets/` (logo, images, 5 videos) so the build doesn't source stock media unnecessarily.
 6. Noted the Django/React stack mismatch: GenieWep markets itself as "Secure, Django-based systems," so any backend built for this site should be Django REST Framework, not an unrelated stack.
 7. Removed the invented "Team member profiles" / generic testimonial claims not present in the catalogue — no testimonials or team bios exist in the source document, so treat those as backlog items requiring new content from the client, not launch-blocking features.
+8. Added the About-page team section at the client's request (§11). Now two cards, confirmed by the client: Kasozi Alosious (Founder & Lead Developer) and Mugisha Andrew (Co-Founder & Software Engineer). Mugisha Andrew's headshot is cropped to a 512px square at `src/assets/team/mugisha-andrew.jpg`; Kasozi Alosious runs on the generic placeholder avatar. **Still owed: a headshot for Kasozi Alosious.** Adding it is one line in `TEAM_PHOTOS` — same circle at the same size, so nothing else moves.
+9. Added the certification badge row at the client's request, from artwork the client supplied directly rather than from the catalogue. **Not yet substantiated — see §8.1 before launch.**
+10. Replaced the Inter webfont with the client's figmaSans stack (§13) and cut the Google Fonts request.

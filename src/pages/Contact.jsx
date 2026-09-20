@@ -135,7 +135,7 @@ const Contact = () => (
                         Location
                       </span>
                       <span className="mt-0.5 block text-sm font-semibold text-title">
-                        {CONTACT.country}
+                        {CONTACT.location}
                       </span>
                     </span>
                   </div>

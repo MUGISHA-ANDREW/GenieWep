@@ -1,6 +1,16 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
+
+/*
+ * Every route except Home is behind React.lazy, so the first `findBy*` in a
+ * route test is waiting on a dynamic import that Vite still has to transform.
+ * Testing Library allows 1000ms for that by default, which the Contact chunk
+ * (react-hook-form + zod) misses on a loaded machine often enough to fail the
+ * suite for reasons that have nothing to do with the code under test. The wait
+ * is a ceiling, not a delay: a passing assertion still resolves immediately.
+ */
+configure({ asyncUtilTimeout: 5000 })
 
 afterEach(() => {
   cleanup()

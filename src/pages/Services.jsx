@@ -92,13 +92,25 @@ const Services = () => {
                  * Accent for the active tab, matching the Projects filter.
                  * A dark fill read as *less* prominent than the inactive chips
                  * once the page itself went dark.
+                 *
+                 * The fill is a shared `layoutId` element that slides between
+                 * tabs, the same treatment as the Projects filter — five tabs
+                 * that light up in place give no sense of which one you left.
                  */
-                className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${
+                className={`relative rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors duration-200 ${
                   isActive
-                    ? 'bg-accent-500 text-white'
+                    ? 'text-white'
                     : 'bg-chip text-body hover:bg-chip-hover hover:text-title'
                 }`}
               >
+                {isActive && (
+                  <motion.span
+                    layoutId="service-tab-fill"
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 rounded-lg bg-accent-500"
+                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                  />
+                )}
                 {category.label}
               </button>
             )

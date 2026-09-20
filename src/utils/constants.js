@@ -51,7 +51,11 @@ export const CONTACT = {
   phoneDisplay: '+256 767 267 209',
   phoneE164: '+256767267209',
   whatsappNumber: '256767267209',
+  city: 'Kampala',
   country: 'Uganda',
+  /* What the footer and the contact page print. Kept as one string rather than
+     joined at each call site, so the city and country never drift apart. */
+  location: 'Kampala, Uganda',
 }
 
 /**
@@ -535,4 +539,97 @@ export const TECH_STACK = [
   { name: 'PostgreSQL', note: 'Reliable relational data' },
   { name: 'Android & iOS', note: 'Native and cross-platform mobile' },
   { name: 'Tailwind CSS', note: 'Responsive design systems' },
+]
+
+/* ------------------------------------------------------------------ */
+/* Team — About page                                                   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The team grid on the About page — three cards, one row.
+ *
+ * The three roles are the ones a client actually meets: who scopes the work,
+ * who designs it, who builds the part they look at.
+ *
+ * Names are as the client supplied them — these are real people, so the
+ * spellings are transcribed rather than normalised. `Alosious` is not a typo
+ * for `Aloysius`.
+ *
+ * There is deliberately no `photo` field. Headshots are keyed by `id` in
+ * `TEAM_PHOTOS` in `components/TeamCard/TeamCard.jsx`, which keeps this file
+ * free of bundler-resolved imports — the same split used for the project
+ * screenshots — and means the photo exists in exactly one place. A flag here
+ * as well would be a second copy of the same fact, free to disagree with it.
+ * A member with no entry in that map falls back to the generic placeholder
+ * avatar: same circle, same size, so adding the real headshot later shifts
+ * nothing on the page.
+ *
+ * Still owed by the client: a headshot for Kasozi Alosious, as a square crop
+ * (PROJECT_BRIEF.md §17). His card runs on the placeholder until it arrives.
+ */
+export const TEAM = [
+  {
+    id: 'lead-developer',
+    name: 'Kasozi Alosious',
+    role: 'Founder & Lead Developer',
+    focus:
+      'Scopes every project, designs the data model and writes the Django that the rest of the system hangs off.',
+  },
+  {
+    id: 'software-engineer',
+    name: 'Mugisha Andrew',
+    role: 'Co-Founder & Software Engineer',
+    focus:
+      'Works across the stack: the React front-end a client sees, the Django behind it, and the integrations that join the two.',
+  },
+]
+
+/* ------------------------------------------------------------------ */
+/* Certifications & accreditation — About page                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Standards the company holds, shown as a badge row on the About page.
+ *
+ * Not from the 2026 catalogue — the client supplied the badge artwork directly.
+ * Each `id` matches a keyed PNG in `src/assets/certifications/`, resolved to an
+ * import in `components/Certifications/CertificationStrip.jsx` so this file
+ * stays free of bundler-resolved paths.
+ *
+ * These are claims about accreditation, so nothing here is embellished: the
+ * text states only what is printed on the badge itself. Certificate numbers,
+ * issuing bodies and expiry dates are deliberately absent rather than guessed —
+ * add them once the client sends the certificates.
+ */
+export const CERTIFICATIONS = [
+  {
+    id: 'anab-iso-iec-17021',
+    name: 'ANAB Accredited',
+    standard: 'ISO/IEC 17021-1',
+    note: 'Accredited by the ANSI National Accreditation Board as a management systems certification body.',
+  },
+  {
+    id: 'iso-9001-2015',
+    name: 'ISO 9001:2015',
+    standard: 'Quality management',
+    note: 'A documented quality management system behind every delivery, not just the large ones.',
+  },
+  {
+    id: 'iso-14001-2015',
+    name: 'ISO 14001:2015',
+    standard: 'Environmental management',
+    note: 'Environmental management practices covering how the business runs and disposes of equipment.',
+  },
+  {
+    id: 'iso-45001',
+    name: 'ISO 45001',
+    standard: 'Occupational health & safety',
+    note: 'Health and safety management for staff on site and on client premises.',
+  },
+  {
+    id: 'r2-v3-certified',
+    name: 'R2v3 Certified',
+    standard: 'Responsible recycling',
+    note: 'Responsible handling of electronics that reach the end of their working life.',
+  },
 ]

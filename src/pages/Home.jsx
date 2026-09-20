@@ -3,9 +3,11 @@ import { FaWhatsapp } from 'react-icons/fa'
 import { FiArrowRight, FiCheck } from 'react-icons/fi'
 
 import Button from '@/components/Button/Button'
+import Counter from '@/components/Counter'
 import Icon from '@/components/Icon'
 import PricingCard from '@/components/PricingTable/PricingCard'
 import ProjectCard from '@/components/ProjectCard/ProjectCard'
+import Reveal, { Stagger, StaggerItem } from '@/components/Reveal'
 import Section from '@/components/Section'
 import Seo from '@/components/Seo'
 import ServiceCard from '@/components/ServiceCard/ServiceCard'
@@ -54,10 +56,19 @@ const Hero = () => (
       aria-hidden="true"
       className="absolute inset-0 -z-10 bg-linear-to-br from-steel-950/96 via-steel-900/92 to-steel-800/88"
     />
-    {/* Sapphire bloom, echoing the faceted highlights in the logo */}
+    {/*
+      Sapphire bloom, echoing the faceted highlights in the logo. It drifts on
+      a 9-second loop, which is slow enough that a visitor never catches it
+      moving — they only notice that the hero is not a flat picture.
+    */}
     <div
       aria-hidden="true"
-      className="absolute -right-40 -top-40 -z-10 h-[32rem] w-[32rem] rounded-full bg-accent-500/10 blur-3xl"
+      className="absolute -right-40 -top-40 -z-10 h-[32rem] w-[32rem] rounded-full bg-accent-500/10 blur-3xl animate-drift"
+    />
+    {/* Aqua counterweight, drifting against the bloom on a longer delay. */}
+    <div
+      aria-hidden="true"
+      className="absolute -bottom-52 -left-32 -z-10 h-[26rem] w-[26rem] rounded-full bg-aqua-500/10 blur-3xl animate-drift [animation-delay:-4.5s]"
     />
 
     <div className="container-page py-20 md:py-28 lg:py-32">
@@ -80,7 +91,14 @@ const Hero = () => (
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="text-4xl leading-tight text-white sm:text-5xl lg:text-6xl"
         >
-          Building digital solutions for businesses, schools, NGOs and startups.
+          Building{' '}
+          {/*
+            Two words in the brand gradient, panning slowly across itself. The
+            effect only works because it is rare — the rest of the headline
+            stays plain white, so the eye lands here first.
+          */}
+          <span className="text-brand-gradient animate-pan">digital solutions</span>{' '}
+          for businesses, schools, NGOs and startups.
         </motion.h1>
 
         <motion.p
@@ -112,12 +130,19 @@ const Hero = () => (
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="mt-14 grid max-w-2xl grid-cols-2 gap-6 border-t border-white/10 pt-8 sm:grid-cols-3"
         >
+          {/*
+            Counts up once when the strip scrolls into view. The figures are
+            the reason the row exists, so they get the one animation on the
+            page that draws the eye to a number rather than to a shape.
+          */}
           <div>
             <dt className="sr-only">Years of experience</dt>
             <dd>
-              <span className="block text-3xl font-extrabold text-accent-400">
-                {COMPANY.yearsExperience}+
-              </span>
+              <Counter
+                to={COMPANY.yearsExperience}
+                suffix="+"
+                className="block text-3xl font-extrabold text-accent-400"
+              />
               <span className="mt-1 block text-sm text-surface-300">
                 Years of experience
               </span>
@@ -126,9 +151,10 @@ const Hero = () => (
           <div>
             <dt className="sr-only">Projects delivered</dt>
             <dd>
-              <span className="block text-3xl font-extrabold text-accent-400">
-                {PROJECTS.length}
-              </span>
+              <Counter
+                to={PROJECTS.length}
+                className="block text-3xl font-extrabold text-accent-400"
+              />
               <span className="mt-1 block text-sm text-surface-300">
                 Client projects delivered
               </span>
@@ -137,9 +163,10 @@ const Hero = () => (
           <div className="col-span-2 sm:col-span-1">
             <dt className="sr-only">Services offered</dt>
             <dd>
-              <span className="block text-3xl font-extrabold text-accent-400">
-                {CORE_SERVICES.length}
-              </span>
+              <Counter
+                to={CORE_SERVICES.length}
+                className="block text-3xl font-extrabold text-accent-400"
+              />
               <span className="mt-1 block text-sm text-surface-300">
                 Services under one roof
               </span>
@@ -250,7 +277,7 @@ const Home = () => (
     {/* Closing CTA */}
     <section className="band-dark">
       <div className="container-page py-16 md:py-20">
-        <div className="mx-auto max-w-3xl text-center">
+        <Reveal className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl text-white md:text-4xl">
             Let&apos;s build something great together
           </h2>
@@ -259,16 +286,26 @@ const Home = () => (
             and fixed price.
           </p>
 
-          <ul className="mx-auto mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <Stagger
+            as="ul"
+            step={0.1}
+            delay={0.15}
+            className="mx-auto mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
+          >
             {['Free consultation', 'Fixed pricing', 'Training after delivery'].map(
               (item) => (
-                <li key={item} className="flex items-center gap-2 text-sm text-surface-200">
+                <StaggerItem
+                  as="li"
+                  key={item}
+                  from="left"
+                  className="flex items-center gap-2 text-sm text-surface-200"
+                >
                   <FiCheck aria-hidden="true" className="h-4 w-4 text-accent-400" />
                   {item}
-                </li>
+                </StaggerItem>
               ),
             )}
-          </ul>
+          </Stagger>
 
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
             <Button to="/contact" size="lg">
@@ -280,7 +317,7 @@ const Home = () => (
               WhatsApp us
             </Button>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   </>

@@ -220,9 +220,18 @@
   --color-whatsapp: #25d366;
   --color-whatsapp-dark: #1da851;
 
-  /* Typography */
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
-    Roboto, Helvetica, Arial, sans-serif;
+  /*
+   * Typography — figmaSans first, then the platform UI face.
+   *
+   * figmaSans is not a hosted webfont, so nothing is downloaded for it: the
+   * stack resolves to it only on a machine that has it installed locally, and
+   * everyone else lands on `system-ui` (Segoe UI on Windows, Roboto on
+   * Android, SF on Apple, where the explicit "SF Pro Display" is tried first).
+   * That is deliberate — it is why the Inter <link> is gone from index.html and
+   * why the site now renders its first paint with no font request at all.
+   */
+  --font-sans: figmaSans, 'figmaSans Fallback', 'SF Pro Display', system-ui,
+    helvetica, sans-serif;
 
   /*
    * Spacing deliberately keeps Tailwind's 0.25rem base step. The 8px grid from
@@ -233,6 +242,53 @@
 
   /* Motion */
   --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /*
+   * Ambient animations — the ones that loop forever and are therefore CSS
+   * rather than Framer Motion: nothing here needs to know about scroll
+   * position or React state, and the `prefers-reduced-motion` block in
+   * globals.css already stops all three.
+   *
+   * Deliberately slow. A 9-second drift reads as the page being alive; the
+   * same movement over 2 seconds reads as something being wrong with it.
+   */
+  --animate-drift: drift 9s ease-in-out infinite;
+  --animate-halo: halo 2.8s var(--ease-brand) infinite;
+  --animate-pan: pan 8s ease-in-out infinite;
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(0, -1.5rem, 0) scale(1.06);
+    }
+  }
+
+  /* Expanding ring behind the floating WhatsApp button. */
+  @keyframes halo {
+    0% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    70%,
+    100% {
+      transform: scale(1.75);
+      opacity: 0;
+    }
+  }
+
+  /* Slides a wide gradient across the text it is clipped to. */
+  @keyframes pan {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
 }
 
 @theme inline {

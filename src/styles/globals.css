@@ -41,8 +41,11 @@
    * Respect reduced-motion preferences.
    *
    * This covers CSS transitions and animations only. Framer Motion drives its
-   * animations from JavaScript, so it is silenced separately via
-   * `useReducedMotion()` in `components/Reveal.jsx` — CSS alone cannot stop it.
+   * animations from JavaScript, so it is silenced separately: globally by
+   * `MotionConfig reducedMotion="user"` in App.jsx, and per-component by
+   * `useReducedMotion()` in `components/Reveal.jsx`, `Counter.jsx` and
+   * `ScrollProgress.jsx`, which skip their motion wrappers altogether rather
+   * than animating to the same place. CSS alone cannot stop either.
    */
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -128,6 +131,30 @@
   }
 
   /*
+   * The light counterpart to `.band-dark`: near-white in *both* themes.
+   *
+   * It exists for the certification badges. Third-party marks come with their
+   * colours fixed — the ANAB mark carries its own white field, and ISO 45001 is
+   * a mid blue — so a band that turns into deep ocean in dark mode would leave
+   * a white slab floating in it and the blue unreadable. Like `.band-dark`,
+   * this one is a fixed surface by design, so anything placed on it must use
+   * the fixed `steel-*` text ramp rather than `--c-title` / `--c-body`.
+   */
+  .band-light {
+    background-color: var(--color-surface-50);
+    background-image: radial-gradient(
+        60rem 30rem at 12% -30%,
+        rgb(10 123 184 / 0.07),
+        transparent 60%
+      ),
+      radial-gradient(
+        45rem 28rem at 100% 130%,
+        rgb(18 169 155 / 0.07),
+        transparent 62%
+      );
+  }
+
+  /*
    * Headline word painted in the brand gradient. Used on one or two words at a
    * time — a whole gradient paragraph is unreadable, and the effect only lands
    * when it is rare.
@@ -136,8 +163,12 @@
     background-image: linear-gradient(
       100deg,
       var(--color-accent-300),
-      var(--color-aqua-300)
+      var(--color-aqua-300),
+      var(--color-accent-300)
     );
+    /* Wider than the text so `animate-pan` has somewhere to travel. A stop is
+       repeated above for the same reason: the slide has to loop seamlessly. */
+    background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

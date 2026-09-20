@@ -156,7 +156,7 @@ export const Footer = () => {
               </li>
               <li className="flex items-start gap-3 text-sm text-surface-300">
                 <FiMapPin aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
-                {CONTACT.country}
+                {CONTACT.location}
               </li>
             </ul>
           </div>

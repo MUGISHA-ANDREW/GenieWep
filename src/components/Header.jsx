@@ -52,7 +52,16 @@ export const Header = () => {
           : 'border-transparent bg-card'
       }`}
     >
-      <div className="container-page flex h-18 items-center justify-between gap-4 py-3">
+      {/*
+        Loses 8px of height once the page scrolls. Small enough that nobody
+        watches it happen, large enough that the header reads as having settled
+        into a compact bar rather than as a slab that followed you down.
+      */}
+      <div
+        className={`container-page flex items-center justify-between gap-4 py-3 transition-[height] duration-300 ease-[var(--ease-brand)] ${
+          isScrolled ? 'h-16' : 'h-18'
+        }`}
+      >
         <Logo />
 
         {/* Desktop navigation */}
