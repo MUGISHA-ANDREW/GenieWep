@@ -66,7 +66,7 @@ const Contact = () => (
         <p className="eyebrow mb-5">
           Contact
         </p>
-        <h1 className="max-w-3xl text-4xl text-white md:text-5xl">
+        <h1 className="max-w-3xl text-3xl text-white md:text-4xl">
           Let&apos;s build something great together
         </h1>
         <p className="mt-5 max-w-2xl text-base text-surface-200 md:text-lg">
@@ -81,7 +81,7 @@ const Contact = () => (
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           {/* Channels */}
           <aside>
-            <h2 className="text-2xl text-title">Reach us directly</h2>
+            <h2 className="text-xl text-title">Reach us directly</h2>
             <p className="mt-3 text-sm leading-relaxed text-body">
               Prefer to talk first? Use whichever channel suits you.
             </p>
@@ -147,7 +147,7 @@ const Contact = () => (
           {/* Form */}
           <div>
             <Card className="p-6 md:p-8">
-              <h2 className="mb-2 text-2xl text-title">Send us a message</h2>
+              <h2 className="mb-2 text-xl text-title">Send us a message</h2>
               <p className="mb-8 text-sm text-body">
                 Fields marked with an asterisk are required.
               </p>

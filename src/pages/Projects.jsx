@@ -32,7 +32,7 @@ const Projects = () => {
           <p className="eyebrow mb-5">
             Projects Completed
           </p>
-          <h1 className="max-w-3xl text-4xl text-white md:text-5xl">
+          <h1 className="max-w-3xl text-3xl text-white md:text-4xl">
             Work we have delivered
           </h1>
           <p className="mt-5 max-w-2xl text-base text-surface-200 md:text-lg">
@@ -94,7 +94,7 @@ const Projects = () => {
       <section className="bg-tint">
         <div className="container-page py-16">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl text-title">Your project could be next</h2>
+            <h2 className="text-2xl text-title sm:text-3xl">Your project could be next</h2>
             <p className="mt-4 text-base text-body">
               Tell us what you are building and we will show you how we would
               approach it.

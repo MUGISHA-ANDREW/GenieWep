@@ -49,7 +49,7 @@ export const Modal = ({ isOpen, onClose, title, children }) => {
             className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-card p-6 shadow-2xl"
           >
             <div className="mb-4 flex items-start justify-between gap-4">
-              {title && <h2 className="text-xl text-title">{title}</h2>}
+              {title && <h2 className="text-lg text-title">{title}</h2>}
               <button
                 type="button"
                 onClick={onClose}

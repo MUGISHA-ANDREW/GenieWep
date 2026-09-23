@@ -3,15 +3,18 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 
 import App from '@/App'
+import { CurrencyProvider } from '@/context/CurrencyProvider'
 import { ThemeProvider } from '@/context/ThemeProvider'
 import '@/index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <CurrencyProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </CurrencyProvider>
     </ThemeProvider>
   </StrictMode>,
 )

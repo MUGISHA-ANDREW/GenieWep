@@ -26,7 +26,7 @@ export const Faq = () => (
             <FiHelpCircle aria-hidden="true" className="h-3.5 w-3.5" />
             Questions
           </p>
-          <h2 className="mb-4 text-3xl leading-[1.15] text-title sm:text-4xl">
+          <h2 className="mb-4 text-2xl leading-[1.2] text-title sm:text-3xl">
             What clients ask before they commit.
           </h2>
           <p className="mb-6 max-w-md text-base leading-relaxed text-body">

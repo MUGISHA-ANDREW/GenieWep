@@ -144,7 +144,7 @@ export const ContactForm = () => {
           />
         )}
 
-        <h3 className="mb-2 text-xl text-title">{heading}</h3>
+        <h3 className="mb-2 text-lg text-title">{heading}</h3>
         <p className="mb-6 text-sm text-body">{body}</p>
 
         {!pending && (

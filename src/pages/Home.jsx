@@ -13,6 +13,9 @@ import {
 
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
+import CurrencySwitcher, {
+  CurrencyNote,
+} from '@/components/Currency/CurrencySwitcher'
 import Faq from '@/components/Home/Faq'
 import FactStrip from '@/components/Home/FactStrip'
 import ProcessSteps from '@/components/Home/ProcessSteps'
@@ -66,7 +69,7 @@ const Hero = () => (
           <motion.h1
             variants={fadeUp}
             transition={transition}
-            className="mt-6 text-[2.15rem] leading-[1.12] text-title sm:text-[2.75rem] lg:text-[3.25rem]"
+            className="mt-6 text-[1.75rem] leading-[1.15] text-title sm:text-[2.125rem] lg:text-[2.5rem]"
           >
             We design, build and maintain the{' '}
             {/* Two words in azure. The effect only works because it is rare —
@@ -254,11 +257,20 @@ const Home = () => (
       title="Published prices, Uganda market rates."
       description="Every package is a fixed scope with no hidden costs. Web, mobile and desktop application pricing is on the services page."
     >
+      {/* The switcher sits directly above the prices it changes, so the
+          relationship needs no explaining. */}
+      <Reveal className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <p className="text-sm text-dim">Show prices in</p>
+        <CurrencySwitcher />
+      </Reveal>
+
       <div className="grid gap-5 lg:grid-cols-3">
         {WEBSITE_PACKAGES.map((pkg, index) => (
           <PricingCard key={pkg.id} pkg={pkg} index={index} />
         ))}
       </div>
+
+      <CurrencyNote className="mt-6 max-w-2xl" />
 
       <Reveal className="mt-10">
         <Button to="/services" variant="secondary">
@@ -281,7 +293,7 @@ const Home = () => (
                   <FiLayers aria-hidden="true" className="h-3.5 w-3.5" />
                   Start a project
                 </p>
-                <h2 className="text-3xl leading-[1.15] text-title sm:text-4xl">
+                <h2 className="text-2xl leading-[1.2] text-title sm:text-3xl">
                   Have a digital project in mind?
                 </h2>
                 <p className="mt-5 max-w-xl text-base leading-relaxed text-body">

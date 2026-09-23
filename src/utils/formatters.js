@@ -1,15 +1,27 @@
 /**
  * Money and text formatting.
  *
- * Every UGX value rendered anywhere on the site goes through this module, so a
- * price range never gets hand-typed into JSX and drift from the catalogue is
+ * Every price rendered anywhere on the site goes through this module, so a
+ * range never gets hand-typed into JSX and drift from the catalogue is
  * impossible. See PROJECT_BRIEF.md §9.
  *
  * Price objects come from `utils/constants.js` and have the shape:
  *   { min: number, max?: number, openEnded?: boolean }
+ * and their numbers are always UGX, because UGX is what the company invoices.
+ *
+ * ── Other currencies ────────────────────────────────────────────────────────
+ * `formatPrice` takes an optional ISO `currency` code and a `rates` table from
+ * `utils/fx`. Pass them and the amount is converted and relabelled for
+ * display; pass nothing and you get the UGX figure exactly as the printed
+ * catalogue prints it. The default is UGX on purpose: a call site that has not
+ * thought about currency should show the real price, not a guess at a
+ * converted one.
  */
 
-const CURRENCY = 'UGX'
+import { BASE_CODE, convertFromUGX, withSymbol } from './currency.js'
+import { FALLBACK_RATES } from './fx.js'
+
+const CURRENCY = BASE_CODE
 
 const groupedNumber = new Intl.NumberFormat('en-UG', {
   maximumFractionDigits: 0,
@@ -65,24 +77,50 @@ const trimTrailingZero = (value) =>
  *   formatPrice({ min: 2800000, max: 4000000 })        -> "UGX 2,800,000 – 4,000,000"
  *   formatPrice({ min: 8e6, max: 2e7, openEnded: true },
  *               { compact: true })                     -> "8M – 20M+"
+ *   formatPrice({ min: 800000 }, { currency: 'KES' })  -> "KSh 26,000"
  *
- * The currency code is printed once, matching the catalogue's own typography.
- * An en dash (–) separates the bounds, not a hyphen.
+ * The symbol is printed once, matching the catalogue's own typography. An en
+ * dash (–) separates the bounds, not a hyphen.
  */
-export const formatPrice = (price, { compact = false, withCurrency = true } = {}) => {
+export const formatPrice = (
+  price,
+  {
+    compact = false,
+    withCurrency = true,
+    currency = BASE_CODE,
+    rates = FALLBACK_RATES,
+  } = {},
+) => {
   if (!price || typeof price.min !== 'number') return ''
 
   const format = compact ? formatCompact : formatAmount
-  const prefix = withCurrency ? `${CURRENCY} ` : ''
 
-  const hasRange = typeof price.max === 'number' && price.max !== price.min
-  const suffix = price.openEnded ? '+' : ''
+  /* Both bounds convert independently and are rounded to readable figures, so
+     a range stays a range rather than collapsing when the two ends round to
+     the same number. */
+  const min = convertFromUGX(price.min, currency, rates)
+  const max =
+    typeof price.max === 'number'
+      ? convertFromUGX(price.max, currency, rates)
+      : null
 
-  if (!hasRange) {
-    return `${prefix}${format(price.min)}${suffix}`
+  /* An unusable rate falls back to the real price rather than to an empty
+     cell. A visitor seeing UGX is mildly inconvenienced; a visitor seeing a
+     blank where a price should be assumes the site is broken. */
+  if (min === null) {
+    return currency === BASE_CODE
+      ? ''
+      : formatPrice(price, { compact, withCurrency })
   }
 
-  return `${prefix}${format(price.min)} – ${format(price.max)}${suffix}`
+  const hasRange = max !== null && max !== min
+  const suffix = price.openEnded ? '+' : ''
+
+  const amount = hasRange
+    ? `${format(min)} – ${format(max)}${suffix}`
+    : `${format(min)}${suffix}`
+
+  return withCurrency ? withSymbol(amount, currency) : amount
 }
 
 /**

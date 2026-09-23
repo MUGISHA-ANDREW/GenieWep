@@ -14,8 +14,8 @@ const NotFound = () => (
 
     <div className="flex min-h-[70vh] items-center justify-center bg-tint px-5 py-20">
       <div className="max-w-lg text-center">
-        <p className="text-7xl font-extrabold text-azure-500 md:text-8xl">404</p>
-        <h1 className="mt-4 text-3xl text-title">Page not found</h1>
+        <p className="text-5xl font-extrabold text-azure-500 md:text-6xl">404</p>
+        <h1 className="mt-4 text-2xl text-title">Page not found</h1>
         <p className="mt-4 text-base text-body">
           The page you are looking for may have moved or no longer exists.
         </p>

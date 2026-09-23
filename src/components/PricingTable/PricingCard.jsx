@@ -3,6 +3,7 @@ import { FiCheck } from 'react-icons/fi'
 
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
+import useCurrency from '@/hooks/useCurrency'
 import { buildWhatsAppLink } from '@/utils/constants'
 import { formatPrice, formatPriceWithUnit } from '@/utils/formatters'
 
@@ -18,6 +19,8 @@ import { formatPrice, formatPriceWithUnit } from '@/utils/formatters'
  * tallest, so the three do not step down the page.
  */
 export const PricingCard = ({ pkg, index = 0 }) => {
+  const { code: currency, rates } = useCurrency()
+
   const enquiry = buildWhatsAppLink(
     `Hello GenieWep Technologies, I am interested in the ${pkg.name}. Could you share more details?`,
   )
@@ -53,7 +56,7 @@ export const PricingCard = ({ pkg, index = 0 }) => {
             pkg.featured ? 'text-link' : 'text-title'
           }`}
         >
-          {formatPrice(pkg.price)}
+          {formatPrice(pkg.price, { currency, rates })}
         </p>
 
         <div className="my-6 h-px bg-line" />
@@ -87,7 +90,7 @@ export const PricingCard = ({ pkg, index = 0 }) => {
             <ul className="space-y-1">
               {pkg.clientPaysSeparately.map((extra) => (
                 <li key={extra.item} className="tabular text-sm text-body">
-                  {extra.item}: {formatPriceWithUnit(extra.price, extra.unit)}
+                  {extra.item}: {formatPriceWithUnit(extra.price, extra.unit, { currency, rates })}
                 </li>
               ))}
             </ul>

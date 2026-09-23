@@ -48,7 +48,7 @@ export const ProcessSteps = () => (
           <p className="tabular mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-link">
             {stage.step}
           </p>
-          <h3 className="mb-3 text-lg font-bold text-title">{stage.title}</h3>
+          <h3 className="mb-3 text-base font-bold text-title">{stage.title}</h3>
           <p className="mx-auto max-w-xs text-sm leading-relaxed text-body">
             {stage.body}
           </p>

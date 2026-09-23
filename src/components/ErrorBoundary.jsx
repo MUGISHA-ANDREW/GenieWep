@@ -28,7 +28,7 @@ export class ErrorBoundary extends Component {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-5 py-20">
         <div className="max-w-md text-center">
-          <h1 className="mb-3 text-2xl text-title">Something went wrong</h1>
+          <h1 className="mb-3 text-xl text-title">Something went wrong</h1>
           <p className="mb-6 text-sm text-body">
             Sorry, this page failed to load. Please refresh, or get in touch and we
             will help you directly.

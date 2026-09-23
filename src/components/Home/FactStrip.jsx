@@ -31,7 +31,7 @@ export const FactStrip = () => (
               <div className="min-w-0">
                 <dt className="sr-only">{fact.label}</dt>
                 <dd>
-                  <span className="tabular block text-xl font-bold leading-tight text-title">
+                  <span className="tabular block text-lg font-bold leading-tight text-title">
                     {fact.value}
                   </span>
                   <span className="mt-0.5 block text-sm text-dim">

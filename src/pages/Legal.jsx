@@ -41,7 +41,7 @@ export const Legal = ({ id }) => {
             <p className="eyebrow mb-5">
               Legal
             </p>
-            <h1 className="max-w-3xl text-4xl text-white md:text-5xl">{doc.title}</h1>
+            <h1 className="max-w-3xl text-3xl text-white md:text-4xl">{doc.title}</h1>
             <p className="mt-5 max-w-2xl text-base text-surface-200 md:text-lg">
               {doc.intro}
             </p>
@@ -63,7 +63,7 @@ export const Legal = ({ id }) => {
                 margin="-40px"
                 className="mb-10 last:mb-0"
               >
-                <h2 className="mb-3 text-xl text-title md:text-2xl">
+                <h2 className="mb-3 text-lg text-title md:text-xl">
                   {section.heading}
                 </h2>
                 {section.body.map((paragraph) => (
@@ -79,7 +79,7 @@ export const Legal = ({ id }) => {
 
             {/* Questions about a policy go to a person, not into the void. */}
             <Reveal margin="-40px" className="mt-14 border-t border-line pt-8">
-              <h2 className="mb-3 text-xl text-title">Questions about this?</h2>
+              <h2 className="mb-3 text-lg text-title">Questions about this?</h2>
               <p className="text-base leading-relaxed text-body">
                 Email{' '}
                 <a

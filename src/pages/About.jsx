@@ -53,7 +53,7 @@ const About = () => (
     <Section>
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <Reveal from="left">
-          <h2 className="text-3xl text-title md:text-4xl">
+          <h2 className="text-2xl text-title md:text-3xl">
             Five years of building software that works
           </h2>
           <p className="mt-4 text-base leading-relaxed text-body">
@@ -182,7 +182,7 @@ const About = () => (
             <p className="eyebrow mb-5">
               Certifications
             </p>
-            <h2 className="text-3xl text-navy-900 md:text-4xl">
+            <h2 className="text-2xl text-navy-900 md:text-3xl">
               Accredited to international standards
             </h2>
             <p className="mt-4 text-base leading-relaxed text-navy-700 md:text-lg">
@@ -235,7 +235,7 @@ const About = () => (
     <section className="bg-navy-900">
       <div className="container-page py-16">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl text-white">Work with us</h2>
+          <h2 className="text-2xl text-white sm:text-3xl">Work with us</h2>
           <p className="mt-4 text-base text-surface-200">
             Tell us about your organization and what you need built.
           </p>

@@ -4,6 +4,9 @@ import { FaWhatsapp } from 'react-icons/fa'
 import { FiArrowRight } from 'react-icons/fi'
 
 import Button from '@/components/Button/Button'
+import CurrencySwitcher, {
+  CurrencyNote,
+} from '@/components/Currency/CurrencySwitcher'
 import PricingCard from '@/components/PricingTable/PricingCard'
 import PricingTable from '@/components/PricingTable/PricingTable'
 import Section from '@/components/Section'
@@ -24,7 +27,7 @@ const CategoryPanel = ({ category }) => (
     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
   >
     <div className="mb-8">
-      <h3 className="text-2xl text-title">{category.heading}</h3>
+      <h3 className="text-xl text-title">{category.heading}</h3>
       {category.note && <p className="mt-2 text-sm text-dim">{category.note}</p>}
     </div>
 
@@ -60,7 +63,7 @@ const Services = () => {
           <p className="eyebrow mb-5">
             Services & Pricing
           </p>
-          <h1 className="max-w-3xl text-4xl text-white md:text-5xl">
+          <h1 className="max-w-3xl text-3xl text-white md:text-4xl">
             Clear packages, Uganda market rates
           </h1>
           <p className="mt-5 max-w-2xl text-base text-surface-200 md:text-lg">
@@ -117,6 +120,11 @@ const Services = () => {
           })}
         </div>
 
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-dim">Show prices in</p>
+          <CurrencySwitcher />
+        </div>
+
         <div
           role="tabpanel"
           id={`panel-${activeCategory.id}`}
@@ -125,9 +133,11 @@ const Services = () => {
           <CategoryPanel category={activeCategory} />
         </div>
 
-        <p className="mt-8 text-xs text-dim">
-          Prices are quoted in Ugandan Shillings (UGX) and reflect our 2026 rates.
-          Domain and hosting are billed separately where indicated.
+        <CurrencyNote className="mt-8" />
+
+        <p className="mt-4 text-sm text-dim">
+          Every price reflects our 2026 catalogue. Domain and hosting are billed
+          separately where indicated.
         </p>
       </Section>
 
@@ -149,7 +159,7 @@ const Services = () => {
       <section className="bg-navy-900">
         <div className="container-page py-16">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl text-white">Not sure which package fits?</h2>
+            <h2 className="text-2xl text-white sm:text-3xl">Not sure which package fits?</h2>
             <p className="mt-4 text-base text-surface-200">
               Send us a short description of your project and we will recommend the
               right scope, with a fixed price.

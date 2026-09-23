@@ -10,15 +10,21 @@ import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 
 import App from '@/App'
+import { CurrencyProvider } from '@/context/CurrencyProvider'
 import { ThemeProvider } from '@/context/ThemeProvider'
 import { TEAM } from '@/utils/constants'
 
+/* The provider stack mirrors main.jsx. If a provider is added there and not
+   here, every route test fails with a "must be used inside" throw rather than
+   with the assertion that actually matters. */
 const renderAt = (route) =>
   render(
     <ThemeProvider>
-      <MemoryRouter initialEntries={[route]}>
-        <App />
-      </MemoryRouter>
+      <CurrencyProvider>
+        <MemoryRouter initialEntries={[route]}>
+          <App />
+        </MemoryRouter>
+      </CurrencyProvider>
     </ThemeProvider>,
   )
 

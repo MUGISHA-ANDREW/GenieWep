@@ -76,7 +76,7 @@ export const Section = ({
 
             {title && (
               <h2
-                className={`text-3xl leading-[1.15] sm:text-4xl lg:text-[2.6rem] ${
+                className={`text-2xl leading-[1.2] sm:text-3xl lg:text-[2rem] ${
                   isDark ? 'text-white' : 'text-title'
                 }`}
               >

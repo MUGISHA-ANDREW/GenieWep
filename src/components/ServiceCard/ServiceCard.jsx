@@ -33,7 +33,7 @@ export const ServiceCard = ({ service, index = 0 }) => (
         <Icon name={service.icon} className="h-6 w-6" />
       </span>
 
-      <h3 className="mb-2 text-lg font-bold text-title">{service.title}</h3>
+      <h3 className="mb-2 text-base font-bold text-title">{service.title}</h3>
 
       <p className="mb-5 flex-1 text-sm leading-relaxed text-body">
         {service.description}
