@@ -22,7 +22,7 @@ const fieldClasses = (hasError) =>
   `${FIELD_BASE} ${
     hasError
       ? 'border-err-line focus:border-err-text'
-      : 'border-line-strong focus:border-accent-500'
+      : 'border-line-strong focus:border-azure-500'
   }`
 
 /** Inline error text, wired to its input through aria-describedby. */
@@ -130,7 +130,7 @@ export const ContactForm = () => {
         {pending ? (
           <span
             aria-hidden="true"
-            className="mx-auto mb-4 block h-12 w-12 animate-spin rounded-full border-4 border-line border-t-accent-500"
+            className="mx-auto mb-4 block h-12 w-12 animate-spin rounded-full border-4 border-line border-t-azure-500"
           />
         ) : delivered ? (
           <FiCheckCircle

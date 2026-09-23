@@ -17,8 +17,7 @@
       content="GenieWep Technologies builds websites, web apps, mobile apps and desktop software for businesses, schools, NGOs, SACCOs and tourism companies in Uganda. 5 years of experience."
     />
     <meta name="author" content="GenieWep Technologies" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#071726" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#090f16" />
 
     <!--
       Resolve the theme before first paint. Without this the page renders in the
@@ -30,15 +29,13 @@
       (function () {
         try {
           var stored = window.localStorage.getItem('geniewep-theme')
-          var theme =
-            stored === 'light' || stored === 'dark'
-              ? stored
-              : window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light'
-          document.documentElement.dataset.theme = theme
+          // Dark is the brand default. Only an explicit stored choice of
+          // 'light' opts out of it, so a first-time visitor always lands on
+          // the dark identity regardless of their OS setting.
+          document.documentElement.dataset.theme =
+            stored === 'light' ? 'light' : 'dark'
         } catch (error) {
-          document.documentElement.dataset.theme = 'light'
+          document.documentElement.dataset.theme = 'dark'
         }
       })()
     </script>
@@ -67,7 +64,7 @@
     <meta name="twitter:image" content="https://geniewep.com/og-image.jpg" />
 
     <!--
-      Fonts: one self-hosted variable woff2, covering weight 400–800. See
+      Fonts: one self-hosted variable woff2, covering weight 400–700. See
       src/styles/fonts.css for why this file and no others.
 
       Preloaded because the hero headline is the LCP element and would
@@ -81,7 +78,7 @@
     -->
     <link
       rel="preload"
-      href="/fonts/open-sans-latin-var.woff2"
+      href="/fonts/instrument-sans-latin-var.woff2"
       as="font"
       type="font/woff2"
       crossorigin

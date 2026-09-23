@@ -1,8 +1,11 @@
-/* Base element styles and shared component classes. */
+/* Base element styles and the shared component classes. */
 
 @layer base {
-  * {
+  html {
     scroll-behavior: smooth;
+    /* The header is sticky, so an in-page anchor would otherwise land with its
+       heading tucked underneath it. 6rem clears the header plus a little air. */
+    scroll-padding-top: 6rem;
   }
 
   body {
@@ -30,128 +33,263 @@
     text-wrap: pretty;
   }
 
-  /* Visible keyboard focus everywhere (WCAG 2.1 AA, brief §13) */
+  /* Visible keyboard focus everywhere (WCAG 2.1 AA) */
   :focus-visible {
-    outline: 3px solid var(--color-accent-500);
-    outline-offset: 2px;
-    border-radius: 2px;
+    outline: 2px solid var(--color-azure-500);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 
   /*
    * Respect reduced-motion preferences.
    *
-   * This covers CSS transitions and animations only. Framer Motion drives its
-   * animations from JavaScript, so it is silenced separately: globally by
+   * This covers CSS transitions and animations only — the orbiting globe, the
+   * tech marquee, the pin pulse. Framer Motion drives its animations from
+   * JavaScript, so it is silenced separately: globally by
    * `MotionConfig reducedMotion="user"` in App.jsx, and per-component by
-   * `useReducedMotion()` in `components/Reveal.jsx`, `Counter.jsx` and
-   * `ScrollProgress.jsx`, which skip their motion wrappers altogether rather
-   * than animating to the same place. CSS alone cannot stop either.
+   * `useReducedMotion()` in Reveal, Counter and ScrollProgress, which skip
+   * their motion wrappers altogether. CSS alone cannot stop either.
    */
   @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
     *,
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
     }
   }
 }
 
 @layer components {
-  /* Page width container, consistent across every section */
+  /* Page width container, consistent across every section. */
   .container-page {
     width: 100%;
     max-width: 80rem;
     margin-inline: auto;
-    padding-inline: 1.25rem;
+    padding-inline: 1rem;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
     .container-page {
       padding-inline: 2rem;
     }
   }
 
   /*
-   * The accent rule that sits above section headings in the catalogue.
-   * It runs azure → aqua: at 56px wide the gradient is read as a single richer
-   * blue rather than as two colours, which is the cheapest way to make the
-   * brand pair present on every section without adding a competing hue.
+   * The label that opens every section: a small azure capsule with an icon.
+   *
+   * A pill rather than a bare line of small caps, because on a dark page an
+   * unanchored 12px label reads as debris — the outline gives it somewhere to
+   * sit. It is the only element on the site that is azure *and* not
+   * clickable, which works because it is always directly above a heading and
+   * never looks like a button.
    */
-  .accent-rule::before {
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-azure-500) 32%, transparent);
+    background-color: color-mix(in srgb, var(--color-azure-500) 10%, transparent);
+    padding: 0.375rem 0.875rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--color-azure-600);
+  }
+
+  [data-theme='dark'] .eyebrow,
+  :root:not([data-theme='light']) .eyebrow {
+    color: var(--color-azure-400);
+  }
+
+  /*
+   * A raised surface: card, panel, popover.
+   *
+   * Border plus an inset top highlight, not a heavy drop shadow. On the dark
+   * theme the shadow is invisible anyway, and the 1px light edge along the top
+   * is what actually makes the surface read as lifted — the same trick a
+   * physical bevel uses.
+   */
+  .surface {
+    background-color: var(--c-card);
+    border: 1px solid var(--c-line);
+    box-shadow: var(--shadow-surface);
+  }
+
+  .surface-hover {
+    transition: border-color 0.25s var(--ease-brand),
+      box-shadow 0.25s var(--ease-brand), transform 0.25s var(--ease-brand);
+  }
+
+  .surface-hover:hover {
+    border-color: color-mix(in srgb, var(--color-azure-500) 40%, transparent);
+    box-shadow: var(--shadow-surface-lg);
+    transform: translateY(-2px);
+  }
+
+  /*
+   * The floating pill navigation.
+   *
+   * A translucent, blurred capsule rather than a full-width bar: it sits over
+   * the page instead of capping it, which is what keeps the hero feeling
+   * full-height without actually being full-height.
+   */
+  .nav-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--c-line) 80%, transparent);
+    background-color: color-mix(in srgb, var(--c-chip) 55%, transparent);
+    padding: 0.25rem 0.375rem;
+    box-shadow: var(--shadow-surface);
+    backdrop-filter: blur(12px);
+  }
+
+  /*
+   * The ambient wash behind the hero and the closing CTA.
+   *
+   * Two soft radial pools of the brand hue — a brighter azure from the
+   * top-left and a deeper one from the bottom-right — at low alpha. They give
+   * a flat dark page depth without an image to download, and they are the only
+   * gradients on the entire site.
+   */
+  .aurora {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .aurora::before {
     content: '';
-    display: block;
-    width: 3.5rem;
-    height: 4px;
-    border-radius: 999px;
-    background-image: linear-gradient(
-      90deg,
-      var(--color-accent-500),
-      var(--color-aqua-500)
-    );
-    margin-bottom: 1rem;
-  }
-
-  .accent-rule-center::before {
-    margin-inline: auto;
-  }
-
-  /* Dark bands keep a brighter rule so it does not disappear into the ocean */
-  .accent-rule-on-dark::before {
-    background-image: linear-gradient(
-      90deg,
-      var(--color-accent-400),
-      var(--color-aqua-300)
-    );
-  }
-
-  /*
-   * The dark brand band behind page heroes and closing CTAs.
-   *
-   * Flat `bg-steel-800` across a full-bleed band reads as a solid slab; the
-   * two radial washes lift the top-left corner toward azure and the bottom-
-   * right toward aqua, so the band has depth without any image to download.
-   * They sit at 20%/14% alpha because anything stronger starts competing with
-   * the white headline for attention.
-   */
-  .band-dark {
-    background-color: var(--color-steel-800);
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background-image: radial-gradient(
-        70rem 40rem at 8% -20%,
-        rgb(63 182 238 / 0.2),
-        transparent 60%
+        60rem 34rem at 12% -10%,
+        rgb(49 133 216 / 0.16),
+        transparent 62%
       ),
       radial-gradient(
-        55rem 35rem at 100% 120%,
-        rgb(18 169 155 / 0.14),
+        52rem 32rem at 92% 108%,
+        rgb(24 87 149 / 0.24),
+        transparent 60%
+      );
+  }
+
+  [data-theme='light'] .aurora::before {
+    background-image: radial-gradient(
+        60rem 34rem at 12% -10%,
+        rgb(49 133 216 / 0.09),
         transparent 62%
+      ),
+      radial-gradient(
+        52rem 32rem at 92% 108%,
+        rgb(24 87 149 / 0.08),
+        transparent 60%
       );
   }
 
   /*
-   * The light counterpart to `.band-dark`: near-white in *both* themes.
-   *
-   * It exists for the certification badges. Third-party marks come with their
-   * colours fixed — the ANAB mark carries its own white field, and ISO 45001 is
-   * a mid blue — so a band that turns into deep ocean in dark mode would leave
-   * a white slab floating in it and the blue unreadable. Like `.band-dark`,
-   * this one is a fixed surface by design, so anything placed on it must use
-   * the fixed `steel-*` text ramp rather than `--c-title` / `--c-body`.
+   * Dotted grid, used behind the hero globe. Small navy dots on 1.5rem
+   * centres, masked to fade out before they reach any edge — a repeating
+   * pattern that stops abruptly reads as a bug.
    */
-  .band-light {
-    background-color: var(--color-surface-50);
+  .dot-grid {
     background-image: radial-gradient(
-        60rem 30rem at 12% -30%,
-        rgb(10 123 184 / 0.07),
-        transparent 60%
-      ),
-      radial-gradient(
-        45rem 28rem at 100% 130%,
-        rgb(18 169 155 / 0.07),
-        transparent 62%
-      );
+      var(--c-line) 1px,
+      transparent 1px
+    );
+    background-size: 1.5rem 1.5rem;
+    -webkit-mask-image: radial-gradient(
+      closest-side,
+      black,
+      transparent
+    );
+    mask-image: radial-gradient(closest-side, black, transparent);
+  }
+
+  /*
+   * Azure-filled icon tile with its own glow. Used once per service card, and
+   * the glow is a separate blurred layer behind the tile rather than a
+   * box-shadow, so it can be much wider and softer than a shadow would allow.
+   */
+  .tile-azure {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background-color: color-mix(in srgb, var(--color-azure-500) 12%, transparent);
+    color: var(--color-azure-500);
+    transition: background-color 0.25s var(--ease-brand),
+      color 0.25s var(--ease-brand);
+  }
+
+  [data-theme='dark'] .tile-azure,
+  :root:not([data-theme='light']) .tile-azure {
+    color: var(--color-azure-400);
+  }
+
+  .group:hover .tile-azure {
+    background-color: var(--color-azure-500);
+    color: #ffffff;
+    box-shadow: var(--shadow-azure-lg);
+  }
+
+  /*
+   * The technology strip.
+   *
+   * The track holds the list twice and slides exactly half its own width, so
+   * the second copy lands where the first started and the loop is seamless.
+   * `mask-image` fades both ends into the page instead of letting cards pop
+   * in and out at a hard edge.
+   *
+   * Hovering pauses it — a strip that keeps moving while you are trying to
+   * read one of its labels is actively hostile.
+   */
+  .marquee {
+    /* The track is deliberately twice the list width, so this has to clip it.
+       Without `overflow: hidden` the extra width becomes horizontal page
+       scroll on every viewport. */
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 6rem,
+      black calc(100% - 6rem),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 6rem,
+      black calc(100% - 6rem),
+      transparent
+    );
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: var(--animate-marquee);
+  }
+
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
   }
 
   /*
@@ -159,16 +297,12 @@
    * time — a whole gradient paragraph is unreadable, and the effect only lands
    * when it is rare.
    */
-  .text-brand-gradient {
+  .text-azure-gradient {
     background-image: linear-gradient(
       100deg,
-      var(--color-accent-300),
-      var(--color-aqua-300),
-      var(--color-accent-300)
+      var(--color-azure-400),
+      var(--color-azure-600)
     );
-    /* Wider than the text so `animate-pan` has somewhere to travel. A stop is
-       repeated above for the same reason: the slide has to loop seamlessly. */
-    background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -187,5 +321,11 @@
   .skip-link:focus {
     left: 1rem;
     top: 1rem;
+  }
+
+  /* Numeric columns — prices, stats. Tabular figures so digits line up down a
+     column instead of dancing. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }

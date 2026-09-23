@@ -61,9 +61,9 @@ const Contact = () => (
       path="/contact"
     />
 
-    <section className="band-dark">
+    <section className="bg-navy-900">
       <div className="container-page py-16 md:py-20">
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-accent-400">
+        <p className="eyebrow mb-5">
           Contact
         </p>
         <h1 className="max-w-3xl text-4xl text-white md:text-5xl">
@@ -81,7 +81,7 @@ const Contact = () => (
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           {/* Channels */}
           <aside>
-            <h2 className="accent-rule text-2xl text-title">Reach us directly</h2>
+            <h2 className="text-2xl text-title">Reach us directly</h2>
             <p className="mt-3 text-sm leading-relaxed text-body">
               Prefer to talk first? Use whichever channel suits you.
             </p>

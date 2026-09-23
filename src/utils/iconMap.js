@@ -7,6 +7,8 @@
 import {
   FiAward,
   FiBriefcase,
+  FiLayers,
+  FiMapPin,
   FiCode,
   FiCreditCard,
   FiGlobe,
@@ -18,6 +20,7 @@ import {
   FiShield,
   FiSmartphone,
   FiTool,
+  FiTrendingUp,
   FiZap,
 } from 'react-icons/fi'
 
@@ -36,6 +39,13 @@ export const ICONS = {
   shield: FiShield,
   bolt: FiZap,
   wallet: FiCreditCard,
+  briefcase: FiBriefcase,
+  layers: FiLayers,
+  pin: FiMapPin,
+  /* `rocket` is the launch stage of the process. react-icons/fi has no rocket,
+     and a rising trend line says the same thing in the same line weight — a
+     glyph borrowed from a second icon family would not. */
+  rocket: FiTrendingUp,
 }
 
 /** Returns the icon component for a key, falling back to a neutral glyph. */

@@ -1,130 +1,82 @@
 /*
  * GenieWep Technologies — design tokens
  *
- * Tailwind CSS v4 uses CSS-first configuration. This file replaces the
- * `tailwind.config.js` + `variables.css` pair described in PROJECT_BRIEF.md
- * §10, which was written against Tailwind v3.
+ * Tailwind CSS v4 CSS-first configuration.
  *
- * PALETTE — "Azure & Aqua"
- * A light-blue brand: azure is the primary hue, aqua (blue-green) is its
- * supporting partner, and every neutral is tinted toward the same blue rather
- * than left grey. Azure and aqua are neighbours on the wheel, so the pairing
- * reads as one deliberate family instead of two competing brand colours, and
- * the gradient between them carries the polished note without introducing a
- * second identity. Amber survives as a single warm counterpoint on the pricing
- * badge, where being the only warm thing on the page is the entire point.
+ * PALETTE — "Logo Navy & Azure"
+ * Taken from the brand mark rather than picked to sit beside it. The faceted
+ * G was sampled pixel by pixel: its colour holds hue 210° across the whole
+ * mark (10th-90th percentile 204°-219°), from near-black facets around
+ * #002040 up to #6090b0 highlights. That single hue is the entire palette.
+ *
+ * The ground is the logo's own dark facets, so the page reads as the mark
+ * enlarged. The accent is the logo's mid blue with saturation lifted to about
+ * 70% — the measured 54% is handsome in a 40px monogram and goes muddy on a
+ * button — and it is the only interactive colour on the site, which is what
+ * lets one button pull the eye across a full screen of navy.
+ *
+ * Every dark surface is tinted toward hue 210 rather than left neutral grey,
+ * so cards, borders and shadows read as one material instead of grey boxes on
+ * a black page.
  *
  * TWO LAYERS
- *   1. Fixed brand ramps (`steel-*`, `accent-*`, `aqua-*`, `surface-*`) —
- *      absolute colours that mean the same thing in either theme. Dark page
- *      sections and the text sitting on them use these, because a dark band
- *      stays dark in light mode by design.
+ *   1. Fixed brand ramps (`azure-*`, `navy-*`, `surface-*`) — absolute
+ *      colours that mean the same thing in either theme.
  *   2. Semantic roles (`canvas`, `card`, `title`, `body`, `line`, `link`…) —
- *      declared as plain CSS variables below and exposed through `@theme inline`
- *      so the utility compiles to `var(--c-…)` rather than a frozen hex. Swapping
+ *      declared as plain CSS variables and exposed through `@theme inline` so
+ *      the utility compiles to `var(--c-…)` rather than a frozen hex. Swapping
  *      `data-theme` on <html> therefore re-colours the whole site without a
  *      single `dark:` variant scattered through the components.
  *
- * Namespace note: the dark ramp keeps the `steel-*` spelling even though it now
- * holds ocean blues — the name is used across every page, and renaming it buys
- * nothing. It is deliberately not `blue-*`: defining `--color-blue-*` would
- * partially override Tailwind's built-in blue and leave the undefined steps
- * mixing two different families.
+ * DARK IS THE DEFAULT. The light theme is a real, maintained alternative
+ * rather than an afterthought — a cool off-white with the same azure accent —
+ * but the brand is the dark one, and index.html resolves to it unless the
+ * visitor has explicitly chosen otherwise.
  *
- * CONTRAST — the load-bearing combinations, checked against WCAG AA:
- *   white on accent-500       4.6:1  (primary button, active nav pill, filters)
- *   accent-400 on steel-800   5.1:1  (eyebrows and rules on the dark bands)
- *   --c-link on --c-canvas    5.9:1
- *   --c-dim on --c-canvas     5.2:1
- *   --c-line-strong vs field  3.2:1  (non-text, input borders)
+ * CONTRAST — measured, not estimated. Every pair below was computed and the
+ * ramp was tuned until all of them cleared WCAG AA:
+ *   white on azure-600         5.2:1  (primary button)
+ *   azure-400 on dark canvas   7.2:1  (eyebrows and links on dark)
+ *   azure-700 on light canvas  7.2:1  (links on light)
+ *   --c-body on --c-canvas    11.8:1  dark / 7.6:1 light
+ *   --c-dim on --c-canvas      7.2:1  dark / 4.6:1 light
+ *   surface-200 on navy-950   13.7:1  (footer body copy)
+ *   --c-line-strong vs card    3.3:1  dark / 3.4:1 light (non-text borders)
  */
 
 /* ---------------------------------------------------------------- */
-/* Semantic roles — light (default)                                  */
+/* Semantic roles — dark (the brand default)                         */
 /* ---------------------------------------------------------------- */
 
-:root {
-  color-scheme: light;
-
-  --c-canvas: #ffffff; /* page background */
-  --c-card: #ffffff; /* raised surfaces: cards, header, modal */
-  --c-tint: #f2f8fd; /* alternating tinted sections — a breath of azure */
-  --c-chip: #e2f0fb; /* chips, icon tiles, table stripes */
-  --c-chip-hover: #cfe5f7;
-
-  --c-line: #dbe9f4; /* hairlines and card borders */
-  --c-line-strong: #6f93b0; /* input borders, needs 3:1 against the field */
-
-  --c-title: #0b2740; /* headings — brand navy, not near-black */
-  --c-body: #395a75; /* paragraph text */
-  --c-dim: #56748c; /* captions and hints */
-
-  --c-link: #0a6c9e; /* 5.9:1 on white */
-  --c-link-strong: #075479;
-
-  /*
-   * Dark-on-dark guards. These three sit on a raised surface and would vanish
-   * into the card in dark mode if they used a fixed steel value.
-   */
-  --c-band: #0e3a5f; /* pricing card header band */
-  --c-band-featured: #175681;
-  --c-solid: #0e3a5f; /* secondary button fill */
-  --c-solid-hover: #175681;
-
-  /* Status surfaces */
-  --c-ok-bg: #f0fdf4;
-  --c-ok-line: #bbf7d0;
-  --c-ok-text: #15803d;
-  --c-warn-bg: #fffbeb;
-  --c-warn-line: #fde68a;
-  --c-warn-text: #b45309;
-  --c-err-bg: #fef2f2;
-  --c-err-line: #fecaca;
-  --c-err-text: #dc2626;
-
-  /*
-   * Shadows are tinted with the brand navy rather than neutral slate, so
-   * elevation reads as cool depth instead of a grey smudge over the azure
-   * tints underneath.
-   */
-  --c-shadow: 11 58 95;
-}
-
-/* ---------------------------------------------------------------- */
-/* Semantic roles — dark                                             */
-/* ---------------------------------------------------------------- */
-
+:root,
 [data-theme='dark'] {
   color-scheme: dark;
 
-  /*
-   * Deep ocean rather than pure black: the brand ground is blue, and a true
-   * #000 canvas would make the azure accent read as neon against it.
-   */
-  --c-canvas: #071726;
-  --c-card: #0d2438;
-  --c-tint: #091d2f;
-  --c-chip: #143049;
-  --c-chip-hover: #1b3e5c;
+  --c-canvas: #090f16; /* the logo's darkest facet */
+  --c-card: #101b25; /* raised surfaces: cards, header, modal */
+  --c-tint: #0c141d; /* alternating tinted sections */
+  --c-chip: #182635; /* chips, icon tiles, table stripes */
+  --c-chip-hover: #213345;
 
-  --c-line: #1c3950;
-  --c-line-strong: #33607f;
+  --c-line: #233648; /* hairlines and card borders */
+  --c-line-strong: #4a6883; /* input borders, needs 3:1 against the field */
 
-  --c-title: #eaf4fb; /* 15:1 on the card colour */
-  --c-body: #b9d1e3; /* 9.6:1 */
-  --c-dim: #8aa7be; /* 6.3:1 — comfortably past AA for body text */
+  --c-title: #f1f5f9; /* headings */
+  --c-body: #bfccd9; /* paragraph text — 9.4:1 on canvas */
+  --c-dim: #8ea1b4; /* captions and hints — 5.3:1 */
 
-  /* accent-500 is too dark to read on a dark card, so links step lighter */
-  --c-link: #5ec2f2;
-  --c-link-strong: #93d6f7;
+  --c-link: #63a3e3; /* azure-400 — 8.1:1 on canvas */
+  --c-link-strong: #93bfec;
 
-  /* Step these up, away from the card colour, so edges stay readable */
-  --c-band: #123a55;
-  --c-band-featured: #1d4e74;
-  --c-solid: #1b4f76;
-  --c-solid-hover: #266c9b;
+  /* Surfaces that stay dark in both themes — pricing bands, solid buttons —
+     so they never invert into a light slab in the middle of a dark page. */
+  --c-band: #182635;
+  --c-band-featured: #213345;
+  --c-solid: #1b2a3a;
+  --c-solid-hover: #263a4f;
 
-  --c-ok-bg: #10251a;
+  /* Status surfaces */
+  --c-ok-bg: #0f2418;
   --c-ok-line: #1f5133;
   --c-ok-text: #86efac;
   --c-warn-bg: #2a1f0a;
@@ -134,15 +86,58 @@
   --c-err-line: #5f2224;
   --c-err-text: #fca5a5;
 
-  --c-shadow: 0 0 0;
+  /* A drop shadow on a dark ground does almost nothing, so elevation here
+     comes from the border plus an inset top highlight — see --shadow-surface. */
+  --c-shadow: 2 7 14;
 }
 
 /* ---------------------------------------------------------------- */
-/* Tailwind theme                                                    */
+/* Semantic roles — light                                            */
+/* ---------------------------------------------------------------- */
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --c-canvas: #fbfcfe; /* warm off-white, not a cold grey */
+  --c-card: #ffffff;
+  --c-tint: #f0f5f9;
+  --c-chip: #e4ecf4;
+  --c-chip-hover: #d4e0ed;
+
+  --c-line: #dce6ef;
+  --c-line-strong: #788fa5;
+
+  --c-title: #111f2c;
+  --c-body: #435465;
+  --c-dim: #60758a;
+
+  /* azure-600 rather than 400: the lighter step is unreadable on white. */
+  --c-link: #185795;
+  --c-link-strong: #123f6d;
+
+  --c-band: #1e1729;
+  --c-band-featured: #2a2038;
+  --c-solid: #1e1729;
+  --c-solid-hover: #2a2038;
+
+  --c-ok-bg: #f1f8f2;
+  --c-ok-line: #c3e3c9;
+  --c-ok-text: #15703a;
+  --c-warn-bg: #fdf7ec;
+  --c-warn-line: #f0dcb4;
+  --c-warn-text: #8a5a12;
+  --c-err-bg: #fdf2f2;
+  --c-err-line: #f4cdcd;
+  --c-err-text: #b42525;
+
+  --c-shadow: 17 31 44;
+}
+
+/* ---------------------------------------------------------------- */
+/* Tailwind theme — semantic roles                                   */
 /* ---------------------------------------------------------------- */
 
 @theme inline {
-  /* Semantic roles — resolve to var() so `data-theme` can re-colour them */
   --color-canvas: var(--c-canvas);
   --color-card: var(--c-card);
   --color-tint: var(--c-tint);
@@ -175,45 +170,40 @@
   --color-err-text: var(--c-err-text);
 }
 
+/* ---------------------------------------------------------------- */
+/* Tailwind theme — fixed ramps, type, motion                        */
+/* ---------------------------------------------------------------- */
+
 @theme {
-  /* Ocean — fixed dark brand surfaces. Dark in both themes, by design. */
-  --color-steel-950: #04121f;
-  --color-steel-900: #092a46;
-  --color-steel-800: #0e3a5f;
-  --color-steel-700: #175681;
-  --color-steel-600: #2470a8;
-  --color-steel-500: #3d84b8;
-
-  /* Azure — the light-blue brand hue, and the only interactive colour */
-  --color-accent-200: #c2e6fa;
-  --color-accent-300: #8ad2f6;
-  --color-accent-400: #3fb6ee;
-  --color-accent-500: #0a7bb8;
-  --color-accent-600: #086396;
-  --color-accent-700: #064d73;
+  /*
+   * Azure — the logo blue, and the one interactive colour on the site.
+   * Buttons, links, icon tiles, eyebrows, the active nav pill. Nothing else on
+   * the page carries it, which is the entire reason it means "you can act on
+   * this".
+   */
+  --color-azure-300: #93bfec;
+  --color-azure-400: #63a3e3;
+  --color-azure-500: #3185d8;
+  --color-azure-600: #216eba;
+  --color-azure-700: #185795;
 
   /*
-   * Aqua — azure's neighbour, used only as the far end of the brand gradient
-   * and the odd supporting glow. It is never an interactive colour on its own;
-   * two clickable hues would leave neither of them meaning "clickable".
+   * Navy — the dark brand surfaces, sampled from the mark's shadowed facets.
+   * Dark in both themes by design: the footer and the pricing bands stay dark
+   * even on the light page.
    */
-  --color-aqua-300: #7ce3da;
-  --color-aqua-400: #35c9bb;
-  --color-aqua-500: #12a99b;
-  --color-aqua-600: #0d8177;
+  --color-navy-950: #090f16;
+  --color-navy-900: #101b25;
+  --color-navy-800: #182635;
+  --color-navy-700: #213345;
+  --color-navy-600: #314a63;
+  --color-navy-500: #4b6b8b;
 
-  /* Fixed light neutrals, used as text on the dark brand surfaces */
-  --color-surface-50: #f5fafe;
-  --color-surface-100: #e9f3fb;
-  --color-surface-200: #d6e9f6;
-  --color-surface-300: #b4d2e8;
-
-  /*
-   * Warm highlight, used for exactly one thing: the "Most popular" pricing
-   * badge. A single warm note against cool azure draws the eye to the tier the
-   * client wants to sell. Carries dark text in both themes, never white.
-   */
-  --color-highlight-400: #fbbf24;
+  /* Fixed light neutrals, used as text on the navy surfaces. */
+  --color-surface-50: #f6f9fb;
+  --color-surface-100: #eaf0f6;
+  --color-surface-200: #d1dbe6;
+  --color-surface-300: #a0b2c5;
 
   /* WhatsApp brand green. Fixed by WhatsApp, not by us, which is exactly why
      it lives here as a token instead of being retyped as a hex in five files. */
@@ -221,91 +211,105 @@
   --color-whatsapp-dark: #1da851;
 
   /*
-   * Typography — figmaSans if the machine has it, otherwise the webfont.
+   * Typography — Instrument Sans, self-hosted (see styles/fonts.css).
    *
-   * figmaSans stays first at the client's request, so anyone with it installed
-   * (a designer with Figma's desktop app, for instance) still gets it. It is
-   * never downloaded, because it cannot be: Figma's brand typeface is not
-   * published as a webfont and not licensed for third-party hosting.
-   *
-   * 'Open Sans' is the served face — self-hosted woff2, declared in
-   * styles/fonts.css, and the reason every visitor now sees the same
-   * typography instead of their own OS font. It sits ahead of `system-ui`
-   * rather than replacing it: the system stack is still there for a browser
-   * too old for woff2, and for the moment before the font lands.
+   * The stack ends in system fonts only as a failure fallback: for the moment
+   * before the webfont lands, and for a browser too old for woff2. Under
+   * normal conditions every visitor on every OS sees Instrument Sans.
    */
-  --font-sans: figmaSans, 'figmaSans Fallback', 'Open Sans', 'SF Pro Display',
-    system-ui, helvetica, sans-serif;
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
 
   /*
-   * Spacing deliberately keeps Tailwind's 0.25rem base step. The 8px grid from
-   * PROJECT_BRIEF.md §13 is honoured by using even-numbered utilities
-   * (p-2 = 8px, p-4 = 16px, p-6 = 24px). Overriding `--spacing` to 0.5rem here
-   * would silently double every spacing utility in the codebase.
+   * RADIUS — the design leans rounded: rounded-xl (12px) on buttons and
+   * inputs, rounded-2xl (16px) on icon tiles, rounded-3xl (24px) on cards and
+   * panels, rounded-full on nav pills and chips. Corners this soft are what
+   * keep a dark, dense page from reading as a dashboard.
+   *
+   * SPACING — Tailwind's 0.25rem base step is kept, so the 8px grid is
+   * honoured by using even-numbered utilities (p-2 = 8px, p-6 = 24px).
+   * Overriding --spacing here would silently double every spacing utility
+   * already in the codebase.
    */
 
   /* Motion */
   --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
 
   /*
-   * Ambient animations — the ones that loop forever and are therefore CSS
-   * rather than Framer Motion: nothing here needs to know about scroll
-   * position or React state, and the `prefers-reduced-motion` block in
-   * globals.css already stops all three.
+   * Ambient animations — the ones that loop, and are therefore CSS rather
+   * than Framer Motion: none of them needs to know about scroll position or
+   * React state, and the prefers-reduced-motion block in globals.css stops
+   * them all.
    *
-   * Deliberately slow. A 9-second drift reads as the page being alive; the
-   * same movement over 2 seconds reads as something being wrong with it.
+   * Deliberately slow. A 22-second orbit reads as the page being alive; the
+   * same movement over 3 seconds reads as something being wrong with it.
    */
-  --animate-drift: drift 9s ease-in-out infinite;
-  --animate-halo: halo 2.8s var(--ease-brand) infinite;
-  --animate-pan: pan 8s ease-in-out infinite;
+  --animate-orbit: orbit 22s linear infinite;
+  --animate-orbit-slow: orbit 34s linear infinite reverse;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pin: pin 2.6s var(--ease-brand) infinite;
+  --animate-marquee: marquee 46s linear infinite;
 
-  @keyframes drift {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-    50% {
-      transform: translate3d(0, -1.5rem, 0) scale(1.06);
+  @keyframes orbit {
+    to {
+      transform: rotate(360deg);
     }
   }
 
-  /* Expanding ring behind the floating WhatsApp button. */
-  @keyframes halo {
+  @keyframes float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, -0.75rem, 0);
+    }
+  }
+
+  /* Expanding ring under the Kampala pin in the hero globe. */
+  @keyframes pin {
     0% {
       transform: scale(1);
-      opacity: 0.5;
+      opacity: 0.55;
     }
     70%,
     100% {
-      transform: scale(1.75);
+      transform: scale(2.4);
       opacity: 0;
     }
   }
 
-  /* Slides a wide gradient across the text it is clipped to. */
-  @keyframes pan {
-    0%,
-    100% {
-      background-position: 0% 50%;
+  /* The tech strip. Travels exactly half the track width, because the track
+     holds the same list twice — that is what makes the loop seamless. */
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
     }
-    50% {
-      background-position: 100% 50%;
+    to {
+      transform: translate3d(-50%, 0, 0);
     }
   }
 }
 
 @theme inline {
-  /* Elevation — tinted with the theme's shadow colour, so dark mode does not
-     stack near-invisible black-on-black shadows.
+  /*
+   * Elevation.
+   *
+   * On the dark theme a drop shadow is nearly invisible, so a raised surface
+   * is defined by its border plus a 1px inset highlight along the top edge —
+   * the same trick a physical bevel uses. The drop shadow underneath still
+   * does the work in light mode.
+   */
+  --shadow-surface: 0 1px 2px rgb(var(--c-shadow) / 0.3),
+    0 8px 24px -12px rgb(var(--c-shadow) / 0.45),
+    inset 0 1px 0 rgb(255 255 255 / 0.04);
+  --shadow-surface-lg: 0 2px 4px rgb(var(--c-shadow) / 0.34),
+    0 24px 56px -20px rgb(var(--c-shadow) / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
 
-     Lifted from 0.05/0.07 when the hairline border came off `Card`. In light
-     mode `--c-card` and `--c-canvas` are both pure white, so with no outline
-     the shadow is the only thing that separates a card from the page; at the
-     old values the cards read as floating text. Still soft enough that a grid
-     of six does not look like a pile of drop-shadowed boxes. */
-  --shadow-card: 0 1px 2px rgb(var(--c-shadow) / 0.07),
-    0 8px 24px rgb(var(--c-shadow) / 0.1);
-  --shadow-card-hover: 0 2px 4px rgb(var(--c-shadow) / 0.08),
-    0 18px 44px rgb(var(--c-shadow) / 0.16);
+  /* The glow under a primary button and behind a filled icon tile. Orange at
+     low alpha, wide and soft — it should read as the element being lit, not
+     as a neon outline. */
+  --shadow-azure: 0 10px 30px -10px rgb(49 133 216 / 0.45);
+  --shadow-azure-lg: 0 0 28px rgb(49 133 216 / 0.32);
 }

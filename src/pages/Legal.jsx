@@ -35,11 +35,10 @@ export const Legal = ({ id }) => {
     <>
       <Seo title={doc.title} description={doc.description} path={doc.slug} />
 
-      <section className="band-dark">
+      <section className="bg-navy-900">
         <div className="container-page py-16 md:py-20">
           <Reveal>
-            <p className="mb-3 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-accent-400">
-              <span aria-hidden="true" className="h-px w-8 bg-accent-400/70" />
+            <p className="eyebrow mb-5">
               Legal
             </p>
             <h1 className="max-w-3xl text-4xl text-white md:text-5xl">{doc.title}</h1>
@@ -85,7 +84,7 @@ export const Legal = ({ id }) => {
                 Email{' '}
                 <a
                   href={EMAIL_LINK}
-                  className="font-semibold text-link underline decoration-accent-300 decoration-2 underline-offset-4 transition-colors hover:text-link-strong"
+                  className="font-semibold text-link underline decoration-azure-300 decoration-2 underline-offset-4 transition-colors hover:text-link-strong"
                 >
                   {CONTACT.email}
                 </a>{' '}

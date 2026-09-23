@@ -3,42 +3,44 @@ import { NavLink } from 'react-router-dom'
 import { NAV_LINKS } from '@/utils/constants'
 
 /**
- * Primary navigation links, shared by the desktop bar and the mobile drawer.
- * `NavLink` supplies `aria-current="page"` automatically for the active route.
+ * Site navigation — a floating capsule on desktop, a plain stack in the
+ * mobile drawer.
+ *
+ * The desktop pill is a translucent blurred capsule that sits *over* the page
+ * rather than a bar that caps it. The active item is a filled azure pill
+ * inside it, which is the one place besides a button where the accent appears
+ * as a fill — it reads as "you are here" rather than "click me" because it is
+ * the only item already selected.
  */
-export const Nav = ({ orientation = 'horizontal', onNavigate, onDark = false }) => {
+export const Nav = ({ orientation = 'horizontal', onNavigate }) => {
   const isVertical = orientation === 'vertical'
 
   const linkClasses = ({ isActive }) => {
-    const base = isVertical
-      ? 'block rounded-lg px-4 py-3 text-base font-semibold transition-colors'
-      : 'relative px-1 py-2 text-sm font-semibold transition-colors'
-
     if (isVertical) {
-      return `${base} ${
-        isActive ? 'bg-accent-500 text-white' : 'text-title hover:bg-chip'
+      return `flex items-center justify-between rounded-xl px-4 py-3 text-base font-semibold transition-colors ${
+        isActive
+          ? 'bg-azure-500/12 text-link'
+          : 'text-title hover:bg-chip hover:text-link'
       }`
     }
 
-    const idle = onDark
-      ? 'text-white/80 hover:text-white'
-      : 'text-body hover:text-title'
-    const active = onDark ? 'text-white' : 'text-link'
-
-    return `${base} ${isActive ? active : idle} after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:rounded-full after:bg-accent-500 after:transition-all after:duration-300 ${
-      isActive ? 'after:w-full' : 'after:w-0 hover:after:w-full'
+    return `shrink-0 rounded-full px-3.5 py-2 text-[0.8125rem] font-medium leading-none transition-colors duration-200 ${
+      isActive
+        ? 'bg-azure-500 text-white'
+        : 'text-body hover:bg-chip-hover hover:text-title'
     }`
   }
 
   return (
-    <ul
-      className={
-        isVertical ? 'flex flex-col gap-1' : 'flex items-center gap-7'
-      }
-    >
+    <ul className={isVertical ? 'flex flex-col gap-1' : 'nav-pill'}>
       {NAV_LINKS.map((link) => (
         <li key={link.to}>
-          <NavLink to={link.to} end={link.to === '/'} className={linkClasses} onClick={onNavigate}>
+          <NavLink
+            to={link.to}
+            end={link.to === '/'}
+            className={linkClasses}
+            onClick={onNavigate}
+          >
             {link.label}
           </NavLink>
         </li>

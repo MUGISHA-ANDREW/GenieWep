@@ -3,6 +3,7 @@ import { FaFacebookF, FaInstagram, FaTiktok, FaXTwitter } from 'react-icons/fa6'
 import { FiGlobe, FiMail, FiMapPin, FiPhone } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 
+import Logo from '@/components/Logo'
 import {
   COMPANY,
   CONTACT,
@@ -26,35 +27,46 @@ const SOCIAL_ICONS = {
   tiktok: FaTiktok,
 }
 
+const linkClass =
+  'text-sm text-surface-300 transition-colors duration-200 hover:text-azure-400'
+
+const ColumnHeading = ({ children }) => (
+  <h2 className="mb-5 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-surface-300/70">
+    {children}
+  </h2>
+)
+
+/**
+ * The footer.
+ *
+ * `navy-950` in both themes — the darkest surface on the site, so the page
+ * ends on a floor rather than fading out. Everything in here therefore uses
+ * the fixed `surface-*` text ramp instead of the themed `--c-body`, which
+ * would invert to near-black on the light theme and vanish.
+ */
 export const Footer = () => {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-steel-900 text-surface-200">
+    <footer className="border-t border-navy-700/60 bg-navy-950 text-surface-200">
       <div className="container-page py-14 md:py-16">
         {/*
-          Five columns from `lg`, not four: the Legal column was added and
-          squeezing it into the Pages column would have buried three documents
-          people occasionally need to find quickly. The brand block spans two
-          at `lg` so the tagline is not forced into a 150px gutter.
+          The brand block takes a wider column of its own and the four link
+          columns share the rest. Five equal columns would leave the tagline a
+          150px gutter to live in, which is how it ends up wrapping every
+          second word.
         */}
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-6">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <p className="text-lg font-extrabold text-white">{COMPANY.name}</p>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent-400">
-              {COMPANY.label}
-            </p>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-surface-300">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:gap-8">
+          <div className="lg:pr-8">
+            <Logo onDark />
+
+            <p className="mt-6 max-w-xs text-sm leading-relaxed text-surface-300">
               {COMPANY.tagline}
             </p>
 
-            {/*
-              Social row sits with the brand rather than in the contact column:
-              these are places to follow the company, not ways to reach it about
-              a project. The enquiry channels stay together on the right.
-            */}
-            <ul className="mt-6 flex items-center gap-3">
+            {/* Places to follow the company, not ways to reach it about a
+                project — the enquiry channels stay together on the right. */}
+            <ul className="mt-6 flex items-center gap-1">
               {SOCIAL_LINKS.map((social) => {
                 const SocialIcon = SOCIAL_ICONS[social.icon]
 
@@ -65,15 +77,11 @@ export const Footer = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`${COMPANY.shortName} on ${social.label} (opens in a new tab)`}
-                      /*
-                        No disc behind the glyph — the filled circles are gone
-                        at the client's request. The 40px box is kept as the tap
-                        target (WCAG 2.5.8 asks for 24px minimum and a thumb
-                        wants more), it just no longer paints anything.
-                      */
-                      className="inline-flex h-10 w-10 items-center justify-center text-surface-200 transition-all duration-200 ease-[var(--ease-brand)] hover:-translate-y-0.5 hover:text-accent-400"
+                      /* 40px box as the tap target — WCAG 2.5.8 asks for 24px
+                         minimum and a thumb wants more. */
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-navy-700/60 text-surface-300 transition-colors duration-200 hover:border-azure-500/50 hover:text-azure-400"
                     >
-                      <SocialIcon aria-hidden="true" className="h-5 w-5" />
+                      <SocialIcon aria-hidden="true" className="h-4 w-4" />
                     </a>
                   </li>
                 )
@@ -81,18 +89,12 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Pages */}
           <nav aria-label="Footer navigation">
-            <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
-              Pages
-            </h2>
-            <ul className="space-y-2.5">
+            <ColumnHeading>Pages</ColumnHeading>
+            <ul className="space-y-3">
               {NAV_LINKS.map((link) => (
                 <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className="text-sm text-surface-300 transition-colors hover:text-accent-400"
-                  >
+                  <Link to={link.to} className={linkClass}>
                     {link.label}
                   </Link>
                 </li>
@@ -100,78 +102,46 @@ export const Footer = () => {
             </ul>
           </nav>
 
-          {/* Legal */}
-          <nav aria-label="Legal">
-            <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
-              Legal
-            </h2>
-            <ul className="space-y-2.5">
-              {LEGAL_LINKS.map((link) => (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className="text-sm text-surface-300 transition-colors hover:text-accent-400"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Services */}
           <div>
-            <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
-              Services
-            </h2>
-            <ul className="space-y-2.5">
+            <ColumnHeading>Services</ColumnHeading>
+            <ul className="space-y-3">
               {CORE_SERVICES.slice(0, 6).map((service) => (
                 <li key={service.id}>
-                  <Link
-                    to="/services"
-                    className="text-sm text-surface-300 transition-colors hover:text-accent-400"
-                  >
-                    {service.title}
+                  <Link to="/services" className={linkClass}>
+                    {/* The catalogue titles carry a parenthetical technology
+                        note — "(Django / React)". It belongs on the services
+                        page, not in a footer column. */}
+                    {service.title.replace(/\s*\(.*\)$/, '')}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
-              Contact
-            </h2>
+            <ColumnHeading>Contact</ColumnHeading>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href={CONTACT.websiteUrl}
-                  className="flex items-start gap-3 text-sm text-surface-300 transition-colors hover:text-accent-400"
-                >
-                  <FiGlobe aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
-                  {CONTACT.website}
-                </a>
-              </li>
               <li>
                 <a
                   href={WHATSAPP_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-start gap-3 text-sm text-surface-300 transition-colors hover:text-accent-400"
+                  className={`${linkClass} inline-flex items-start gap-2.5`}
                 >
                   <FaWhatsapp
                     aria-hidden="true"
                     className="mt-0.5 h-4 w-4 shrink-0 text-whatsapp"
                   />
                   {CONTACT.phoneDisplay}
-                  <span className="sr-only">on WhatsApp (opens in a new tab)</span>
+                  <span className="sr-only">
+                    on WhatsApp (opens in a new tab)
+                  </span>
                 </a>
               </li>
               <li>
                 <a
                   href={PHONE_LINK}
-                  className="flex items-start gap-3 text-sm text-surface-300 transition-colors hover:text-accent-400"
+                  className={`${linkClass} inline-flex items-start gap-2.5`}
                 >
                   <FiPhone aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                   Call {CONTACT.phoneDisplay}
@@ -180,23 +150,48 @@ export const Footer = () => {
               <li>
                 <a
                   href={EMAIL_LINK}
-                  className="flex items-start gap-3 text-sm break-all text-surface-300 transition-colors hover:text-accent-400"
+                  className={`${linkClass} inline-flex items-start gap-2.5 break-all`}
                 >
                   <FiMail aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                   {CONTACT.email}
                 </a>
               </li>
-              <li className="flex items-start gap-3 text-sm text-surface-300">
+              <li>
+                <a
+                  href={CONTACT.websiteUrl}
+                  className={`${linkClass} inline-flex items-start gap-2.5`}
+                >
+                  <FiGlobe aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
+                  {CONTACT.website}
+                </a>
+              </li>
+              <li className="flex items-start gap-2.5 text-sm text-surface-300">
                 <FiMapPin aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                 {CONTACT.location}
               </li>
             </ul>
           </div>
+
+          <nav aria-label="Legal">
+            <ColumnHeading>Legal</ColumnHeading>
+            <ul className="space-y-3">
+              {LEGAL_LINKS.map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className={linkClass}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6">
-          <p className="text-xs text-surface-300">
+        <div className="mt-14 flex flex-col gap-2 border-t border-navy-700/60 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-surface-300/80">
             &copy; {year} {COMPANY.name}. All rights reserved.
+          </p>
+          <p className="text-xs text-surface-300/80">
+            {COMPANY.label} &middot; {CONTACT.location}
           </p>
         </div>
       </div>

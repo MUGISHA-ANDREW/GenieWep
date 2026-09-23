@@ -31,7 +31,7 @@ export const ScrollProgress = () => {
     <motion.div
       aria-hidden="true"
       style={{ scaleX: prefersReducedMotion ? scrollYProgress : smoothed }}
-      className="fixed left-0 top-0 z-60 h-0.5 w-full origin-left bg-linear-to-r from-accent-500 via-accent-400 to-aqua-400"
+      className="fixed left-0 top-0 z-60 h-0.5 w-full origin-left bg-linear-to-r from-azure-600 via-azure-500 to-azure-300"
     />
   )
 }

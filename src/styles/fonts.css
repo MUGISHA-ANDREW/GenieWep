@@ -1,62 +1,47 @@
 /*
  * Webfont, self-hosted.
  *
- * The site used to ship no font at all: `--font-sans` asked for figmaSans and
- * fell through to `system-ui`, so every visitor got whatever their OS supplied
- * — Segoe UI on Windows, Roboto on Android, SF on Apple. Three different sites.
- * This is what makes the typography the same everywhere.
+ * Instrument Sans — a grotesque with slightly condensed proportions and tall
+ * x-height. It holds a 56px headline without looking inflated and stays
+ * readable at 13px in a nav pill, which is the range this site needs.
  *
- * figmaSans is still first in the stack in theme.css, so a machine that has it
- * installed still uses it. But it cannot be served: it is Figma's proprietary
- * brand typeface, not published as a webfont and not licensed for third-party
- * hosting. Open Sans is the stand-in — a humanist sans in the same genre as
- * the Segoe UI this site has actually been rendering in, and under the SIL
- * Open Font License, so it can be hosted here. `public/fonts/OFL.txt` ships
- * with it, which that licence requires.
+ * One variable file per subset, covering weight 400-700 in a single request.
+ * The site uses 400, 500, 600 and 700; as static faces that is four requests,
+ * here it is one and 30kb. Nothing synthesises a weight, so no faux bold.
  *
- * ── Why these files ─────────────────────────────────────────────────────────
- * One variable font per subset, covering weight 400–800 in a single file. The
- * site uses 400, 500, 600, 700 and 800; as static faces that is five requests
- * and ~150kb, and here it is one request and 48kb. Nothing synthesises a
- * weight, so no faux-bold anywhere.
+ * `latin-ext` is gated behind its own unicode-range, so the extra 11kb is
+ * fetched only by a page that actually renders a character in it. English copy
+ * never triggers it.
  *
- * `latin-ext` is split out and gated behind its own `unicode-range`, so the
- * extra 35kb is fetched only by a page that actually renders a character in
- * it. For English copy it is never downloaded.
- *
- * ── Browser support ─────────────────────────────────────────────────────────
- * woff2 only, deliberately. Every browser that supports variable fonts
- * supports woff2, and everything since roughly 2016 supports woff2 — Chrome
- * 36+, Firefox 39+, Safari 10+, Edge 14+. A woff or ttf fallback would be
- * dead weight for the browsers that can use this file and useless to the ones
- * that cannot, since they could not read the variable axis either. Anything
- * older simply falls through the stack to its own system font, which is
- * exactly what the whole site did before this file existed.
+ * woff2 only. Every browser that supports variable fonts supports woff2, and a
+ * woff or ttf fallback would be dead weight for the browsers that can use this
+ * file and useless to the ones that cannot. Anything older falls through the
+ * stack in theme.css to its own system font.
  *
  * `font-display: swap` so text paints immediately in the fallback and swaps
- * when the font lands. Never invisible, at the cost of one reflow — mitigated
+ * when the font lands — never invisible, at the cost of one reflow, mitigated
  * by the preload in index.html.
  */
 
 @font-face {
-  font-family: 'Open Sans';
+  font-family: 'Instrument Sans';
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 400 700;
   font-stretch: 100%;
   font-display: swap;
-  src: url('/fonts/open-sans-latin-var.woff2') format('woff2');
+  src: url('/fonts/instrument-sans-latin-var.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
     U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
     U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: 'Open Sans';
+  font-family: 'Instrument Sans';
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 400 700;
   font-stretch: 100%;
   font-display: swap;
-  src: url('/fonts/open-sans-latin-ext-var.woff2') format('woff2');
+  src: url('/fonts/instrument-sans-latin-ext-var.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
     U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
     U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;

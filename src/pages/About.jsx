@@ -26,13 +26,13 @@ const About = () => (
       path="/about"
     />
 
-    <section className="band-dark">
+    <section className="bg-navy-900">
       <div className="container-page py-16 md:py-20">
         {/* Walks the eyebrow, headline and summary in one after the other. */}
         <Stagger step={0.1}>
           <StaggerItem
             as="p"
-            className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-accent-400"
+            className="eyebrow mb-5"
           >
             About {COMPANY.shortName}
           </StaggerItem>
@@ -53,7 +53,7 @@ const About = () => (
     <Section>
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <Reveal from="left">
-          <h2 className="accent-rule text-3xl text-title">
+          <h2 className="text-3xl text-title md:text-4xl">
             Five years of building software that works
           </h2>
           <p className="mt-4 text-base leading-relaxed text-body">
@@ -79,7 +79,7 @@ const About = () => (
                 <StaggerItem
                   as="li"
                   key={market}
-                  className="cursor-default rounded-full bg-chip px-3.5 py-1.5 text-sm font-medium text-title transition-all duration-200 ease-[var(--ease-brand)] hover:-translate-y-0.5 hover:bg-accent-500 hover:text-white"
+                  className="cursor-default rounded-full bg-chip px-3.5 py-1.5 text-sm font-medium text-title transition-all duration-200 ease-[var(--ease-brand)] hover:-translate-y-0.5 hover:bg-azure-500 hover:text-white"
                 >
                   {market}
                 </StaggerItem>
@@ -93,7 +93,7 @@ const About = () => (
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="group overflow-hidden rounded-xl shadow-[var(--shadow-card-hover)]"
+          className="group overflow-hidden rounded-xl shadow-[var(--shadow-surface-lg)]"
         >
           <img
             src={aboutImage}
@@ -170,22 +170,22 @@ const About = () => (
 
     {/*
       Accreditation.
-      `band-light` rather than a themed tone: these are third-party marks with
+      `bg-surface-50` rather than a themed tone: these are third-party marks with
       their colours fixed, and the ANAB badge carries its own white field, so
       the surface behind them has to stay light in dark mode too. Anything in
-      here uses the fixed `steel-*` text ramp for the same reason.
+      here uses the fixed `navy-*` and `surface-*` ramps for the same reason.
     */}
     {CERTIFICATIONS.length > 0 && (
-      <section className="band-light border-y border-steel-900/8">
+      <section className="bg-surface-50 border-y border-navy-900/8">
         <div className="container-page py-16 md:py-24">
           <Reveal className="mb-12 max-w-3xl">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-accent-600">
+            <p className="eyebrow mb-5">
               Certifications
             </p>
-            <h2 className="accent-rule text-3xl text-steel-900 md:text-4xl">
+            <h2 className="text-3xl text-navy-900 md:text-4xl">
               Accredited to international standards
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-steel-700 md:text-lg">
+            <p className="mt-4 text-base leading-relaxed text-navy-700 md:text-lg">
               The standards we hold ourselves to on quality, environment, safety
               and responsible disposal. Hover a badge for what it covers.
             </p>
@@ -202,7 +202,7 @@ const About = () => (
         {WHY_CHOOSE_US.map((reason) => (
           <StaggerItem as="li" key={reason.id}>
             <Card hoverable className="group flex h-full items-start gap-4 p-5">
-              <span className="inline-flex shrink-0 text-link transition-colors duration-300 group-hover:text-accent-500">
+              <span className="inline-flex shrink-0 text-link transition-colors duration-300 group-hover:text-azure-500">
                 <Icon name={reason.icon} className="h-7 w-7" />
               </span>
               <span className="pt-2 text-sm font-medium text-title">
@@ -232,7 +232,7 @@ const About = () => (
       </Stagger>
     </Section>
 
-    <section className="band-dark">
+    <section className="bg-navy-900">
       <div className="container-page py-16">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl text-white">Work with us</h2>

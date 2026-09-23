@@ -28,7 +28,7 @@ export const WhatsAppFloat = () => (
   >
     <span
       aria-hidden="true"
-      className="absolute inset-0 -z-10 rounded-full bg-whatsapp animate-halo"
+      className="absolute inset-0 -z-10 rounded-full bg-whatsapp animate-pin"
     />
     <FaWhatsapp
       aria-hidden="true"

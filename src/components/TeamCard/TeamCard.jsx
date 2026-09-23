@@ -68,7 +68,7 @@ export const TeamCard = ({ member, index = 0 }) => {
           height="512"
           loading="lazy"
           decoding="async"
-          className="h-28 w-28 rounded-full object-cover ring-4 ring-accent-300/30 transition-all duration-300 ease-[var(--ease-brand)] group-hover:scale-105 group-hover:ring-accent-400/60"
+          className="h-28 w-28 rounded-full object-cover ring-4 ring-azure-300/30 transition-all duration-300 ease-[var(--ease-brand)] group-hover:scale-105 group-hover:ring-azure-400/60"
         />
 
         <h3 className="mt-6 text-lg text-title">

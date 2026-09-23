@@ -40,7 +40,7 @@ describe('routing', () => {
     expect(
       await screen.findByRole('heading', {
         level: 1,
-        name: /building digital solutions/i,
+        name: /we design, build and maintain/i,
       }),
     ).toBeInTheDocument()
   })
@@ -250,39 +250,47 @@ describe('global chrome', () => {
   })
 })
 
+/*
+ * Dark is the brand default now, not a preference inherited from the OS —
+ * see the note on `DEFAULT_THEME` in context/ThemeProvider.jsx and the inline
+ * script in index.html, which have to agree with each other and with this.
+ * So a fresh visitor starts dark and the toggle offers *light*.
+ */
 describe('theme toggle', () => {
-  it('offers a dark theme switch in the header', async () => {
+  it('starts dark and offers a light theme switch', async () => {
     renderAt('/')
+
+    expect(document.documentElement.dataset.theme).toBe('dark')
 
     const header = getHeader()
     expect(
-      within(header).getAllByRole('button', { name: /switch to dark theme/i }).length,
+      within(header).getAllByRole('button', { name: /switch to light theme/i })
+        .length,
     ).toBeGreaterThan(0)
   })
 
-  it('switches the document to dark and back', async () => {
+  it('switches the document to light and back', async () => {
     const user = userEvent.setup()
     renderAt('/')
 
     const header = getHeader()
     const [toggle] = within(header).getAllByRole('button', {
-      name: /switch to dark theme/i,
+      name: /switch to light theme/i,
     })
 
-    expect(document.documentElement.dataset.theme).toBe('light')
-    expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    expect(toggle).toHaveAttribute('aria-pressed', 'true')
 
     await user.click(toggle)
 
-    expect(document.documentElement.dataset.theme).toBe('dark')
-
-    const [backToLight] = within(header).getAllByRole('button', {
-      name: /switch to light theme/i,
-    })
-    expect(backToLight).toHaveAttribute('aria-pressed', 'true')
-
-    await user.click(backToLight)
     expect(document.documentElement.dataset.theme).toBe('light')
+
+    const [backToDark] = within(header).getAllByRole('button', {
+      name: /switch to dark theme/i,
+    })
+    expect(backToDark).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(backToDark)
+    expect(document.documentElement.dataset.theme).toBe('dark')
   })
 
   it('remembers the choice in localStorage', async () => {
@@ -291,11 +299,11 @@ describe('theme toggle', () => {
 
     const header = getHeader()
     const [toggle] = within(header).getAllByRole('button', {
-      name: /switch to dark theme/i,
+      name: /switch to light theme/i,
     })
 
     await user.click(toggle)
 
-    expect(window.localStorage.getItem('geniewep-theme')).toBe('dark')
+    expect(window.localStorage.getItem('geniewep-theme')).toBe('light')
   })
 })

@@ -2,16 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { STORAGE_KEY, ThemeContext } from '@/context/theme-context'
 
-const getSystemTheme = () =>
-  window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-
-/** Returns 'light' | 'dark' when the visitor has chosen, or null to follow the OS. */
+/** Returns 'light' | 'dark' when the visitor has chosen, or null if not. */
 const readStoredPreference = () => {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY)
     return stored === 'light' || stored === 'dark' ? stored : null
   } catch {
-    // Private window or blocked storage — fall back to following the system.
+    // Private window or blocked storage — fall back to the brand default.
     return null
   }
 }
@@ -19,19 +16,25 @@ const readStoredPreference = () => {
 /**
  * Theme state for the whole site.
  *
- * Three-value model behind a two-state toggle: `preference` stays null until the
- * visitor actually picks a side, so a first-time visitor inherits their OS
- * setting and keeps inheriting it if they later change it. Once they click the
- * toggle, their choice wins and persists.
+ * Dark is the brand default, not a preference. A visitor who has never used
+ * the toggle gets the dark identity regardless of their operating system
+ * setting — this site is designed dark first, and a light-mode OS should not
+ * silently swap it for the secondary treatment.
  *
- * The matching `data-theme` attribute is also set by an inline script in
- * index.html before first paint, so the page never flashes the wrong theme.
+ * That is a deliberate change from the old behaviour, which followed
+ * `prefers-color-scheme` until the visitor chose. The two are kept in step
+ * with the inline script in index.html, which resolves the same rule before
+ * first paint so the page never flashes the wrong theme. If you change the
+ * rule here, change it there in the same commit.
+ *
+ * Once the visitor does use the toggle, their choice wins and persists.
  */
+const DEFAULT_THEME = 'dark'
+
 export const ThemeProvider = ({ children }) => {
   const [preference, setPreference] = useState(readStoredPreference)
-  const [systemTheme, setSystemTheme] = useState(getSystemTheme)
 
-  const theme = preference ?? systemTheme
+  const theme = preference ?? DEFAULT_THEME
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -49,23 +52,17 @@ export const ThemeProvider = ({ children }) => {
     }
   }, [preference])
 
-  // Keep following the OS for as long as no explicit choice has been made.
-  useEffect(() => {
-    const query = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleChange = (event) => setSystemTheme(event.matches ? 'dark' : 'light')
-
-    query.addEventListener?.('change', handleChange)
-    return () => query.removeEventListener?.('change', handleChange)
-  }, [])
-
   const value = useMemo(
     () => ({
       theme,
       isDark: theme === 'dark',
-      followsSystem: preference === null,
+      /* True until the visitor has made a choice of their own. Nothing in the
+         UI reads it today; it is here so a "reset to default" control does not
+         need the provider changed to exist. */
+      usesDefault: preference === null,
       toggleTheme: () => setPreference(theme === 'dark' ? 'light' : 'dark'),
       setTheme: setPreference,
-      useSystemTheme: () => setPreference(null),
+      resetTheme: () => setPreference(null),
     }),
     [theme, preference],
   )

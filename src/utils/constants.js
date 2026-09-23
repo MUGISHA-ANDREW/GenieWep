@@ -153,6 +153,7 @@ export const CORE_SERVICES = [
     icon: 'globe',
     description:
       'Fast, mobile-first websites that turn visitors into enquiries for small and growing Ugandan businesses.',
+    includes: ['Mobile responsive', 'Contact form', 'WhatsApp integration', 'Google Maps'],
   },
   {
     id: 'corporate-websites',
@@ -160,6 +161,7 @@ export const CORE_SERVICES = [
     icon: 'building',
     description:
       'Polished multi-page sites for established organizations that need authority, structure and scale.',
+    includes: ['Multi-page', 'Blog / News', 'Admin dashboard', 'Photo gallery'],
   },
   {
     id: 'web-applications',
@@ -167,6 +169,7 @@ export const CORE_SERVICES = [
     icon: 'code',
     description:
       'Secure dashboards, portals and internal systems built on Django with React front-ends.',
+    includes: ['Dashboards', 'Payments', 'Role management', 'Reports', 'APIs'],
   },
   {
     id: 'mobile-applications',
@@ -174,6 +177,7 @@ export const CORE_SERVICES = [
     icon: 'mobile',
     description:
       'Native and cross-platform apps that put your service in your customers pockets.',
+    includes: ['Android', 'iOS', 'Cross-platform'],
   },
   {
     id: 'desktop-applications',
@@ -181,6 +185,7 @@ export const CORE_SERVICES = [
     icon: 'desktop',
     description:
       'Offline-capable POS, inventory and school management software for day-to-day operations.',
+    includes: ['POS', 'Inventory', 'School management', 'Offline-capable'],
   },
   {
     id: 'ui-ux-design',
@@ -188,6 +193,7 @@ export const CORE_SERVICES = [
     icon: 'design',
     description:
       'Interface design and prototyping that makes complex products feel simple to use.',
+    includes: ['Interface design', 'Prototyping'],
   },
   {
     id: 'website-maintenance',
@@ -195,6 +201,7 @@ export const CORE_SERVICES = [
     icon: 'maintenance',
     description:
       'Ongoing updates, backups, security patches and content changes so your site never goes stale.',
+    includes: ['Updates', 'Backups', 'Security patches'],
   },
   {
     id: 'domain-hosting',
@@ -202,6 +209,7 @@ export const CORE_SERVICES = [
     icon: 'server',
     description:
       'Domain registration, hosting configuration and free SSL so you launch on solid infrastructure.',
+    includes: ['Domain registration', 'Hosting setup', 'Free SSL'],
   },
   {
     id: 'business-email',
@@ -209,6 +217,7 @@ export const CORE_SERVICES = [
     icon: 'mail',
     description:
       'Branded mailboxes such as info@yourcompany.com, configured and ready across all devices.',
+    includes: ['Branded mailboxes', 'Device setup'],
   },
   {
     id: 'seo',
@@ -216,6 +225,7 @@ export const CORE_SERVICES = [
     icon: 'search',
     description:
       'Technical SEO, Google Business setup and on-page optimization so customers find you first.',
+    includes: ['Technical SEO', 'Google Business', 'On-page'],
   },
 ]
 
@@ -496,6 +506,134 @@ export const SERVICE_CATEGORIES = [
     type: 'table',
     items: ADDITIONAL_SERVICES,
     columnLabel: 'Service',
+  },
+]
+
+/* ------------------------------------------------------------------ */
+/* Headline facts — the strip under the hero                           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Four facts, not four statistics.
+ *
+ * The client has supplied no client count, no revenue figure, no headcount and
+ * no uptime percentage, so none appear. Every value below is either printed in
+ * the 2026 catalogue or counted from the data in this file — `PROJECTS.length`
+ * and `CORE_SERVICES.length` are derived rather than typed, so they cannot
+ * drift from what the rest of the site shows.
+ */
+export const HEADLINE_FACTS = [
+  {
+    id: 'experience',
+    value: `${COMPANY.yearsExperience}+`,
+    label: 'Years building software',
+    icon: 'award',
+  },
+  {
+    id: 'projects',
+    value: String(PROJECTS.length),
+    label: 'Client projects delivered',
+    icon: 'briefcase',
+  },
+  {
+    id: 'services',
+    value: String(CORE_SERVICES.length),
+    label: 'Services under one roof',
+    icon: 'layers',
+  },
+  {
+    id: 'base',
+    value: CONTACT.city,
+    label: 'Where we are based',
+    icon: 'pin',
+  },
+]
+
+/* ------------------------------------------------------------------ */
+/* How a project runs                                                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The four stages of a GenieWep engagement.
+ *
+ * Written from what the catalogue already commits to — a free consultation, a
+ * fixed scope and price, training after delivery, and maintenance as a priced
+ * ongoing service — rather than from a generic agency process diagram.
+ */
+export const PROCESS = [
+  {
+    id: 'discover',
+    step: '01',
+    title: 'Discover',
+    icon: 'search',
+    body: 'A free consultation to understand your organization, the people who will use the system, and what it has to do. It ends with a written scope and a fixed price.',
+  },
+  {
+    id: 'design',
+    step: '02',
+    title: 'Design',
+    icon: 'design',
+    body: 'Structure first, then interface. You see and approve the screens before any of them are built, so changes happen while they are still cheap.',
+  },
+  {
+    id: 'build',
+    step: '03',
+    title: 'Build',
+    icon: 'code',
+    body: 'Development in visible stages, with a working version you can open and try at each one. Nothing stays behind a curtain until launch day.',
+  },
+  {
+    id: 'launch',
+    step: '04',
+    title: 'Launch & support',
+    icon: 'rocket',
+    body: 'Domain, hosting, SSL and email configured, your team trained on the system, and maintenance available for as long as you need it.',
+  },
+]
+
+/* ------------------------------------------------------------------ */
+/* Frequently asked questions                                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The questions a prospective client actually asks before committing.
+ *
+ * Every answer is checked against what the rest of this file already states —
+ * the package prices, what is billed separately, the services offered and the
+ * two-person team. Nothing here promises a turnaround time, a warranty period
+ * or a support SLA, because none of those are in the catalogue and inventing
+ * one on a public page creates a commitment the client never agreed to.
+ */
+export const FAQS = [
+  {
+    id: 'cost',
+    question: 'What does a website actually cost?',
+    answer: `Website packages start at ${'UGX 800,000'} for the Starter package and run to UGX 2.8M–4M for the Executive package. Web, mobile and desktop application pricing is published on the services page. Every price on the site is a fixed scope, not an hourly estimate.`,
+  },
+  {
+    id: 'hosting',
+    question: 'Do domain and hosting cost extra?',
+    answer: 'Yes, and they are listed separately rather than buried in the package price. Domain registration runs UGX 45,000–180,000 a year and hosting management UGX 250,000–600,000 a year. We register and configure both, including free SSL.',
+  },
+  {
+    id: 'after-launch',
+    question: 'What happens after the site goes live?',
+    answer: 'The Executive package includes training after delivery so your own team can update content. Beyond that, website maintenance is a priced service at UGX 100,000–350,000 a month covering updates, backups, security patches and content changes.',
+  },
+  {
+    id: 'custom',
+    question: 'Can you build something that is not in the catalogue?',
+    answer: 'Yes. The packages cover the work we are asked for most often. Custom business software is quoted on its own — tell us what the system needs to do and we come back with a scope, a timeline and a fixed price.',
+  },
+  {
+    id: 'who',
+    question: 'Who actually works on my project?',
+    answer: 'A small senior team, which is the point. The person who scopes your project is the person who builds it — there is no handover to a junior once the deposit clears.',
+  },
+  {
+    id: 'start',
+    question: 'How do we get started?',
+    answer: `Send a short description of what you need through the contact form, on WhatsApp at ${CONTACT.phoneDisplay}, or by email. The first consultation is free and ends with a written scope you can take away.`,
   },
 ]
 

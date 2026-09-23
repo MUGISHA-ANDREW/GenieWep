@@ -55,9 +55,9 @@ const Services = () => {
       />
 
       {/* Page header */}
-      <section className="band-dark">
+      <section className="bg-navy-900">
         <div className="container-page py-16 md:py-20">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-accent-400">
+          <p className="eyebrow mb-5">
             Services & Pricing
           </p>
           <h1 className="max-w-3xl text-4xl text-white md:text-5xl">
@@ -107,7 +107,7 @@ const Services = () => {
                   <motion.span
                     layoutId="service-tab-fill"
                     aria-hidden="true"
-                    className="absolute inset-0 -z-10 rounded-lg bg-accent-500"
+                    className="absolute inset-0 -z-10 rounded-lg bg-azure-500"
                     transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                   />
                 )}
@@ -146,7 +146,7 @@ const Services = () => {
       </Section>
 
       {/* CTA */}
-      <section className="band-dark">
+      <section className="bg-navy-900">
         <div className="container-page py-16">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl text-white">Not sure which package fits?</h2>

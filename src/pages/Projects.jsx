@@ -27,9 +27,9 @@ const Projects = () => {
         path="/projects"
       />
 
-      <section className="band-dark">
+      <section className="bg-navy-900">
         <div className="container-page py-16 md:py-20">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-accent-400">
+          <p className="eyebrow mb-5">
             Projects Completed
           </p>
           <h1 className="max-w-3xl text-4xl text-white md:text-5xl">
@@ -70,7 +70,7 @@ const Projects = () => {
                   <motion.span
                     layoutId="project-filter-pill"
                     aria-hidden="true"
-                    className="absolute inset-0 -z-10 rounded-full bg-accent-500"
+                    className="absolute inset-0 -z-10 rounded-full bg-azure-500"
                     transition={{ type: 'spring', stiffness: 380, damping: 32 }}
                   />
                 )}

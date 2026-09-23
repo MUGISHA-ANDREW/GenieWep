@@ -7,7 +7,7 @@ export const PageLoader = () => (
   >
     <span
       aria-hidden="true"
-      className="h-10 w-10 animate-spin rounded-full border-3 border-line border-t-accent-500"
+      className="h-10 w-10 animate-spin rounded-full border-3 border-line border-t-azure-500"
     />
     <span className="sr-only">Loading page…</span>
   </div>

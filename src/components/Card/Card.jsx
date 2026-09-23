@@ -1,23 +1,25 @@
 /**
- * Neutral surface used by service, project and content cards.
+ * The raised surface every card on the site is built from.
  *
- * No border. Cards are defined by elevation alone at the client's request —
- * the hairline `border-line` outline is gone, and so is the `accent-300` edge
- * it picked up on hover.
+ * Border plus a 1px inset highlight along the top edge, not a heavy drop
+ * shadow — see `.surface` in styles/globals.css for why. On the dark theme a
+ * drop shadow is nearly invisible, so the border and the light top edge are
+ * what actually make a card read as lifted off the page.
  *
- * That puts all the weight on the shadow, which matters in light mode: `card`
- * and `canvas` are both pure white there, so the shadow is the *only* thing
- * separating a card from the page behind it. The base elevation in theme.css
- * was lifted slightly when the border came off to keep that separation
- * readable. In dark mode the two surfaces differ, so the card reads on colour
- * as well.
+ * `rounded-3xl` by default. Cards are the dominant shape on this design and
+ * 24px corners are what keep a dense, dark page from reading as a dashboard;
+ * callers that need a tighter radius pass their own.
  */
-export const Card = ({ as: Component = 'div', hoverable = false, className = '', children, ...props }) => {
+export const Card = ({
+  as: Component = 'div',
+  hoverable = false,
+  className = '',
+  children,
+  ...props
+}) => {
   const classes = [
-    'rounded-xl bg-card shadow-[var(--shadow-card)]',
-    hoverable
-      ? 'transition-all duration-300 ease-[var(--ease-brand)] hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]'
-      : '',
+    'surface rounded-3xl',
+    hoverable ? 'surface-hover' : '',
     className,
   ]
     .filter(Boolean)

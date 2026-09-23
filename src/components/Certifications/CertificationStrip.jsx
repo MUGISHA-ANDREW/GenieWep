@@ -60,7 +60,7 @@ export const CertificationStrip = () => {
           {/*
             No card behind the badge — the white plates are gone at the
             client's request, so each mark sits straight on the band. That only
-            works because the band is `band-light` in both themes: the ANAB
+            works because the band is `bg-surface-50` in both themes: the ANAB
             mark carries its own white field, which would read as a floating
             slab on any dark surface.
 
@@ -86,10 +86,10 @@ export const CertificationStrip = () => {
             />
 
             <figcaption className="mt-4">
-              <span className="block text-sm font-bold text-steel-900">
+              <span className="block text-sm font-bold text-navy-900">
                 {certification.name}
               </span>
-              <span className="mt-0.5 block text-xs font-medium text-steel-700">
+              <span className="mt-0.5 block text-xs font-medium text-navy-700">
                 {certification.standard}
               </span>
               {/*
@@ -98,7 +98,7 @@ export const CertificationStrip = () => {
                 which `height: auto` is not.
               */}
               <span className="mt-0 grid grid-rows-[0fr] opacity-0 transition-all duration-300 ease-[var(--ease-brand)] group-hover:mt-2 group-hover:grid-rows-[1fr] group-hover:opacity-100 group-focus-within:mt-2 group-focus-within:grid-rows-[1fr] group-focus-within:opacity-100">
-                <span className="overflow-hidden text-xs leading-relaxed text-steel-700">
+                <span className="overflow-hidden text-xs leading-relaxed text-navy-700">
                   {certification.note}
                 </span>
               </span>

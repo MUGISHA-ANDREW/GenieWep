@@ -1,32 +1,43 @@
 import Reveal from '@/components/Reveal'
 
 /**
- * Section wrapper with the catalogue's heading treatment: a small uppercase
- * eyebrow, the accent rule, then the heading. Animates in once on scroll.
+ * Section wrapper with the site's heading treatment: an azure eyebrow pill,
+ * then the heading, then a supporting line. Animates in once on scroll.
  *
  * The entrance is delegated to `Reveal` rather than configured here, so the
  * distance, easing and viewport margin match every other element on the site
  * and reduced-motion handling only has to be right in one place.
+ *
+ * Vertical rhythm lives here too — pages choose a `tone` and a `size`, never
+ * their own `py-` value, which is what stops the site from acquiring five
+ * different ideas of how much air a section needs.
  */
 
-/*
- * `light` is the page ground (`canvas`), not `card`. The two are both white in
- * light mode but diverge in dark mode, where cards must sit slightly raised
- * above the page behind them.
- */
 const TONES = {
+  /* `canvas` is the page ground. `card` would be wrong: the two are near
+     identical in light mode but diverge in dark, where a card sits above the
+     page rather than being it. */
   light: 'bg-canvas',
   tinted: 'bg-tint',
-  dark: 'band-dark text-surface-100',
+  dark: 'bg-navy-900',
+}
+
+const SIZES = {
+  compact: 'py-12 sm:py-16',
+  md: 'py-16 sm:py-20 lg:py-24',
+  lg: 'py-20 sm:py-24 lg:py-32',
 }
 
 export const Section = ({
   id,
   eyebrow,
+  eyebrowIcon: EyebrowIcon,
   title,
   description,
   tone = 'light',
+  size = 'md',
   align = 'left',
+  divided = false,
   className = '',
   containerClassName = '',
   children,
@@ -37,7 +48,14 @@ export const Section = ({
   return (
     <section
       id={id}
-      className={`py-16 md:py-24 ${TONES[tone] ?? TONES.light} ${className}`}
+      className={[
+        SIZES[size] ?? SIZES.md,
+        TONES[tone] ?? TONES.light,
+        divided ? 'border-t border-line' : '',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
     >
       <div className={`container-page ${containerClassName}`}>
         {(eyebrow || title || description) && (
@@ -45,21 +63,20 @@ export const Section = ({
             as="header"
             duration={0.5}
             margin="-80px"
-            className={`mb-12 max-w-3xl ${isCentered ? 'mx-auto text-center' : ''}`}
+            className={`mb-12 max-w-2xl md:mb-16 ${isCentered ? 'mx-auto text-center' : ''}`}
           >
             {eyebrow && (
-              <p
-                className={`mb-3 text-xs font-bold uppercase tracking-[0.18em] ${
-                  isDark ? 'text-accent-400' : 'text-link'
-                }`}
-              >
+              <p className="eyebrow mb-5">
+                {EyebrowIcon && (
+                  <EyebrowIcon aria-hidden="true" className="h-3.5 w-3.5" />
+                )}
                 {eyebrow}
               </p>
             )}
 
             {title && (
               <h2
-                className={`accent-rule ${isCentered ? 'accent-rule-center' : ''} text-3xl md:text-4xl ${
+                className={`text-3xl leading-[1.15] sm:text-4xl lg:text-[2.6rem] ${
                   isDark ? 'text-white' : 'text-title'
                 }`}
               >
@@ -69,7 +86,7 @@ export const Section = ({
 
             {description && (
               <p
-                className={`mt-4 text-base leading-relaxed md:text-lg ${
+                className={`mt-5 text-base leading-relaxed ${
                   isDark ? 'text-surface-200' : 'text-body'
                 }`}
               >
