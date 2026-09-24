@@ -1,15 +1,6 @@
 import { motion } from 'framer-motion'
 import { FaWhatsapp } from 'react-icons/fa'
-import {
-  FiArrowRight,
-  FiBriefcase,
-  FiCpu,
-  FiGrid,
-  FiLayers,
-  FiStar,
-  FiTag,
-  FiZap,
-} from 'react-icons/fi'
+import { FiArrowRight } from 'react-icons/fi'
 
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
@@ -61,15 +52,11 @@ const Hero = () => (
     <div className="container-page py-16 sm:py-20 lg:py-24">
       <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 xl:gap-16">
         <motion.div initial="initial" animate="animate" transition={{ staggerChildren: 0.08 }}>
-          <motion.p variants={fadeUp} transition={transition} className="eyebrow">
-            <FiZap aria-hidden="true" className="h-3.5 w-3.5" />
-            {COMPANY.label}
-          </motion.p>
 
           <motion.h1
             variants={fadeUp}
             transition={transition}
-            className="mt-6 text-[1.75rem] leading-[1.15] text-title sm:text-[2.125rem] lg:text-[2.5rem]"
+            className="text-[1.75rem] leading-[1.15] text-title sm:text-[2.125rem] lg:text-[2.5rem]"
           >
             We design, build and maintain the{' '}
             {/* Two words in azure. The effect only works because it is rare —
@@ -156,8 +143,6 @@ const Home = () => (
 
     {/* Services */}
     <Section
-      eyebrow="What we build"
-      eyebrowIcon={FiGrid}
       title="Software that solves practical business problems."
       description="From a first business website to a system your whole operation runs on — designed, built and maintained by the same small team."
     >
@@ -192,8 +177,6 @@ const Home = () => (
 
     {/* Projects */}
     <Section
-      eyebrow="Selected work"
-      eyebrowIcon={FiBriefcase}
       title="Built, launched, and still running."
       description="Real systems for real organizations across agriculture, commodities trading, tourism and the NGO sector."
     >
@@ -214,8 +197,6 @@ const Home = () => (
     {/* Why GenieWep */}
     <Section
       tone="tinted"
-      eyebrow="Why GenieWep"
-      eyebrowIcon={FiStar}
       title="Why Ugandan organizations pick us."
       description="Five things the company will put in writing, taken straight from our 2026 catalogue. No awards, no invented client counts."
     >
@@ -239,8 +220,6 @@ const Home = () => (
     <Section
       size="compact"
       align="center"
-      eyebrow="Our stack"
-      eyebrowIcon={FiCpu}
       title="Proven tools, chosen so the system outlives the project."
       description="Nothing here is experimental. Every one of these has a large community, long-term support, and other developers who can pick it up if you ever need them to."
       containerClassName="!max-w-none !px-0"
@@ -252,8 +231,6 @@ const Home = () => (
     {/* Pricing */}
     <Section
       tone="tinted"
-      eyebrow="Pricing"
-      eyebrowIcon={FiTag}
       title="Published prices, Uganda market rates."
       description="Every package is a fixed scope with no hidden costs. Web, mobile and desktop application pricing is on the services page."
     >
@@ -289,10 +266,6 @@ const Home = () => (
           <Card className="px-6 py-10 sm:px-10 sm:py-12 lg:px-14">
             <div className="grid items-center gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
               <div>
-                <p className="eyebrow mb-5">
-                  <FiLayers aria-hidden="true" className="h-3.5 w-3.5" />
-                  Start a project
-                </p>
                 <h2 className="text-2xl leading-[1.2] text-title sm:text-3xl">
                   Have a digital project in mind?
                 </h2>

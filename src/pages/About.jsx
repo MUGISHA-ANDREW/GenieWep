@@ -28,14 +28,8 @@ const About = () => (
 
     <section className="bg-navy-900">
       <div className="container-page py-16 md:py-20">
-        {/* Walks the eyebrow, headline and summary in one after the other. */}
+        {/* Walks the headline and summary in one after the other. */}
         <Stagger step={0.1}>
-          <StaggerItem
-            as="p"
-            className="eyebrow mb-5"
-          >
-            About {COMPANY.shortName}
-          </StaggerItem>
           <StaggerItem as="h1" className="max-w-3xl text-4xl text-white md:text-5xl">
             A Ugandan software company building for Africa
           </StaggerItem>
@@ -151,7 +145,6 @@ const About = () => (
     */}
     <Section
       id="team"
-      eyebrow="The Team"
       title="The people who build your software"
       description="A small senior team, which is why the person who scopes your project is the person who builds it. No handover to a junior after the deposit clears."
     >
@@ -179,9 +172,6 @@ const About = () => (
       <section className="bg-surface-50 border-y border-navy-900/8">
         <div className="container-page py-16 md:py-24">
           <Reveal className="mb-12 max-w-3xl">
-            <p className="eyebrow mb-5">
-              Certifications
-            </p>
             <h2 className="text-2xl text-navy-900 md:text-3xl">
               Accredited to international standards
             </h2>
@@ -197,7 +187,7 @@ const About = () => (
     )}
 
     {/* Why choose us */}
-    <Section tone="tinted" eyebrow="Why GenieWep" title="Why choose GenieWep Technologies?">
+    <Section tone="tinted" title="Why choose GenieWep Technologies?">
       <Stagger as="ul" step={0.07} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {WHY_CHOOSE_US.map((reason) => (
           <StaggerItem as="li" key={reason.id}>
@@ -216,7 +206,6 @@ const About = () => (
 
     {/* Tech stack */}
     <Section
-      eyebrow="Tech Stack"
       title="The tools we build with"
       description="We choose proven, well-supported technology so your system stays maintainable long after launch."
     >

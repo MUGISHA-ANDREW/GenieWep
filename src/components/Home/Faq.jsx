@@ -1,4 +1,4 @@
-import { FiChevronDown, FiHelpCircle } from 'react-icons/fi'
+import { FiChevronDown } from 'react-icons/fi'
 
 import Button from '@/components/Button/Button'
 import Reveal, { Stagger, StaggerItem } from '@/components/Reveal'
@@ -22,10 +22,6 @@ export const Faq = () => (
     <div className="container-page">
       <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14">
         <Reveal className="lg:sticky lg:top-28">
-          <p className="eyebrow mb-5">
-            <FiHelpCircle aria-hidden="true" className="h-3.5 w-3.5" />
-            Questions
-          </p>
           <h2 className="mb-4 text-2xl leading-[1.2] text-title sm:text-3xl">
             What clients ask before they commit.
           </h2>

@@ -147,16 +147,43 @@ const buildBody = ({ name, email, phone, serviceType, message }) => {
 }
 
 /**
- * Hands one validated enquiry to Resend.
- *
- * @throws {EnquiryConfigError}   when RESEND_API_KEY is unset
- * @throws {EnquiryDeliveryError} on timeout, network failure or a rejection
+ * The acknowledgement the enquirer gets: proof the form worked, and a promise
+ * of a reply. Deliberately short and without a copy of their message — it goes
+ * to an address nobody has verified, so it should carry as little as possible.
  */
-export const deliverEnquiry = async (enquiry, env = process.env) => {
-  const apiKey = env.RESEND_API_KEY
-  if (!apiKey) throw new EnquiryConfigError()
+const buildConfirmation = ({ name, serviceType }) => {
+  const firstName = name.split(/\s+/)[0]
 
-  const { html, text } = buildBody(enquiry)
+  const html = `
+    <div style="font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#0b2740;max-width:560px">
+      <h2 style="margin:0 0 16px;font-size:18px">Thanks, ${escapeHtml(firstName)} — we have your message</h2>
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.6">
+        Your ${escapeHtml(serviceType)} enquiry reached the ${escapeHtml(COMPANY.name)} team.
+        We will reply shortly, usually within one business day.
+      </p>
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.6">
+        Need us sooner? Call or WhatsApp ${escapeHtml(CONTACT.phoneDisplay)}.
+      </p>
+      <p style="margin:24px 0 0;color:#56748c;font-size:12px">
+        ${escapeHtml(COMPANY.name)} · ${escapeHtml(CONTACT.location)} · ${escapeHtml(CONTACT.website)}
+      </p>
+    </div>`
+
+  const text = [
+    `Thanks, ${firstName} — we have your message.`,
+    '',
+    `Your ${serviceType} enquiry reached the ${COMPANY.name} team. We will reply shortly, usually within one business day.`,
+    '',
+    `Need us sooner? Call or WhatsApp ${CONTACT.phoneDisplay}.`,
+    '',
+    `${COMPANY.name} · ${CONTACT.location} · ${CONTACT.website}`,
+  ].join('\n')
+
+  return { html, text }
+}
+
+/** One POST to Resend. */
+const sendEmail = async (apiKey, message) => {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
@@ -168,22 +195,7 @@ export const deliverEnquiry = async (enquiry, env = process.env) => {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        from: env.RESEND_FROM || DEFAULT_FROM,
-        to: [env.ENQUIRY_TO || CONTACT.email],
-
-        /*
-         * `reply_to` is the enquirer, so hitting reply in Gmail answers the
-         * client rather than the sending domain. The subject leads with the
-         * service and the name so the inbox is triageable from the
-         * notification list alone.
-         */
-        reply_to: enquiry.email,
-        subject: `New ${enquiry.serviceType} enquiry from ${enquiry.name}`,
-        html,
-        text,
-        headers: { 'X-Entity-Ref-ID': `${COMPANY.shortName}-enquiry` },
-      }),
+      body: JSON.stringify(message),
     })
 
     const result = await response.json().catch(() => null)
@@ -204,4 +216,61 @@ export const deliverEnquiry = async (enquiry, env = process.env) => {
   } finally {
     clearTimeout(timeout)
   }
+}
+
+/**
+ * Hands one validated enquiry to Resend: the enquiry itself to the company
+ * inbox, then an acknowledgement to the enquirer.
+ *
+ * Only the first is load-bearing. If the acknowledgement fails the enquiry has
+ * still arrived, so that failure is logged rather than reported to the
+ * visitor as "did not send" — which would invite a duplicate. Note that with
+ * the default `onboarding@resend.dev` sender Resend refuses every recipient
+ * but the account owner, so acknowledgements only go out once a domain is
+ * verified and RESEND_FROM is set.
+ *
+ * @throws {EnquiryConfigError}   when RESEND_API_KEY is unset
+ * @throws {EnquiryDeliveryError} on timeout, network failure or a rejection
+ */
+export const deliverEnquiry = async (enquiry, env = process.env) => {
+  const apiKey = env.RESEND_API_KEY
+  if (!apiKey) throw new EnquiryConfigError()
+
+  const from = env.RESEND_FROM || DEFAULT_FROM
+  const inbox = env.ENQUIRY_TO || CONTACT.email
+  const { html, text } = buildBody(enquiry)
+
+  const result = await sendEmail(apiKey, {
+    from,
+    to: [inbox],
+
+    /*
+     * `reply_to` is the enquirer, so hitting reply in Gmail answers the
+     * client rather than the sending domain. The subject leads with the
+     * service and the name so the inbox is triageable from the
+     * notification list alone.
+     */
+    reply_to: enquiry.email,
+    subject: `New ${enquiry.serviceType} enquiry from ${enquiry.name}`,
+    html,
+    text,
+    headers: { 'X-Entity-Ref-ID': `${COMPANY.shortName}-enquiry` },
+  })
+
+  const confirmation = buildConfirmation(enquiry)
+  try {
+    await sendEmail(apiKey, {
+      from,
+      to: [enquiry.email],
+      reply_to: inbox,
+      subject: `We received your message — ${COMPANY.name}`,
+      html: confirmation.html,
+      text: confirmation.text,
+      headers: { 'X-Entity-Ref-ID': `${COMPANY.shortName}-confirmation` },
+    })
+  } catch (error) {
+    console.warn('[send-enquiry] confirmation to enquirer not sent:', error.message)
+  }
+
+  return result
 }

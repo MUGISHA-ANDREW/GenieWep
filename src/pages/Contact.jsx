@@ -63,9 +63,6 @@ const Contact = () => (
 
     <section className="bg-navy-900">
       <div className="container-page py-16 md:py-20">
-        <p className="eyebrow mb-5">
-          Contact
-        </p>
         <h1 className="max-w-3xl text-3xl text-white md:text-4xl">
           Let&apos;s build something great together
         </h1>

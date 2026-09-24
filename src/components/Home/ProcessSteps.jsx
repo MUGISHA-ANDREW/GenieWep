@@ -1,5 +1,3 @@
-import { FiGitCommit } from 'react-icons/fi'
-
 import Section from '@/components/Section'
 import Icon from '@/components/Icon'
 import { Stagger, StaggerItem } from '@/components/Reveal'
@@ -22,8 +20,6 @@ export const ProcessSteps = () => (
     tone="tinted"
     size="md"
     align="center"
-    eyebrow="How we work"
-    eyebrowIcon={FiGitCommit}
     title="Four stages, and you see the work at every one."
     description="No black box between the deposit and the launch. You approve the scope before we design, the screens before we build, and a working version at every stage after that."
   >

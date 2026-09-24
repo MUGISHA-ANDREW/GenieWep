@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 
 import Card from '@/components/Card/Card'
+import kasoziAlosiousPhoto from '@/assets/team/kasozi-alosious.jpg'
 import mugishaAndrewPhoto from '@/assets/team/mugisha-andrew.jpg'
 import placeholderAvatar from '@/assets/team/placeholder-avatar.png'
 
@@ -16,9 +17,10 @@ import placeholderAvatar from '@/assets/team/placeholder-avatar.png'
  * Crop them square and centred on the head before adding them, at 512px. The
  * card draws them into a circle, and `object-cover` will not rescue a portrait
  * whose face is off-centre — it will just cut the top of the head off in a
- * rounder shape. Still missing: `lead-developer`.
+ * rounder shape.
  */
 const TEAM_PHOTOS = {
+  'lead-developer': kasoziAlosiousPhoto,
   'software-engineer': mugishaAndrewPhoto,
 }
 

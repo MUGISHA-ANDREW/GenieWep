@@ -60,9 +60,6 @@ const Services = () => {
       {/* Page header */}
       <section className="bg-navy-900">
         <div className="container-page py-16 md:py-20">
-          <p className="eyebrow mb-5">
-            Services & Pricing
-          </p>
           <h1 className="max-w-3xl text-3xl text-white md:text-4xl">
             Clear packages, Uganda market rates
           </h1>
@@ -144,7 +141,6 @@ const Services = () => {
       {/* Full service list */}
       <Section
         tone="tinted"
-        eyebrow="Everything we offer"
         title="Full service list"
         description="Ten services covering the whole lifecycle, from first design to ongoing maintenance."
       >

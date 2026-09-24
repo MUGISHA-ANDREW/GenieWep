@@ -38,9 +38,6 @@ export const Legal = ({ id }) => {
       <section className="bg-navy-900">
         <div className="container-page py-16 md:py-20">
           <Reveal>
-            <p className="eyebrow mb-5">
-              Legal
-            </p>
             <h1 className="max-w-3xl text-3xl text-white md:text-4xl">{doc.title}</h1>
             <p className="mt-5 max-w-2xl text-base text-surface-200 md:text-lg">
               {doc.intro}

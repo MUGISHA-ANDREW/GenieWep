@@ -181,4 +181,29 @@ describe('deliverEnquiry', () => {
       EnquiryDeliveryError,
     )
   })
+
+  it('sends the enquirer an acknowledgement after the enquiry', async () => {
+    fetch.mockResolvedValue(resendOk())
+
+    await deliverEnquiry(VALUES, ENV)
+
+    expect(fetch).toHaveBeenCalledTimes(2)
+    const body = JSON.parse(fetch.mock.calls[1][1].body)
+    expect(body.to).toEqual(['jane@example.com'])
+    expect(body.reply_to).toBe('geniewep@gmail.com')
+    expect(body.text).toContain('Thanks, Jane')
+    expect(body.text).toContain('reply shortly')
+  })
+
+  it('still succeeds when only the acknowledgement fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    fetch.mockResolvedValueOnce(resendOk()).mockResolvedValueOnce({
+      ok: false,
+      status: 403,
+      json: () => Promise.resolve({ message: 'You can only send testing emails to your own address.' }),
+    })
+
+    await expect(deliverEnquiry(VALUES, ENV)).resolves.toBeTruthy()
+    expect(console.warn).toHaveBeenCalled()
+  })
 })

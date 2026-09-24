@@ -1,8 +1,8 @@
 import Reveal from '@/components/Reveal'
 
 /**
- * Section wrapper with the site's heading treatment: an azure eyebrow pill,
- * then the heading, then a supporting line. Animates in once on scroll.
+ * Section wrapper with the site's heading treatment: the heading, then a
+ * supporting line. Animates in once on scroll.
  *
  * The entrance is delegated to `Reveal` rather than configured here, so the
  * distance, easing and viewport margin match every other element on the site
@@ -30,8 +30,6 @@ const SIZES = {
 
 export const Section = ({
   id,
-  eyebrow,
-  eyebrowIcon: EyebrowIcon,
   title,
   description,
   tone = 'light',
@@ -58,21 +56,13 @@ export const Section = ({
         .join(' ')}
     >
       <div className={`container-page ${containerClassName}`}>
-        {(eyebrow || title || description) && (
+        {(title || description) && (
           <Reveal
             as="header"
             duration={0.5}
             margin="-80px"
             className={`mb-12 max-w-2xl md:mb-16 ${isCentered ? 'mx-auto text-center' : ''}`}
           >
-            {eyebrow && (
-              <p className="eyebrow mb-5">
-                {EyebrowIcon && (
-                  <EyebrowIcon aria-hidden="true" className="h-3.5 w-3.5" />
-                )}
-                {eyebrow}
-              </p>
-            )}
 
             {title && (
               <h2

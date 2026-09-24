@@ -701,9 +701,6 @@ export const TECH_STACK = [
  * A member with no entry in that map falls back to the generic placeholder
  * avatar: same circle, same size, so adding the real headshot later shifts
  * nothing on the page.
- *
- * Still owed by the client: a headshot for Kasozi Alosious, as a square crop
- * (PROJECT_BRIEF.md §17). His card runs on the placeholder until it arrives.
  */
 export const TEAM = [
   {
