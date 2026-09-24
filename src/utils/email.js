@@ -32,7 +32,7 @@ export class EmailDeliveryError extends Error {
 /**
  * Deliver one validated enquiry to the company inbox.
  *
- * @param {{name: string, email: string, phone: string, serviceType: string, message: string, company?: string}} values
+ * @param {{name: string, email: string, phone: string, serviceType: string, message: string, botcheck?: string}} values
  * @throws {EmailDeliveryError} on timeout, network failure or a rejection
  */
 export const sendEnquiryEmail = async ({
@@ -41,7 +41,7 @@ export const sendEnquiryEmail = async ({
   phone,
   serviceType,
   message,
-  company = '',
+  botcheck = '',
 }) => {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
@@ -59,7 +59,7 @@ export const sendEnquiryEmail = async ({
        * a bot posting straight to the endpoint never ran the form's
        * validation, so the browser's check is a convenience, not a control.
        */
-      body: JSON.stringify({ name, email, phone, serviceType, message, company }),
+      body: JSON.stringify({ name, email, phone, serviceType, message, botcheck }),
     })
 
     /*

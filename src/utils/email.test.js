@@ -60,16 +60,16 @@ describe('sendEnquiryEmail', () => {
       phone: '+256700000000',
       serviceType: 'Business / Corporate Website',
       message: 'We need a five page website for our SACCO.',
-      company: '',
+      botcheck: '',
     })
   })
 
   it('forwards the honeypot so the server can check it too', async () => {
     fetch.mockResolvedValue(jsonResponse({ success: true }))
 
-    await sendEnquiryEmail({ ...VALUES, company: 'spam-bot' })
+    await sendEnquiryEmail({ ...VALUES, botcheck: 'spam-bot' })
 
-    expect(JSON.parse(fetch.mock.calls[0][1].body).company).toBe('spam-bot')
+    expect(JSON.parse(fetch.mock.calls[0][1].body).botcheck).toBe('spam-bot')
   })
 
   it('never leaks an API key into the request', async () => {

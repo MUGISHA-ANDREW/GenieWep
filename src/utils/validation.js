@@ -54,7 +54,7 @@ export const contactSchema = z.object({
    * Honeypot. Hidden from humans via CSS; bots fill it in. A non-empty value
    * fails validation, so no request is ever sent.
    */
-  company: z.string().max(0, 'Submission rejected.').optional().or(z.literal('')),
+  botcheck: z.string().max(0, 'Submission rejected.').optional().or(z.literal('')),
 })
 
 export const contactDefaultValues = {
@@ -63,5 +63,5 @@ export const contactDefaultValues = {
   phone: '',
   serviceType: '',
   message: '',
-  company: '',
+  botcheck: '',
 }

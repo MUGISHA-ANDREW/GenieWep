@@ -74,11 +74,11 @@ describe('parseEnquiry', () => {
    * back with the field left blank.
    */
   it('signals a tripped honeypot without raising', () => {
-    expect(parseEnquiry({ ...VALUES, company: 'spam-bot' })).toBeNull()
+    expect(parseEnquiry({ ...VALUES, botcheck: 'spam-bot' })).toBeNull()
   })
 
   it('ignores an empty honeypot, which is what a person submits', () => {
-    expect(parseEnquiry({ ...VALUES, company: '' })).toEqual(VALUES)
+    expect(parseEnquiry({ ...VALUES, botcheck: '' })).toEqual(VALUES)
   })
 })
 

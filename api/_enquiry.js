@@ -70,7 +70,7 @@ export const parseEnquiry = (payload) => {
 
   // Honeypot: hidden from people, irresistible to bots. Anything in it is a
   // bot, and the quiet accept below means it never learns why nothing arrived.
-  if (typeof payload.company === 'string' && payload.company.trim() !== '') {
+  if (typeof payload.botcheck === 'string' && payload.botcheck.trim() !== '') {
     return null
   }
 

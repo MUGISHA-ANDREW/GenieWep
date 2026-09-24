@@ -185,8 +185,8 @@ export const ContactForm = () => {
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
       {/* Honeypot: hidden from people, irresistible to bots. */}
       <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
-        <label htmlFor="company">Company (leave blank)</label>
-        <input id="company" type="text" tabIndex={-1} autoComplete="off" {...register('company')} />
+        <label htmlFor="botcheck">Leave this field empty</label>
+        <input id="botcheck" type="text" tabIndex={-1} autoComplete="off" {...register('botcheck')} />
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
