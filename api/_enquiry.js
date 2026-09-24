@@ -15,7 +15,14 @@
  *   RESEND_API_KEY  required. From https://resend.com/api-keys
  *   RESEND_FROM     optional. Defaults to Resend's shared testing sender.
  *   ENQUIRY_TO      optional. Defaults to the address in constants.js.
+ *   GMAIL_USER, GMAIL_APP_PASSWORD
+ *                   optional. When both are set, the enquirer's confirmation
+ *                   goes out through that Gmail account instead of Resend.
+ *                   Resend cannot mail arbitrary visitors until a domain is
+ *                   verified; Gmail can, from the day it is configured.
  */
+
+import nodemailer from 'nodemailer'
 
 import { CONTACT, COMPANY } from '../src/utils/constants.js'
 
@@ -156,10 +163,10 @@ const buildConfirmation = ({ name, serviceType }) => {
 
   const html = `
     <div style="font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#0b2740;max-width:560px">
-      <h2 style="margin:0 0 16px;font-size:18px">Thanks, ${escapeHtml(firstName)} — we have your message</h2>
+      <h2 style="margin:0 0 16px;font-size:18px">Thanks, ${escapeHtml(firstName)} — your message was received</h2>
       <p style="margin:0 0 12px;font-size:14px;line-height:1.6">
         Your ${escapeHtml(serviceType)} enquiry reached the ${escapeHtml(COMPANY.name)} team.
-        We will reply shortly, usually within one business day.
+        We will contact you in less than 24 hours.
       </p>
       <p style="margin:0 0 12px;font-size:14px;line-height:1.6">
         Need us sooner? Call or WhatsApp ${escapeHtml(CONTACT.phoneDisplay)}.
@@ -170,9 +177,9 @@ const buildConfirmation = ({ name, serviceType }) => {
     </div>`
 
   const text = [
-    `Thanks, ${firstName} — we have your message.`,
+    `Thanks, ${firstName} — your message was received.`,
     '',
-    `Your ${serviceType} enquiry reached the ${COMPANY.name} team. We will reply shortly, usually within one business day.`,
+    `Your ${serviceType} enquiry reached the ${COMPANY.name} team. We will contact you in less than 24 hours.`,
     '',
     `Need us sooner? Call or WhatsApp ${CONTACT.phoneDisplay}.`,
     '',
@@ -219,15 +226,49 @@ const sendEmail = async (apiKey, message) => {
 }
 
 /**
+ * Sends the enquirer's acknowledgement: through Gmail when GMAIL_USER and
+ * GMAIL_APP_PASSWORD are set, otherwise through Resend (which only reaches
+ * visitors once RESEND_FROM is on a verified domain).
+ */
+const sendConfirmation = async (enquiry, { apiKey, from, inbox, env }) => {
+  const { html, text } = buildConfirmation(enquiry)
+  const subject = `We received your message — ${COMPANY.name}`
+
+  if (env.GMAIL_USER && env.GMAIL_APP_PASSWORD) {
+    const transport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: env.GMAIL_USER, pass: env.GMAIL_APP_PASSWORD },
+      connectionTimeout: REQUEST_TIMEOUT_MS,
+      socketTimeout: REQUEST_TIMEOUT_MS,
+    })
+    return transport.sendMail({
+      from: `${COMPANY.name} <${env.GMAIL_USER}>`,
+      to: enquiry.email,
+      replyTo: inbox,
+      subject,
+      html,
+      text,
+    })
+  }
+
+  return sendEmail(apiKey, {
+    from,
+    to: [enquiry.email],
+    reply_to: inbox,
+    subject,
+    html,
+    text,
+    headers: { 'X-Entity-Ref-ID': `${COMPANY.shortName}-confirmation` },
+  })
+}
+
+/**
  * Hands one validated enquiry to Resend: the enquiry itself to the company
  * inbox, then an acknowledgement to the enquirer.
  *
  * Only the first is load-bearing. If the acknowledgement fails the enquiry has
  * still arrived, so that failure is logged rather than reported to the
- * visitor as "did not send" — which would invite a duplicate. Note that with
- * the default `onboarding@resend.dev` sender Resend refuses every recipient
- * but the account owner, so acknowledgements only go out once a domain is
- * verified and RESEND_FROM is set.
+ * visitor as "did not send" — which would invite a duplicate.
  *
  * @throws {EnquiryConfigError}   when RESEND_API_KEY is unset
  * @throws {EnquiryDeliveryError} on timeout, network failure or a rejection
@@ -257,17 +298,8 @@ export const deliverEnquiry = async (enquiry, env = process.env) => {
     headers: { 'X-Entity-Ref-ID': `${COMPANY.shortName}-enquiry` },
   })
 
-  const confirmation = buildConfirmation(enquiry)
   try {
-    await sendEmail(apiKey, {
-      from,
-      to: [enquiry.email],
-      reply_to: inbox,
-      subject: `We received your message — ${COMPANY.name}`,
-      html: confirmation.html,
-      text: confirmation.text,
-      headers: { 'X-Entity-Ref-ID': `${COMPANY.shortName}-confirmation` },
-    })
+    await sendConfirmation(enquiry, { apiKey, from, inbox, env })
   } catch (error) {
     console.warn('[send-enquiry] confirmation to enquirer not sent:', error.message)
   }

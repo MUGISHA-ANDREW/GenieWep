@@ -223,19 +223,15 @@
   }
 
   /*
-   * Azure-filled icon tile with its own glow. Used once per service card, and
-   * the glow is a separate blurred layer behind the tile rather than a
-   * box-shadow, so it can be much wider and softer than a shadow would allow.
+   * Azure icon slot: a sized box that centres the glyph, with no fill behind
+   * it — the client asked for bare icons. Hover only shifts the icon colour.
    */
   .tile-azure {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 1rem;
-    background-color: color-mix(in srgb, var(--color-azure-500) 12%, transparent);
     color: var(--color-azure-500);
-    transition: background-color 0.25s var(--ease-brand),
-      color 0.25s var(--ease-brand);
+    transition: color 0.25s var(--ease-brand);
   }
 
   [data-theme='dark'] .tile-azure,
@@ -244,9 +240,11 @@
   }
 
   .group:hover .tile-azure {
-    background-color: var(--color-azure-500);
-    color: #ffffff;
-    box-shadow: var(--shadow-azure-lg);
+    color: var(--color-azure-300);
+  }
+
+  [data-theme='light'] .group:hover .tile-azure {
+    color: var(--color-azure-700);
   }
 
   /*

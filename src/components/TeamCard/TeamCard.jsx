@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 
 import Card from '@/components/Card/Card'
-import kasoziAlosiousPhoto from '@/assets/team/kasozi-alosious.jpg'
+import kasoziAloisiusPhoto from '@/assets/team/kasozi-aloisius.jpg'
 import mugishaAndrewPhoto from '@/assets/team/mugisha-andrew.jpg'
 import placeholderAvatar from '@/assets/team/placeholder-avatar.png'
 
@@ -20,7 +20,7 @@ import placeholderAvatar from '@/assets/team/placeholder-avatar.png'
  * rounder shape.
  */
 const TEAM_PHOTOS = {
-  'lead-developer': kasoziAlosiousPhoto,
+  'lead-developer': kasoziAloisiusPhoto,
   'software-engineer': mugishaAndrewPhoto,
 }
 

@@ -204,8 +204,8 @@ const Home = () => (
         {WHY_CHOOSE_US.map((reason) => (
           <StaggerItem as="li" key={reason.id}>
             <Card hoverable className="group flex h-full items-start gap-4 p-6">
-              <span className="tile-azure h-12 w-12 shrink-0">
-                <Icon name={reason.icon} className="h-5 w-5" />
+              <span className="tile-azure shrink-0 pt-1.5">
+                <Icon name={reason.icon} className="h-7 w-7" />
               </span>
               <span className="pt-2.5 text-[0.9375rem] font-semibold text-title">
                 {reason.text}

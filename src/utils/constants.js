@@ -690,7 +690,7 @@ export const TECH_STACK = [
  * who designs it, who builds the part they look at.
  *
  * Names are as the client supplied them — these are real people, so the
- * spellings are transcribed rather than normalised. `Alosious` is not a typo
+ * spellings are transcribed rather than normalised. `Aloisius` is not a typo
  * for `Aloysius`.
  *
  * There is deliberately no `photo` field. Headshots are keyed by `id` in
@@ -705,7 +705,7 @@ export const TECH_STACK = [
 export const TEAM = [
   {
     id: 'lead-developer',
-    name: 'Kasozi Alosious',
+    name: 'Kasozi Aloisius',
     role: 'Founder & Lead Developer',
     focus:
       'Scopes every project, designs the data model and writes the Django that the rest of the system hangs off.',

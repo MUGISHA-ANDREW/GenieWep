@@ -37,7 +37,7 @@ export const ProcessSteps = () => (
 
       {PROCESS.map((stage) => (
         <StaggerItem as="li" key={stage.id} className="relative text-center">
-          <span className="tile-azure mx-auto mb-5 h-14 w-14 ring-8 ring-tint">
+          <span className="tile-azure mx-auto mb-5 h-14 w-14 bg-tint ring-8 ring-tint">
             <Icon name={stage.icon} className="h-6 w-6" />
           </span>
 

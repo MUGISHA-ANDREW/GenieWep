@@ -17,6 +17,11 @@ import {
   parseEnquiry,
 } from './_enquiry.js'
 
+const sendMail = vi.fn()
+vi.mock('nodemailer', () => ({
+  default: { createTransport: vi.fn(() => ({ sendMail })) },
+}))
+
 const VALUES = {
   name: 'Jane Nakato',
   email: 'jane@example.com',
@@ -192,7 +197,7 @@ describe('deliverEnquiry', () => {
     expect(body.to).toEqual(['jane@example.com'])
     expect(body.reply_to).toBe('geniewep@gmail.com')
     expect(body.text).toContain('Thanks, Jane')
-    expect(body.text).toContain('reply shortly')
+    expect(body.text).toContain('less than 24 hours')
   })
 
   it('still succeeds when only the acknowledgement fails', async () => {
@@ -205,5 +210,24 @@ describe('deliverEnquiry', () => {
 
     await expect(deliverEnquiry(VALUES, ENV)).resolves.toBeTruthy()
     expect(console.warn).toHaveBeenCalled()
+  })
+
+  it('sends the acknowledgement through Gmail when it is configured', async () => {
+    fetch.mockResolvedValue(resendOk())
+    sendMail.mockResolvedValue({ messageId: 'x' })
+
+    await deliverEnquiry(VALUES, {
+      ...ENV,
+      GMAIL_USER: 'geniewep@gmail.com',
+      GMAIL_APP_PASSWORD: 'abcd efgh ijkl mnop',
+    })
+
+    // The enquiry still goes through Resend; only the acknowledgement moves.
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(sendMail).toHaveBeenCalledTimes(1)
+    const mail = sendMail.mock.calls[0][0]
+    expect(mail.to).toBe('jane@example.com')
+    expect(mail.from).toContain('geniewep@gmail.com')
+    expect(mail.text).toContain('less than 24 hours')
   })
 })

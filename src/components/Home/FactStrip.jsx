@@ -25,8 +25,8 @@ export const FactStrip = () => (
         {HEADLINE_FACTS.map((fact) => (
           <StaggerItem as="div" key={fact.id}>
             <Card className="flex h-full items-center gap-4 px-5 py-4">
-              <span className="tile-azure h-11 w-11 shrink-0">
-                <Icon name={fact.icon} className="h-5 w-5" />
+              <span className="tile-azure shrink-0">
+                <Icon name={fact.icon} className="h-7 w-7" />
               </span>
               <div className="min-w-0">
                 <dt className="sr-only">{fact.label}</dt>

@@ -210,7 +210,7 @@ describe('team', () => {
     expect(
       TEAM.map((member) => `${member.name} — ${member.role}`),
     ).toEqual([
-      'Kasozi Alosious — Founder & Lead Developer',
+      'Kasozi Aloisius — Founder & Lead Developer',
       'Mugisha Andrew — Co-Founder & Software Engineer',
     ])
   })

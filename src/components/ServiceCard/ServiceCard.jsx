@@ -12,9 +12,9 @@ import Icon from '@/components/Icon'
  * `Role management` is a scope a client can recognise their own project in.
  * They come from the catalogue rather than being written here.
  *
- * The icon tile fills with azure on hover — see `.tile-azure` in
- * styles/globals.css. It is the only colour change on the card, so the whole
- * card lights up from one point rather than everything shifting at once.
+ * The icon shifts shade on hover — see `.tile-azure` in styles/globals.css.
+ * It is the only colour change on the card, so the whole card responds from
+ * one point rather than everything shifting at once.
  */
 export const ServiceCard = ({ service, index = 0 }) => (
   <motion.div
@@ -29,8 +29,8 @@ export const ServiceCard = ({ service, index = 0 }) => (
     className="h-full"
   >
     <Card hoverable className="group flex h-full flex-col p-6 sm:p-7">
-      <span className="tile-azure mb-5 h-13 w-13 shrink-0">
-        <Icon name={service.icon} className="h-6 w-6" />
+      <span className="tile-azure mb-5 shrink-0 self-start">
+        <Icon name={service.icon} className="h-7 w-7" />
       </span>
 
       <h3 className="mb-2 text-base font-bold text-title">{service.title}</h3>

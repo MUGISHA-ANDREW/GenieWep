@@ -56,7 +56,7 @@ const outcomeCopy = ({ email }) => {
     return {
       tone: 'bg-ok-bg',
       heading: 'Message delivered',
-      body: `Your message has arrived in the ${COMPANY.shortName} inbox. We will get back to you shortly — usually within one business day.`,
+      body: `Your message has arrived in the ${COMPANY.shortName} inbox. We will contact you in less than 24 hours.`,
     }
   }
 

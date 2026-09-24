@@ -118,7 +118,7 @@ describe('ContactForm delivery', () => {
     await user.click(screen.getByRole('button', { name: /send message/i }))
 
     expect(await screen.findByText(/^message delivered$/i)).toBeInTheDocument()
-    expect(screen.getByText(/get back to you shortly/i)).toBeInTheDocument()
+    expect(screen.getByText(/less than 24 hours/i)).toBeInTheDocument()
 
     expect(sendEnquiryEmail).toHaveBeenCalledTimes(1)
     expect(sendEnquiryEmail).toHaveBeenCalledWith(
