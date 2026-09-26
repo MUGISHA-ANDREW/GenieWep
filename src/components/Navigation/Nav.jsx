@@ -1,3 +1,4 @@
+import { FiChevronRight } from 'react-icons/fi'
 import { NavLink } from 'react-router-dom'
 
 import { NAV_LINKS } from '@/utils/constants'
@@ -17,7 +18,7 @@ export const Nav = ({ orientation = 'horizontal', onNavigate }) => {
 
   const linkClasses = ({ isActive }) => {
     if (isVertical) {
-      return `flex items-center justify-between rounded-xl px-4 py-3 text-base font-semibold transition-colors ${
+      return `group flex items-center justify-between rounded-xl px-4 py-3.5 text-[1.0625rem] font-semibold transition-colors ${
         isActive
           ? 'bg-azure-500/12 text-link'
           : 'text-title hover:bg-chip hover:text-link'
@@ -42,6 +43,14 @@ export const Nav = ({ orientation = 'horizontal', onNavigate }) => {
             onClick={onNavigate}
           >
             {link.label}
+            {/* A chevron on each row is the cue, on a phone, that the row
+                goes somewhere — the same affordance a native list uses. */}
+            {isVertical && (
+              <FiChevronRight
+                aria-hidden="true"
+                className="h-4 w-4 text-dim transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            )}
           </NavLink>
         </li>
       ))}

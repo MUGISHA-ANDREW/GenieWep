@@ -49,15 +49,18 @@ export const Footer = () => {
 
   return (
     <footer className="border-t border-navy-700/60 bg-navy-950 text-surface-200">
-      <div className="container-page py-14 md:py-16">
+      <div className="container-page pt-12 pb-24 sm:pb-14 sm:pt-14 md:py-16">
         {/*
           The brand block takes a wider column of its own and the four link
           columns share the rest. Five equal columns would leave the tagline a
           150px gutter to live in, which is how it ends up wrapping every
           second word.
         */}
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:gap-8">
-          <div className="lg:pr-8">
+        {/* Two columns even on a phone: the short link lists sit side by side
+            instead of stacking into one very long scroll. The brand block and
+            the contact details, whose lines are too long to halve, span both. */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)] lg:gap-8">
+          <div className="col-span-2 lg:col-span-1 lg:pr-8">
             <Logo onDark />
 
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-surface-300">
@@ -66,7 +69,7 @@ export const Footer = () => {
 
             {/* Places to follow the company, not ways to reach it about a
                 project — the enquiry channels stay together on the right. */}
-            <ul className="mt-6 flex items-center gap-1">
+            <ul className="mt-6 flex items-center gap-2 sm:gap-1">
               {SOCIAL_LINKS.map((social) => {
                 const SocialIcon = SOCIAL_ICONS[social.icon]
 
@@ -118,7 +121,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <ColumnHeading>Contact</ColumnHeading>
             <ul className="space-y-3">
               <li>
@@ -172,9 +175,9 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <nav aria-label="Legal">
+          <nav aria-label="Legal" className="col-span-2 md:col-span-1">
             <ColumnHeading>Legal</ColumnHeading>
-            <ul className="space-y-3">
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 md:block md:space-y-3">
               {LEGAL_LINKS.map((link) => (
                 <li key={link.to}>
                   <Link to={link.to} className={linkClass}>
@@ -186,7 +189,7 @@ export const Footer = () => {
           </nav>
         </div>
 
-        <div className="mt-14 flex flex-col gap-2 border-t border-navy-700/60 pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-2 border-t sm:mt-14 border-navy-700/60 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-surface-300/80">
             &copy; {year} {COMPANY.name}. All rights reserved.
           </p>

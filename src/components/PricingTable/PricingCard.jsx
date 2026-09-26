@@ -38,12 +38,12 @@ export const PricingCard = ({ pkg, index = 0 }) => {
       className="h-full"
     >
       <Card
-        className={`relative flex h-full flex-col p-6 sm:p-7 ${
+        className={`relative flex h-full flex-col p-5 sm:p-7 ${
           pkg.featured ? 'border-azure-500/45' : ''
         }`}
       >
         {pkg.featured && (
-          <span className="absolute right-6 top-6 rounded-full bg-azure-500/15 px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-link">
+          <span className="absolute right-5 top-5 rounded-full sm:right-6 sm:top-6 bg-azure-500/15 px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.1em] text-link">
             Most popular
           </span>
         )}

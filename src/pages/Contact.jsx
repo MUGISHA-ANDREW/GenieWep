@@ -73,9 +73,9 @@ const Contact = () => (
       </div>
     </section>
 
-    <div className="bg-canvas py-16 md:py-24">
+    <div className="bg-canvas py-12 sm:py-16 md:py-24">
       <div className="container-page">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+        <div className="grid gap-10 sm:gap-12 lg:grid-cols-[1fr_1.4fr]">
           {/* Channels */}
           <aside>
             <h2 className="text-xl text-title">Reach us directly</h2>
@@ -83,10 +83,10 @@ const Contact = () => (
               Prefer to talk first? Use whichever channel suits you.
             </p>
 
-            <ul className="mt-8 space-y-4">
+            <ul className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
               {CHANNELS.map((channel) => (
                 <li key={channel.id}>
-                  <Card hoverable className="p-5">
+                  <Card hoverable className="rounded-2xl p-4 sm:rounded-3xl sm:p-5">
                     <a
                       href={channel.href}
                       {...(channel.external
@@ -122,7 +122,7 @@ const Contact = () => (
               ))}
 
               <li>
-                <Card className="p-5">
+                <Card className="rounded-2xl p-4 sm:rounded-3xl sm:p-5">
                   <div className="flex items-start gap-4">
                     <span className="inline-flex shrink-0 text-link">
                       <FiMapPin aria-hidden="true" className="h-7 w-7" />
@@ -143,7 +143,7 @@ const Contact = () => (
 
           {/* Form */}
           <div>
-            <Card className="p-6 md:p-8">
+            <Card className="p-5 sm:p-6 md:p-8">
               <h2 className="mb-2 text-xl text-title">Send us a message</h2>
               <p className="mb-8 text-sm text-body">
                 Fields marked with an asterisk are required.

@@ -120,9 +120,13 @@ export const Header = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            /* Fills the rest of the screen rather than stopping at its content,
+               so the page does not show through underneath a half-height sheet
+               — the menu reads as a screen of its own, the way a native app's
+               does. It scrolls internally on a short landscape phone. */
             className="overflow-hidden border-t border-line bg-canvas lg:hidden"
           >
-            <div className="container-page py-6">
+            <div className="container-page flex h-[calc(100dvh-4.5rem)] flex-col overflow-y-auto overscroll-contain py-6">
               <nav aria-label="Mobile navigation">
                 <Nav
                   orientation="vertical"
@@ -130,7 +134,7 @@ export const Header = () => {
                 />
               </nav>
 
-              <div className="mt-6">
+              <div className="mt-6 mb-8">
                 <Button to="/contact" size="lg" fullWidth>
                   Get a free consultation
                 </Button>
@@ -139,7 +143,7 @@ export const Header = () => {
               {/* The two channels people actually use, spelled out. This is
                   the bottom of the menu, which is where someone who did not
                   find the page they wanted goes looking. */}
-              <ul className="mt-6 space-y-3 border-t border-line pt-6">
+              <ul className="mt-auto space-y-4 border-t border-line pt-6 pb-[env(safe-area-inset-bottom)]">
                 <li>
                   <a
                     href={WHATSAPP_LINK}

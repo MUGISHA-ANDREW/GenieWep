@@ -49,14 +49,14 @@ const transition = { duration: 0.55, ease: [0.22, 1, 0.36, 1] }
  */
 const Hero = () => (
   <section className="aurora relative overflow-hidden border-b border-line bg-canvas">
-    <div className="container-page py-16 sm:py-20 lg:py-24">
-      <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 xl:gap-16">
+    <div className="container-page pt-12 pb-16 sm:py-20 lg:py-24">
+      <div className="grid items-center gap-12 sm:gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 xl:gap-16">
         <motion.div initial="initial" animate="animate" transition={{ staggerChildren: 0.08 }}>
 
           <motion.h1
             variants={fadeUp}
             transition={transition}
-            className="text-[1.75rem] leading-[1.15] text-title sm:text-[2.125rem] lg:text-[2.5rem]"
+            className="text-[1.875rem] leading-[1.12] text-title sm:text-[2.125rem] lg:text-[2.5rem]"
           >
             We design, build and maintain the{' '}
             {/* Two words in azure. The effect only works because it is rare —
@@ -68,7 +68,7 @@ const Hero = () => (
           <motion.p
             variants={fadeUp}
             transition={transition}
-            className="mt-6 max-w-xl text-base leading-relaxed text-body sm:text-lg"
+            className="mt-5 max-w-xl text-base leading-relaxed text-body sm:mt-6 sm:text-lg"
           >
             {COMPANY.summary}
           </motion.p>
@@ -78,7 +78,7 @@ const Hero = () => (
           <motion.ul
             variants={fadeUp}
             transition={transition}
-            className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-dim"
+            className="mt-6 flex flex-wrap items-center gap-2 text-[0.8125rem] text-dim sm:gap-x-4 sm:gap-y-2 sm:text-sm"
           >
             {/*
               The separator dot trails each item rather than leading the next
@@ -87,12 +87,17 @@ const Hero = () => (
             */}
             {['Websites', 'Web & mobile apps', 'Custom software', 'Hosting & support'].map(
               (item, index, all) => (
-                <li key={item} className="flex items-center gap-4">
+                /* On a phone the four items wrap unpredictably, so they
+                   become outlined pills there and a dotted line from `sm`. */
+                <li
+                  key={item}
+                  className="flex items-center gap-4 rounded-full border border-line bg-card/50 px-3 py-1.5 sm:border-0 sm:bg-transparent sm:p-0"
+                >
                   {item}
                   {index < all.length - 1 && (
                     <span
                       aria-hidden="true"
-                      className="h-1 w-1 rounded-full bg-line-strong"
+                      className="hidden h-1 w-1 rounded-full bg-line-strong sm:block"
                     />
                   )}
                 </li>
@@ -103,7 +108,7 @@ const Hero = () => (
           <motion.div
             variants={fadeUp}
             transition={transition}
-            className="mt-9 flex flex-col gap-3 sm:flex-row"
+            className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row"
           >
             <Button to="/contact" size="lg">
               Get a free consultation
@@ -155,7 +160,7 @@ const Home = () => (
       {/* The catalogue link as a full-width bar rather than a stray button —
           it closes the section instead of dangling under it. */}
       <Reveal className="mt-8">
-        <Card className="flex flex-col items-start justify-between gap-5 px-6 py-6 sm:flex-row sm:items-center sm:px-8">
+        <Card className="flex flex-col items-start justify-between gap-5 px-5 py-6 sm:flex-row sm:items-center sm:px-8">
           <div>
             <h3 className="text-base font-bold text-title">
               Need the full service catalogue?
@@ -165,7 +170,7 @@ const Home = () => (
               for every package.
             </p>
           </div>
-          <Button to="/services" className="shrink-0">
+          <Button to="/services" className="w-full shrink-0 sm:w-auto">
             View services &amp; pricing
             <FiArrowRight aria-hidden="true" className="h-4 w-4" />
           </Button>
@@ -180,14 +185,22 @@ const Home = () => (
       title="Built, launched, and still running."
       description="Real systems for real organizations across agriculture, commodities trading, tourism and the NGO sector."
     >
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {/* A swipeable row on phones — four full-height cards stacked would be
+          most of the page — and the grid from `sm` up. The next card peeks in
+          from the right edge, which is what tells a visitor the row scrolls. */}
+      <div className="bleed-x scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:pb-0 lg:grid-cols-4">
         {PROJECTS.map((project, index) => (
-          <ProjectCard key={project.id} project={project} index={index} />
+          <div
+            key={project.id}
+            className="w-[82%] shrink-0 snap-start sm:w-auto"
+          >
+            <ProjectCard project={project} index={index} />
+          </div>
         ))}
       </div>
 
       <Reveal className="mt-10">
-        <Button to="/projects" variant="secondary">
+        <Button to="/projects" variant="secondary" className="w-full sm:w-auto">
           See all projects
           <FiArrowRight aria-hidden="true" className="h-4 w-4" />
         </Button>
@@ -203,11 +216,11 @@ const Home = () => (
       <Stagger as="ul" step={0.06} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {WHY_CHOOSE_US.map((reason) => (
           <StaggerItem as="li" key={reason.id}>
-            <Card hoverable className="group flex h-full items-start gap-4 p-6">
-              <span className="tile-azure shrink-0 pt-1.5">
+            <Card hoverable className="group flex h-full items-center gap-4 p-5 sm:items-start sm:p-6">
+              <span className="tile-azure shrink-0 sm:pt-1.5">
                 <Icon name={reason.icon} className="h-7 w-7" />
               </span>
-              <span className="pt-2.5 text-[0.9375rem] font-semibold text-title">
+              <span className="text-[0.9375rem] font-semibold text-title sm:pt-2.5">
                 {reason.text}
               </span>
             </Card>
@@ -236,9 +249,9 @@ const Home = () => (
     >
       {/* The switcher sits directly above the prices it changes, so the
           relationship needs no explaining. */}
-      <Reveal className="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <Reveal className="mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
         <p className="text-sm text-dim">Show prices in</p>
-        <CurrencySwitcher />
+        <CurrencySwitcher className="w-full sm:w-auto" />
       </Reveal>
 
       <div className="grid gap-5 lg:grid-cols-3">
@@ -250,7 +263,7 @@ const Home = () => (
       <CurrencyNote className="mt-6 max-w-2xl" />
 
       <Reveal className="mt-10">
-        <Button to="/services" variant="secondary">
+        <Button to="/services" variant="secondary" className="w-full sm:w-auto">
           Compare all packages
           <FiArrowRight aria-hidden="true" className="h-4 w-4" />
         </Button>
@@ -263,7 +276,7 @@ const Home = () => (
     <section className="aurora relative overflow-hidden border-t border-line bg-canvas">
       <div className="container-page py-16 sm:py-20">
         <Reveal>
-          <Card className="px-6 py-10 sm:px-10 sm:py-12 lg:px-14">
+          <Card className="px-5 py-8 sm:px-10 sm:py-12 lg:px-14">
             <div className="grid items-center gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
               <div>
                 <h2 className="text-2xl leading-[1.2] text-title sm:text-3xl">

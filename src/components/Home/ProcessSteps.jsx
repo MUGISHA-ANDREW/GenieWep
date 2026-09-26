@@ -26,7 +26,7 @@ export const ProcessSteps = () => (
     <Stagger
       as="ol"
       step={0.08}
-      className="relative grid gap-8 lg:grid-cols-4 lg:gap-6"
+      className="relative mx-auto grid max-w-md gap-0 sm:max-w-none lg:grid-cols-4 lg:gap-6"
     >
       {/* The rule the tiles sit on. Hidden below `lg`, where the stages stack
           and a horizontal line would have nothing to connect. */}
@@ -35,19 +35,37 @@ export const ProcessSteps = () => (
         className="absolute left-[12.5%] right-[12.5%] top-7 hidden h-px bg-line lg:block"
       />
 
-      {PROCESS.map((stage) => (
-        <StaggerItem as="li" key={stage.id} className="relative text-center">
-          <span className="tile-azure mx-auto mb-5 h-14 w-14 bg-tint ring-8 ring-tint">
+      {PROCESS.map((stage, index) => (
+        /*
+          Below `sm` each stage is a row of a vertical timeline: the icon on
+          the left, on a rule that runs down to the next one, and the text
+          left-aligned beside it. Centred paragraphs stacked four deep read as
+          a poem; a timeline reads as a sequence.
+        */
+        <StaggerItem
+          as="li"
+          key={stage.id}
+          className="relative grid grid-cols-[3.5rem_1fr] gap-x-4 pb-10 text-left last:pb-0 sm:block sm:pb-8 sm:text-center lg:pb-0"
+        >
+          {index < PROCESS.length - 1 && (
+            <span
+              aria-hidden="true"
+              className="absolute left-7 top-14 bottom-0 w-px bg-line sm:hidden"
+            />
+          )}
+          <span className="tile-azure relative h-14 w-14 rounded-2xl border border-line bg-card sm:mx-auto sm:mb-5 sm:rounded-none sm:border-0 sm:bg-tint sm:ring-8 sm:ring-tint">
             <Icon name={stage.icon} className="h-6 w-6" />
           </span>
 
-          <p className="tabular mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-link">
-            {stage.step}
-          </p>
-          <h3 className="mb-3 text-base font-bold text-title">{stage.title}</h3>
-          <p className="mx-auto max-w-xs text-sm leading-relaxed text-body">
-            {stage.body}
-          </p>
+          <div className="pt-1 sm:pt-0">
+            <p className="tabular mb-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-link sm:mb-2">
+              {stage.step}
+            </p>
+            <h3 className="mb-2 text-base font-bold text-title sm:mb-3">{stage.title}</h3>
+            <p className="max-w-xs text-sm leading-relaxed text-body sm:mx-auto">
+              {stage.body}
+            </p>
+          </div>
         </StaggerItem>
       ))}
     </Stagger>

@@ -48,7 +48,7 @@ const Projects = () => {
           what actually happened. The pill is behind the label, so the label
           keeps its own colour transition on top of it.
         */}
-        <div className="mb-10 flex flex-wrap gap-2">
+        <div className="bleed-x scrollbar-none mb-8 flex gap-2 overflow-x-auto sm:mb-10 sm:flex-wrap sm:overflow-visible">
           {PROJECT_CATEGORIES.map((category) => {
             const isActive = category === activeCategory
             return (
@@ -57,7 +57,8 @@ const Projects = () => {
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setActiveCategory(category)}
-                className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                /* `isolate`: see the note on the Services tabs. */
+                className={`relative isolate shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
                   isActive
                     ? 'text-white'
                     : 'bg-chip text-body hover:bg-chip-hover hover:text-title'
@@ -97,7 +98,7 @@ const Projects = () => {
               approach it.
             </p>
             <div className="mt-8">
-              <Button to="/contact" size="lg">
+              <Button to="/contact" size="lg" className="w-full sm:w-auto">
                 Start a conversation
                 <FiArrowRight aria-hidden="true" className="h-4 w-4" />
               </Button>

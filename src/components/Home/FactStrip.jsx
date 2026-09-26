@@ -16,17 +16,19 @@ import { HEADLINE_FACTS } from '@/utils/constants'
  */
 export const FactStrip = () => (
   <section className="border-y border-line bg-tint">
-    <div className="container-page py-10 sm:py-12 lg:py-14">
+    <div className="container-page py-8 sm:py-12 lg:py-14">
       <Stagger
         as="dl"
         step={0.06}
-        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
       >
         {HEADLINE_FACTS.map((fact) => (
           <StaggerItem as="div" key={fact.id}>
-            <Card className="flex h-full items-center gap-4 px-5 py-4">
+            {/* Two by two on a phone, with the icon above the figure —
+                four full-width rows here pushed the services a screen down. */}
+            <Card className="flex h-full flex-col items-start gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:gap-4 sm:rounded-3xl sm:px-5 sm:py-4">
               <span className="tile-azure shrink-0">
-                <Icon name={fact.icon} className="h-7 w-7" />
+                <Icon name={fact.icon} className="h-6 w-6 sm:h-7 sm:w-7" />
               </span>
               <div className="min-w-0">
                 <dt className="sr-only">{fact.label}</dt>

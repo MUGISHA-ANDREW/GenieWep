@@ -69,7 +69,7 @@ const TICKS = Array.from({ length: 48 }, (_, index) => {
 })
 
 export const AfricaGlobe = () => (
-  <div className="relative mx-auto w-full max-w-[21rem] sm:max-w-[25rem]">
+  <div className="relative mx-auto w-full max-w-[18rem] sm:max-w-[25rem]">
     {/* Soft azure pool behind the sphere. Blurred and low-alpha, so it reads
         as the globe being lit rather than as a ring around it. */}
     <div

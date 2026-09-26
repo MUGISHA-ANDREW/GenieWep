@@ -16,7 +16,9 @@ import { sendEnquiryEmail } from '@/utils/email'
 import { contactDefaultValues, contactSchema } from '@/utils/validation'
 
 const FIELD_BASE =
-  'w-full rounded-lg border bg-card px-4 py-3 text-sm text-title transition-colors placeholder:text-dim/70 focus:outline-none'
+  /* `text-base` below `sm`: iOS zooms the page into any field under 16px
+   the moment it is focused, and does not zoom back out. */
+  'w-full rounded-xl border bg-card px-4 py-3 text-base text-title sm:text-sm transition-colors placeholder:text-dim/70 focus:outline-none'
 
 const fieldClasses = (hasError) =>
   `${FIELD_BASE} ${
@@ -125,7 +127,7 @@ export const ContactForm = () => {
         aria-live="polite"
         /* Borderless like the cards. The tinted fill still carries the state,
            and the icon above says it again without relying on colour. */
-        className={`rounded-xl p-8 text-center ${tone}`}
+        className={`rounded-xl p-6 text-center sm:p-8 ${tone}`}
       >
         {pending ? (
           <span
@@ -280,7 +282,7 @@ export const ContactForm = () => {
       </div>
 
       <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
-        <Button type="submit" size="lg">
+        <Button type="submit" size="lg" className="w-full sm:w-auto">
           <FiSend aria-hidden="true" className="h-4 w-4" />
           Send message
         </Button>

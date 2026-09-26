@@ -61,7 +61,7 @@ export const Section = ({
             as="header"
             duration={0.5}
             margin="-80px"
-            className={`mb-12 max-w-2xl md:mb-16 ${isCentered ? 'mx-auto text-center' : ''}`}
+            className={`mb-10 max-w-2xl sm:mb-12 md:mb-16 ${isCentered ? 'mx-auto text-center' : ''}`}
           >
 
             {title && (
@@ -76,7 +76,7 @@ export const Section = ({
 
             {description && (
               <p
-                className={`mt-5 text-base leading-relaxed ${
+                className={`mt-4 text-base leading-relaxed sm:mt-5 ${
                   isDark ? 'text-surface-200' : 'text-body'
                 }`}
               >

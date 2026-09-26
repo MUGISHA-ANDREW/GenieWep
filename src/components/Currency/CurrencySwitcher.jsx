@@ -51,7 +51,9 @@ export const CurrencySwitcher = ({ className = '' }) => {
         id="currency-switcher"
         value={code}
         onChange={(event) => setCurrency(event.target.value)}
-        className="max-w-[16rem] cursor-pointer truncate rounded-xl border border-line bg-card py-2 pl-3 pr-8 text-sm font-semibold text-title transition-colors hover:border-azure-500/40 focus:outline-none"
+        /* 16px on phones: iOS zooms the whole page into any control set
+           smaller than that the moment it is tapped. */
+        className="min-w-0 flex-1 cursor-pointer truncate rounded-xl border border-line bg-card py-2.5 pl-3 pr-8 text-base font-semibold sm:max-w-[16rem] sm:flex-none sm:py-2 sm:text-sm text-title transition-colors hover:border-azure-500/40 focus:outline-none"
       >
         {/* The detected currency, when it is not one of the regulars. Grouped
             separately so it reads as "yours" rather than as an odd entry

@@ -75,7 +75,9 @@ const Services = () => {
         <div
           role="tablist"
           aria-label="Service categories"
-          className="mb-10 flex flex-wrap gap-2 border-b border-line pb-4"
+          /* One swipeable row on phones rather than two ragged wrapped
+             rows; the wrap comes back from `sm`, where they fit. */
+          className="bleed-x scrollbar-none mb-8 flex gap-2 overflow-x-auto border-b border-line pb-4 sm:mb-10 sm:flex-wrap sm:overflow-visible"
         >
           {SERVICE_CATEGORIES.map((category) => {
             const isActive = category.id === activeId
@@ -97,7 +99,10 @@ const Services = () => {
                  * tabs, the same treatment as the Projects filter — five tabs
                  * that light up in place give no sense of which one you left.
                  */
-                className={`relative rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors duration-200 ${
+                /* `isolate` keeps the sliding `-z-10` fill inside the button's
+                   own stacking context. Without it the fill drops behind the
+                   section background and the active tab shows no fill. */
+                className={`relative isolate shrink-0 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors duration-200 ${
                   isActive
                     ? 'text-white'
                     : 'bg-chip text-body hover:bg-chip-hover hover:text-title'
@@ -117,9 +122,9 @@ const Services = () => {
           })}
         </div>
 
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
           <p className="text-sm text-dim">Show prices in</p>
-          <CurrencySwitcher />
+          <CurrencySwitcher className="w-full sm:w-auto" />
         </div>
 
         <div

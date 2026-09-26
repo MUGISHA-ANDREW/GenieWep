@@ -28,8 +28,8 @@ export const ServiceCard = ({ service, index = 0 }) => (
     }}
     className="h-full"
   >
-    <Card hoverable className="group flex h-full flex-col p-6 sm:p-7">
-      <span className="tile-azure mb-5 shrink-0 self-start">
+    <Card hoverable className="group flex h-full flex-col p-5 sm:p-7">
+      <span className="tile-azure mb-4 shrink-0 self-start sm:mb-5">
         <Icon name={service.icon} className="h-7 w-7" />
       </span>
 

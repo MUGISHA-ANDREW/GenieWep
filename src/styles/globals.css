@@ -6,9 +6,19 @@
     /* The header is sticky, so an in-page anchor would otherwise land with its
        heading tucked underneath it. 6rem clears the header plus a little air. */
     scroll-padding-top: 6rem;
+    /* Stop iOS inflating text on rotation, and drop the grey flash Android
+       and iOS paint over anything tapped — every control here has its own
+       pressed state. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
+    /* `clip` rather than `hidden`: it stops a stray wide element from
+       creating sideways scroll on a phone without turning <body> into a
+       scroll container, which would break the sticky header. */
+    overflow-x: clip;
     background-color: var(--c-canvas);
     color: var(--c-body);
     font-family: var(--font-sans);
@@ -319,6 +329,40 @@
   .skip-link:focus {
     left: 1rem;
     top: 1rem;
+  }
+
+  /* A row that scrolls sideways on a phone without showing a scrollbar —
+     the tab and filter rows, and the project carousel. */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*
+   * Bleeds a horizontal scroller out to the screen edges below `sm`, while
+   * keeping its first item aligned with the page gutter. A row that stops at
+   * the gutter looks cropped; one that runs off the edge reads as "swipe".
+   */
+  .bleed-x {
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    scroll-padding-inline: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .bleed-x {
+      margin-inline: 0;
+      padding-inline: 0;
+      scroll-padding-inline: 0;
+    }
+  }
+
+  /* Keeps fixed elements clear of the iPhone home indicator. */
+  .safe-bottom {
+    bottom: max(1rem, env(safe-area-inset-bottom));
   }
 
   /* Numeric columns — prices, stats. Tabular figures so digits line up down a

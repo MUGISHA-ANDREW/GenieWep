@@ -56,7 +56,7 @@ export const TeamCard = ({ member, index = 0 }) => {
       }}
       className="h-full"
     >
-      <Card hoverable className="group flex h-full flex-col items-center p-8 text-center">
+      <Card hoverable className="group flex h-full flex-col items-center p-6 text-center sm:p-8">
         <img
           src={photo ?? placeholderAvatar}
           /*

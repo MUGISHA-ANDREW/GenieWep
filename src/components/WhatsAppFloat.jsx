@@ -24,7 +24,9 @@ export const WhatsAppFloat = () => (
     target="_blank"
     rel="noopener noreferrer"
     aria-label={`Chat with GenieWep Technologies on WhatsApp at ${CONTACT.phoneDisplay} (opens in a new tab)`}
-    className="group fixed bottom-5 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-whatsapp text-white shadow-lg shadow-whatsapp/40 transition-all duration-300 ease-[var(--ease-brand)] hover:scale-110 hover:shadow-xl hover:shadow-whatsapp/50 active:scale-100"
+    /* A size down on phones, where a 56px disc sits on top of a real share
+       of every card it floats over. */
+    className="safe-bottom group fixed right-4 z-40 inline-flex h-13 w-13 items-center sm:right-5 sm:h-14 sm:w-14 justify-center rounded-full bg-whatsapp text-white shadow-lg shadow-whatsapp/40 transition-all duration-300 ease-[var(--ease-brand)] hover:scale-110 hover:shadow-xl hover:shadow-whatsapp/50 active:scale-100"
   >
     <span
       aria-hidden="true"
@@ -32,7 +34,7 @@ export const WhatsAppFloat = () => (
     />
     <FaWhatsapp
       aria-hidden="true"
-      className="h-7 w-7 transition-transform duration-300 ease-[var(--ease-brand)] group-hover:rotate-12"
+      className="h-6 w-6 transition sm:h-7 sm:w-7-transform duration-300 ease-[var(--ease-brand)] group-hover:rotate-12"
     />
   </a>
 )

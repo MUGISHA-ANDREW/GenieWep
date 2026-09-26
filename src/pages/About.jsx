@@ -30,7 +30,7 @@ const About = () => (
       <div className="container-page py-16 md:py-20">
         {/* Walks the headline and summary in one after the other. */}
         <Stagger step={0.1}>
-          <StaggerItem as="h1" className="max-w-3xl text-4xl text-white md:text-5xl">
+          <StaggerItem as="h1" className="max-w-3xl text-[2rem] leading-[1.15] text-white sm:text-4xl md:text-5xl">
             A Ugandan software company building for Africa
           </StaggerItem>
           <StaggerItem
@@ -111,7 +111,7 @@ const About = () => (
           {/* The 4px accent bar that used to run down the left of these two
               cards is gone with the rest of the borders. Mission and vision
               are still told apart by their icon and heading colour. */}
-          <Card hoverable className="h-full p-8">
+          <Card hoverable className="h-full p-6 sm:p-8">
             {/* Bare glyph: the tinted tiles behind icons are gone site-wide. */}
             <span className="mb-4 inline-flex text-link">
               <FiTarget aria-hidden="true" className="h-8 w-8" />
@@ -124,7 +124,7 @@ const About = () => (
         </Reveal>
 
         <Reveal from="right" delay={0.1}>
-          <Card hoverable className="h-full p-8">
+          <Card hoverable className="h-full p-6 sm:p-8">
             <span className="mb-4 inline-flex text-title">
               <FiEye aria-hidden="true" className="h-8 w-8" />
             </span>
@@ -229,7 +229,7 @@ const About = () => (
             Tell us about your organization and what you need built.
           </p>
           <div className="mt-8">
-            <Button to="/contact" size="lg">
+            <Button to="/contact" size="lg" className="w-full sm:w-auto">
               Get in touch
               <FiArrowRight aria-hidden="true" className="h-4 w-4" />
             </Button>
