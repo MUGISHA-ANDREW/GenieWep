@@ -168,7 +168,7 @@ const Services = () => {
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Button to="/contact" size="lg">
                 Request a quote
-                <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+                <FiArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
               </Button>
               <Button href={WHATSAPP_LINK} variant="whatsapp" size="lg">
                 <FaWhatsapp aria-hidden="true" className="h-5 w-5" />

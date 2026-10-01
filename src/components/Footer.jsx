@@ -1,9 +1,9 @@
 import { FaWhatsapp } from 'react-icons/fa'
-import { FaFacebookF, FaInstagram, FaTiktok, FaXTwitter } from 'react-icons/fa6'
 import { FiGlobe, FiMail, FiMapPin, FiPhone } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 
 import Logo from '@/components/Logo'
+import { SOCIAL_ICONS } from '@/components/SocialIcons'
 import {
   COMPANY,
   CONTACT,
@@ -15,17 +15,6 @@ import {
   WHATSAPP_LINK,
 } from '@/utils/constants'
 import { LEGAL_LINKS } from '@/utils/legal'
-
-/**
- * Maps the `icon` keys on `SOCIAL_LINKS` to components. Kept here rather than
- * in constants.js so the data file never imports React.
- */
-const SOCIAL_ICONS = {
-  facebook: FaFacebookF,
-  instagram: FaInstagram,
-  x: FaXTwitter,
-  tiktok: FaTiktok,
-}
 
 const linkClass =
   'text-sm text-surface-300 transition-colors duration-200 hover:text-azure-400'

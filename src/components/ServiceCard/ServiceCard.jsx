@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion'
+import { FiArrowRight } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
 
 import Card from '@/components/Card/Card'
 import Icon from '@/components/Icon'
@@ -15,8 +17,12 @@ import Icon from '@/components/Icon'
  * The icon shifts shade on hover — see `.tile-azure` in styles/globals.css.
  * It is the only colour change on the card, so the whole card responds from
  * one point rather than everything shifting at once.
+ *
+ * Pass `to` and the whole card becomes a link with an "Explore" cue along the
+ * bottom — used on the home page, where the card is a door into the catalogue
+ * rather than the catalogue itself.
  */
-export const ServiceCard = ({ service, index = 0 }) => (
+export const ServiceCard = ({ service, index = 0, to }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -28,7 +34,12 @@ export const ServiceCard = ({ service, index = 0 }) => (
     }}
     className="h-full"
   >
-    <Card hoverable className="group flex h-full flex-col p-5 sm:p-7">
+    <Card
+      as={to ? Link : 'div'}
+      to={to}
+      hoverable
+      className="group flex h-full flex-col p-5 sm:p-7"
+    >
       <span className="tile-azure mb-4 shrink-0 self-start sm:mb-5">
         <Icon name={service.icon} className="h-7 w-7" />
       </span>
@@ -50,6 +61,16 @@ export const ServiceCard = ({ service, index = 0 }) => (
             </li>
           ))}
         </ul>
+      )}
+
+      {to && (
+        <span className="mt-6 inline-flex items-center gap-2 border-t border-line pt-5 text-sm font-semibold text-link">
+          Explore service
+          <FiArrowRight
+            aria-hidden="true"
+            className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+          />
+        </span>
       )}
     </Card>
   </motion.div>

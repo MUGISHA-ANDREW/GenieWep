@@ -96,7 +96,7 @@ export const Legal = ({ id }) => {
                       className="inline-flex items-center gap-2 text-sm font-semibold text-link transition-colors hover:text-link-strong"
                     >
                       {link.label}
-                      <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+                      <FiArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
                     </Link>
                   </li>
                 ))}

@@ -231,7 +231,7 @@ const About = () => (
           <div className="mt-8">
             <Button to="/contact" size="lg" className="w-full sm:w-auto">
               Get in touch
-              <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+              <FiArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
             </Button>
           </div>
         </Reveal>

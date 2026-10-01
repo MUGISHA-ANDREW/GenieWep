@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
  */
 
 const BASE =
-  'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 ease-[var(--ease-brand)] disabled:cursor-not-allowed disabled:opacity-60'
+  'group/btn inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 ease-[var(--ease-brand)] disabled:cursor-not-allowed disabled:opacity-60'
 
 const VARIANTS = {
   /*

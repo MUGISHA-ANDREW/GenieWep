@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { FaWhatsapp } from 'react-icons/fa'
-import { FiArrowRight } from 'react-icons/fi'
+import { FiArrowRight, FiMail, FiPhone } from 'react-icons/fi'
 
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
@@ -21,7 +21,10 @@ import Seo from '@/components/Seo'
 import ServiceCard from '@/components/ServiceCard/ServiceCard'
 import {
   COMPANY,
+  CONTACT,
   CORE_SERVICES,
+  EMAIL_LINK,
+  PHONE_LINK,
   PROJECTS,
   WEBSITE_PACKAGES,
   WHATSAPP_LINK,
@@ -56,7 +59,7 @@ const Hero = () => (
           <motion.h1
             variants={fadeUp}
             transition={transition}
-            className="text-[1.875rem] leading-[1.12] text-title sm:text-[2.125rem] lg:text-[2.5rem]"
+            className="text-[2rem] leading-[1.08] tracking-[-0.03em] text-title sm:text-[2.75rem] lg:text-[3rem] xl:text-[3.5rem]"
           >
             We design, build and maintain the{' '}
             {/* Two words in azure. The effect only works because it is rare —
@@ -112,12 +115,31 @@ const Hero = () => (
           >
             <Button to="/contact" size="lg">
               Get a free consultation
-              <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+              <FiArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
             </Button>
             <Button to="/projects" variant="secondary" size="lg">
               See our work
             </Button>
           </motion.div>
+
+          {/* The benchmark's "need help? call us" line: a person to talk to,
+              one tap away, for the visitor who would rather not fill a form. */}
+          <motion.a
+            variants={fadeUp}
+            transition={transition}
+            href={PHONE_LINK}
+            className="group mt-8 inline-flex items-center gap-3 sm:mt-10"
+          >
+            <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-card text-link transition-colors duration-200 group-hover:border-azure-500/50">
+              <FiPhone aria-hidden="true" className="h-4 w-4" />
+            </span>
+            <span className="flex flex-col leading-tight">
+              <span className="text-xs text-dim">Prefer to talk? Call us</span>
+              <span className="tabular text-base font-semibold text-title transition-colors duration-200 group-hover:text-link">
+                {CONTACT.phoneDisplay}
+              </span>
+            </span>
+          </motion.a>
         </motion.div>
 
         {/* The globe gets a plain fade with a touch more delay and no movement
@@ -153,7 +175,7 @@ const Home = () => (
     >
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {CORE_SERVICES.slice(0, 6).map((service, index) => (
-          <ServiceCard key={service.id} service={service} index={index} />
+          <ServiceCard key={service.id} service={service} index={index} to="/services" />
         ))}
       </div>
 
@@ -172,7 +194,7 @@ const Home = () => (
           </div>
           <Button to="/services" className="w-full shrink-0 sm:w-auto">
             View services &amp; pricing
-            <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+            <FiArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
           </Button>
         </Card>
       </Reveal>
@@ -202,7 +224,7 @@ const Home = () => (
       <Reveal className="mt-10">
         <Button to="/projects" variant="secondary" className="w-full sm:w-auto">
           See all projects
-          <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+          <FiArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
         </Button>
       </Reveal>
     </Section>
@@ -265,7 +287,7 @@ const Home = () => (
       <Reveal className="mt-10">
         <Button to="/services" variant="secondary" className="w-full sm:w-auto">
           Compare all packages
-          <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+          <FiArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
         </Button>
       </Reveal>
     </Section>
@@ -274,24 +296,49 @@ const Home = () => (
 
     {/* Closing CTA */}
     <section className="aurora relative overflow-hidden border-t border-line bg-canvas">
-      <div className="container-page py-16 sm:py-20">
+      <div className="container-page py-16 sm:py-24 lg:py-28">
         <Reveal>
-          <Card className="px-5 py-8 sm:px-10 sm:py-12 lg:px-14">
+          <Card className="px-5 py-8 sm:px-10 sm:py-14 lg:px-16">
             <div className="grid items-center gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
               <div>
-                <h2 className="text-2xl leading-[1.2] text-title sm:text-3xl">
+                <h2 className="text-[1.75rem] leading-[1.15] tracking-[-0.025em] text-title sm:text-4xl lg:text-[2.625rem]">
                   Have a digital project in mind?
                 </h2>
-                <p className="mt-5 max-w-xl text-base leading-relaxed text-body">
+                <p className="mt-5 max-w-xl text-base leading-relaxed text-body sm:text-lg">
                   Tell us what you are building. We will come back with a clear
                   scope, a timeline and a fixed price — at no cost.
                 </p>
+
+                <ul className="mt-8 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:gap-10">
+                  <li>
+                    <a href={PHONE_LINK} className="group inline-flex items-center gap-3">
+                      <FiPhone aria-hidden="true" className="h-5 w-5 shrink-0 text-link" />
+                      <span className="flex flex-col leading-tight">
+                        <span className="text-xs text-dim">Call us</span>
+                        <span className="tabular text-sm font-semibold text-title transition-colors group-hover:text-link">
+                          {CONTACT.phoneDisplay}
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href={EMAIL_LINK} className="group inline-flex items-center gap-3">
+                      <FiMail aria-hidden="true" className="h-5 w-5 shrink-0 text-link" />
+                      <span className="flex flex-col leading-tight">
+                        <span className="text-xs text-dim">Email us</span>
+                        <span className="text-sm font-semibold break-all text-title transition-colors group-hover:text-link">
+                          {CONTACT.email}
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                </ul>
               </div>
 
               <div className="flex flex-col gap-3">
                 <Button to="/contact" size="lg" fullWidth>
                   Start a project
-                  <FiArrowRight aria-hidden="true" className="h-4 w-4" />
+                  <FiArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
                 </Button>
                 <Button
                   href={WHATSAPP_LINK}

@@ -23,9 +23,9 @@ const TONES = {
 }
 
 const SIZES = {
-  compact: 'py-12 sm:py-16',
-  md: 'py-16 sm:py-20 lg:py-24',
-  lg: 'py-20 sm:py-24 lg:py-32',
+  compact: 'py-14 sm:py-16 lg:py-20',
+  md: 'py-16 sm:py-24 lg:py-28',
+  lg: 'py-20 sm:py-28 lg:py-32',
 }
 
 export const Section = ({
@@ -61,12 +61,12 @@ export const Section = ({
             as="header"
             duration={0.5}
             margin="-80px"
-            className={`mb-10 max-w-2xl sm:mb-12 md:mb-16 ${isCentered ? 'mx-auto text-center' : ''}`}
+            className={`mb-10 max-w-3xl sm:mb-14 lg:mb-16 ${isCentered ? 'mx-auto text-center' : ''}`}
           >
 
             {title && (
               <h2
-                className={`text-2xl leading-[1.2] sm:text-3xl lg:text-[2rem] ${
+                className={`text-[1.75rem] leading-[1.15] tracking-[-0.025em] sm:text-4xl lg:text-[2.625rem] ${
                   isDark ? 'text-white' : 'text-title'
                 }`}
               >
@@ -76,7 +76,7 @@ export const Section = ({
 
             {description && (
               <p
-                className={`mt-4 text-base leading-relaxed sm:mt-5 ${
+                className={`mt-4 max-w-2xl text-base leading-relaxed sm:mt-5 sm:text-lg ${isCentered ? 'mx-auto' : ''} ${
                   isDark ? 'text-surface-200' : 'text-body'
                 }`}
               >
